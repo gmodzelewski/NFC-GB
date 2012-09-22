@@ -1,0 +1,59 @@
+<resources>
+    
+     <string name="menu_info">My Information</string>
+     <string name="menu_about">About</string>
+     
+    <string name="title_activity_main">NFC GB</string>
+
+    <string name="app_name">NFC-GB</string>
+        
+    <string name="edit_events">Edit Events</string>
+    <string name="event">Event</string>
+    
+    <string name="eventname">Eventname</string>
+    <string name="eventname_hint">The name of this event</string>
+    <string name="semester">Semester</string>
+    <string name="semester_hint">Current semester</string>
+    <string name="year">Year</string>
+    <string name="year_hint">Current year</string>
+    <string name="tutor">Tutor</string>
+    <string name="tutor_hint">Name of your tutor</string>
+    <string name="tutor_email">Tutor eMail adress</string>
+    <string name="tutor_email_hint">Email adress of your tutor</string>
+    <string name="info">Information</string>
+    <string name="info_hint">Other information</string>
+    
+    <string name="groups">Groups</string>
+        
+    <string name="my_info">My Info</string>
+    
+    <string name="first_name">First name</string>
+    <string name="first_name_hint">My first name</string>
+    <string name="last_name">Last name</string>
+    <string name="last_name_hint">My last name</string>
+    <string name="email">EMail</string>
+    <string name="email_hint">My eMail adress</string>
+    <string name="course_of_studies">Course of studies</string>
+    <string name="course_of_studies_hint">My course of studies</string>
+    
+    <string name="apply_button">Apply</string>
+    <string name="cancel_button">Cancel</string>
+    
+    <string-array name="events_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    
+    <string name="prompt">Select</string>
+    <string name="about">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</string>
+    <string name="about_tv">See what this all about</string>
+    
+    
+    
+</resources>
