@@ -2,25 +2,31 @@
 # generated on 2012/06/06 05:55:57
 #
 # --table-start--
-dataClass=com.melitta.nfcgb.SimpleData
-tableName=simpledata
+dataClass=com.melitta.nfcgb.persistence.EventData
+tableName=eventdata
 # --table-fields-start--
 # --field-start--
 fieldName=id
 generatedId=true
 # --field-end--
 # --field-start--
-fieldName=string
-indexName=simpledata_string_idx
-# --field-end--
-# --field-start--
-fieldName=millis
+fieldName=eventname
+indexName=eventdata_eventname_idx
 # --field-end--
 # --field-start--
 fieldName=date
 # --field-end--
 # --field-start--
-fieldName=even
+fieldName=year
+# --field-end--
+# --field-start--
+fieldName=tutor
+# --field-end--
+# --field-start--
+fieldName=tutoremail
+# --field-end--
+# --field-start--
+fieldName=info
 # --field-end--
 # --table-fields-end--
 # --table-end--

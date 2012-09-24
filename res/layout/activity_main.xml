@@ -4,14 +4,12 @@
     android:layout_height="wrap_content"
     android:paddingRight="2dip" >
 
-    <TableRow
-        android:background="@color/LightGrey"
-        >
+    <TableRow android:background="@color/LightGrey" >
 
         <Spinner
             android:id="@+id/events_spinner"
-            android:layout_height="fill_parent"
             android:layout_width="0dp"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:prompt="@string/prompt" />
 
@@ -23,24 +21,23 @@
             android:onClick="startEventActivity"
             android:text="@string/edit_events" />
     </TableRow>
-    
-    <TableRow 
-        android:background="@color/Black" > 
-        <Space android:layout_height="1dp"/>
-    </TableRow>
 
     <TableRow>
 
         <ListView
             android:id="@+id/eventLV"
-            android:layout_width="0dp" 
-            android:layout_weight="1">
+            android:layout_width="0dp"
+            android:layout_weight="1" >
         </ListView>
+
+        <View
+            android:layout_width="3dip"
+            android:background="@color/LightGrey" />
 
         <ExpandableListView
             android:id="@+id/eventExpLV"
-            android:layout_width="0dp" 
-            android:layout_weight="1">
+            android:layout_width="0dp"
+            android:layout_weight="1" >
         </ExpandableListView>
     </TableRow>
 

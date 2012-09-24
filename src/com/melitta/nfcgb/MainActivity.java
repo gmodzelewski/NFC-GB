@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +19,13 @@ import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class MainActivity  extends Activity  {
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.melitta.nfcgb.persistence.DatabaseHelper;
+import com.melitta.nfcgb.persistence.EventData;
+
+//public class MainActivity  extends Activity  {
+public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	int request_Code = 1;
 	private static final String NAME = "NAME";
 	private static final String IS_EVEN = "IS_EVEN";
@@ -28,100 +33,39 @@ public class MainActivity  extends Activity  {
 	private DatabaseHelper databaseHelper = null;
 	private final String LOG_TAG = getClass().getSimpleName();
 
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-//		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
-//		TextView tv = new TextView(this);
-//		doSampleDatabaseStuff("onCreate", tv);
-//		setContentView(tv);
+		// Log.i(LOG_TAG, "creating " + getClass() + " at " +
+		// System.currentTimeMillis());
+		// TextView tv = new TextView(this);
+		doEventDatabaseStuff("onCreate");
+		// get our DAOs
+		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper()
+				.getEventDataDao();
+		// setContentView(tv);
 		createSpinner();
 		createListView();
 		createExpandableListView();
 
 	}
 
+	private void doEventDatabaseStuff(String string) {
+		// TODO Auto-generated method stub
 
-//	@Override
-//	protected void onDestroy() {
-//	    super.onDestroy();
-//	    if (databaseHelper != null) {
-//	        OpenHelperManager.releaseHelper();
-//	        databaseHelper = null;
-//	    }
-//	}
-//
-//	private DatabaseHelper getHelper() {
-//	    if (databaseHelper == null) {
-//	        databaseHelper =
-//	            OpenHelperManager.getHelper(this, DatabaseHelper.class);
-//	    }
-//	    return databaseHelper;
-//	}
-//	/**
-//	 * Do our sample database stuff.
-//	 */
-//	private void doSampleDatabaseStuff(String action, TextView tv) {
-//		// get our dao
-//		RuntimeExceptionDao<SimpleData, Integer> simpleDao = getHelper().getSimpleDataDao();
-//		// query for all of the data objects in the database
-//		List<SimpleData> list = simpleDao.queryForAll();
-//		// our string builder for building the content-view
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("got ").append(list.size()).append(" entries in ").append(action).append("\n");
-//
-//		// if we already have items in the database
-//		int simpleC = 0;
-//		for (SimpleData simple : list) {
-//			sb.append("------------------------------------------\n");
-//			sb.append("[").append(simpleC).append("] = ").append(simple).append("\n");
-//			simpleC++;
-//		}
-//		sb.append("------------------------------------------\n");
-//		for (SimpleData simple : list) {
-//			simpleDao.delete(simple);
-//			sb.append("deleted id ").append(simple.id).append("\n");
-//			Log.i(LOG_TAG, "deleting simple(" + simple.id + ")");
-//			simpleC++;
-//		}
-//
-//		int createNum;
-//		do {
-//			createNum = new Random().nextInt(3) + 1;
-//		} while (createNum == list.size());
-//		for (int i = 0; i < createNum; i++) {
-//			// create a new simple object
-//			long millis = System.currentTimeMillis();
-//			SimpleData simple = new SimpleData(millis);
-//			// store it in the database
-//			simpleDao.create(simple);
-//			Log.i(LOG_TAG, "created simple(" + millis + ")");
-//			// output it
-//			sb.append("------------------------------------------\n");
-//			sb.append("created new entry #").append(i + 1).append(":\n");
-//			sb.append(simple).append("\n");
-//			try {
-//				Thread.sleep(5);
-//			} catch (InterruptedException e) {
-//				// ignore
-//			}
-//		}
-//
-//		tv.setText(sb.toString());
-//		Log.i(LOG_TAG, "Done with page at " + System.currentTimeMillis());
-//	}
-	
+	}
+
 	private void createSpinner() {
 		Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        R.array.events_array, android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				this, R.array.events_array,
+				android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 	}
-	
+
 	private void createExpandableListView() {
 		ExpandableListView eventExpLV = (ExpandableListView) findViewById(R.id.eventExpLV);
 		List<Map<String, String>> groupData = new ArrayList<Map<String, String>>();

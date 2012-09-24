@@ -217,7 +217,6 @@ public final class R {
         public static final int activity_main=0x7f030001;
         public static final int event=0x7f030002;
         public static final int myinfo=0x7f030003;
-        public static final int seconderactivity=0x7f030004;
     }
     public static final class menu {
         public static final int activity_main=0x7f0a0000;

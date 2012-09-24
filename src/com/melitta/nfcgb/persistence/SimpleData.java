@@ -1,4 +1,4 @@
-package com.melitta.nfcgb;
+package com.melitta.nfcgb.persistence;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.melitta.nfcgb;
+package com.melitta.nfcgb.persistence;
 
 import java.sql.SQLException;
 
@@ -11,6 +11,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.melitta.nfcgb.R;
+import com.melitta.nfcgb.R.raw;
 
 /**
  * Database helper class used to manage the creation and upgrading of your database. This class also usually provides
@@ -19,13 +21,13 @@ import com.j256.ormlite.table.TableUtils;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	// name of the database file for your application -- change to something appropriate for your app
-	private static final String DATABASE_NAME = "helloAndroid.db";
+	private static final String DATABASE_NAME = "nfcgb.db";
 	// any time you make changes to your database objects, you may have to increase the database version
 	private static final int DATABASE_VERSION = 1;
 
-	// the DAO object we use to access the SimpleData table
-	private Dao<SimpleData, Integer> simpleDao = null;
-	private RuntimeExceptionDao<SimpleData, Integer> simpleRuntimeDao = null;
+	// the DAO object we use to access the eventData table
+	private Dao<EventData, Integer> eventDao = null;
+	private RuntimeExceptionDao<EventData, Integer> eventRuntimeDao = null;
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -39,20 +41,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
 			Log.i(DatabaseHelper.class.getName(), "onCreate");
-			TableUtils.createTable(connectionSource, SimpleData.class);
+			TableUtils.createTable(connectionSource, EventData.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
 		}
 
 		// here we try inserting data in the on-create as a test
-		RuntimeExceptionDao<SimpleData, Integer> dao = getSimpleDataDao();
+		RuntimeExceptionDao<EventData, Integer> dao = getEventDataDao();
 		long millis = System.currentTimeMillis();
 		// create some entries in the onCreate
-		SimpleData simple = new SimpleData(millis);
-		dao.create(simple);
-		simple = new SimpleData(millis + 1);
-		dao.create(simple);
+		EventData event = new EventData(millis);
+		dao.create(event);
+		event = new EventData(millis + 1);
+		dao.create(event);
 		Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate: " + millis);
 	}
 
@@ -64,7 +66,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
 			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
-			TableUtils.dropTable(connectionSource, SimpleData.class, true);
+			TableUtils.dropTable(connectionSource, EventData.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -74,25 +76,25 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
+	 * Returns the Database Access Object (DAO) for our eventData class. It will create it or just give the cached
 	 * value.
 	 */
-	public Dao<SimpleData, Integer> getDao() throws SQLException {
-		if (simpleDao == null) {
-			simpleDao = getDao(SimpleData.class);
+	public Dao<EventData, Integer> getDao() throws SQLException {
+		if (eventDao == null) {
+			eventDao = getDao(EventData.class);
 		}
-		return simpleDao;
+		return eventDao;
 	}
 
 	/**
-	 * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our SimpleData class. It will
+	 * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our eventData class. It will
 	 * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
 	 */
-	public RuntimeExceptionDao<SimpleData, Integer> getSimpleDataDao() {
-		if (simpleRuntimeDao == null) {
-			simpleRuntimeDao = getRuntimeExceptionDao(SimpleData.class);
+	public RuntimeExceptionDao<EventData, Integer> getEventDataDao() {
+		if (eventRuntimeDao == null) {
+			eventRuntimeDao = getRuntimeExceptionDao(EventData.class);
 		}
-		return simpleRuntimeDao;
+		return eventRuntimeDao;
 	}
 
 	/**
@@ -101,7 +103,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void close() {
 		super.close();
-		simpleDao = null;
-		simpleRuntimeDao = null;
+		eventDao = null;
+		eventRuntimeDao = null;
 	}
 }
