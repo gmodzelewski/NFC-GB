@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.melitta.nfcgb.persistence.DatabaseHelper;
 import com.melitta.nfcgb.persistence.EventData;
+
 
 //public class MainActivity  extends Activity  {
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
@@ -53,7 +56,52 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	private void doEventDatabaseStuff(String string) {
-		// TODO Auto-generated method stub
+		// get our dao
+		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
+		// query for all of the data objects in the database
+		List<EventData> list = eventDao.queryForAll();
+		// our string builder for building the content-view
+		StringBuilder sb = new StringBuilder();
+		sb.append("got ").append(list.size()).append(" entries in ").append("EventData").append("\n");
+
+		// if we already have items in the database
+		int eventC = 0;
+		for (EventData event : list) {
+			sb.append("------------------------------------------\n");
+			sb.append("[").append(eventC).append("] = ").append(event).append("\n");
+			eventC++;
+		}
+		sb.append("------------------------------------------\n");
+		for (EventData event : list) {
+			eventDao.delete(event);
+			sb.append("deleted id ").append(event.id).append("\n");
+			Log.i(LOG_TAG, "deleting simple(" + event.id + ")");
+			eventC++;
+		}
+
+		int createNum;
+		do {
+			createNum = new Random().nextInt(3) + 1;
+		} while (createNum == list.size());
+		for (int i = 0; i < createNum; i++) {
+			// create a new simple object
+			long millis = System.currentTimeMillis();
+			EventData event = new EventData(millis);
+			// store it in the database
+			eventDao.create(event);
+			Log.i(LOG_TAG, "created event(" + millis + ")");
+			// output it
+			sb.append("------------------------------------------\n");
+			sb.append("created new entry #").append(i + 1).append(":\n");
+			sb.append(event).append("\n");
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				// ignore
+			}
+		}
+
+		Log.i(LOG_TAG, "Done with page at " + System.currentTimeMillis());
 
 	}
 
