@@ -32,22 +32,16 @@ public class EventActivity extends Activity implements OnClickListener, OnItemSe
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.events);
-		
-		Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        R.array.events_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
+		setContentView(R.layout.event);		
 		
 		eventname = (EditText)findViewById(R.id.eventname); 
 		semester = (EditText)findViewById(R.id.semester);
 		year = (EditText)findViewById(R.id.year);
 		tutor = (EditText)findViewById(R.id.tutor);
-		applyButton = (Button)findViewById(R.id.events_apply_button);
+		applyButton = (Button)findViewById(R.id.event_apply_button);
 		applyButton.setOnClickListener(this);
 		
-		cancelButton = (Button)findViewById(R.id.events_cancel_button);
+		cancelButton = (Button)findViewById(R.id.event_cancel_button);
 		cancelButton.setOnClickListener(new OnClickListener() {
 		    @Override
 		    public void onClick(View v) {

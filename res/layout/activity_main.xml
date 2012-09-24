@@ -1,36 +1,47 @@
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:columnWidth="90dp"
-    android:gravity="center"
-    android:numColumns="2">
+    android:layout_height="wrap_content"
+    android:paddingRight="2dip" >
+
+    <TableRow
+        android:background="@color/LightGrey"
+        >
+
+        <Spinner
+            android:id="@+id/events_spinner"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:prompt="@string/prompt" />
+
+        <Button
+            android:id="@+id/btn_events"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:onClick="startEventActivity"
+            android:text="@string/edit_events" />
+    </TableRow>
     
-    <Button
-        android:id="@+id/btn_events"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_row="1"
-        android:onClick="startEventActivity"
-        android:text="@string/edit_events" />
+    <TableRow 
+        android:background="@color/Black" > 
+        <Space android:layout_height="1dp"/>
+    </TableRow>
 
-    <ListView
-        android:id="@+id/eventLV"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:layout_row="2"
-        android:layout_column="0" >
-    </ListView>
+    <TableRow>
 
-    <ExpandableListView
-        android:id="@+id/eventExpLV"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_column="1"
-        android:layout_row="2" >
+        <ListView
+            android:id="@+id/eventLV"
+            android:layout_width="0dp" 
+            android:layout_weight="1">
+        </ListView>
 
-    </ExpandableListView>
+        <ExpandableListView
+            android:id="@+id/eventExpLV"
+            android:layout_width="0dp" 
+            android:layout_weight="1">
+        </ExpandableListView>
+    </TableRow>
 
-</GridLayout>
+</TableLayout>
