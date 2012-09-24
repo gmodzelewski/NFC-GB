@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:fadingEdge="horizontal"
     android:paddingRight="2dip" >
 
     <TableRow android:background="@color/LightGrey" >
@@ -9,20 +10,18 @@
         <Spinner
             android:id="@+id/events_spinner"
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:prompt="@string/prompt" />
 
         <Button
             android:id="@+id/btn_events"
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:onClick="startEventActivity"
             android:text="@string/edit_events" />
     </TableRow>
 
-    <TableRow>
+    <TableRow android:layout_height="0dp" >
 
         <ListView
             android:id="@+id/eventLV"

@@ -9,4 +9,16 @@
         android:orderInCategory="100"
         android:showAsAction="never"
          />
+    <item android:id="@+id/menu_add_person"
+        android:title="@string/menu_add_person"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_menu_add_person"
+        android:showAsAction="ifRoom"
+         />
+    <item android:id="@+id/menu_add_group"
+        android:title="@string/menu_add_group"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_menu_add_group"
+        android:showAsAction="ifRoom"
+         />
 </menu>

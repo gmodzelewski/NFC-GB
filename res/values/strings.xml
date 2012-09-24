@@ -2,6 +2,8 @@
     
      <string name="menu_info">My Information</string>
      <string name="menu_about">About</string>
+     <string name="menu_add_person">Add a new person</string>
+     <string name="menu_add_group">Add a new group</string>
      
     <string name="title_activity_main">NFC GB</string>
 
