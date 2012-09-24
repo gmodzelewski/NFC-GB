@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
+import com.melitta.nfcgb.EventData;
+import com.melitta.nfcgb.PersonData;
 
 /**
  * Database helper class used to manage the creation and upgrading of your
@@ -11,10 +13,10 @@ import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
  * classes.
  */
 public class DatabaseConfigUtil extends OrmLiteConfigUtil {
-	private static final Class<?>[] classes = new Class[] { SimpleData.class, };
+	private static final Class<?>[] classes = new Class[] { EventData.class, PersonData.class};
 
 	public static void main(String[] args) throws SQLException, IOException {
-		writeConfigFile("ormlite_config.txt");
-//		writeConfigFile("ormlite_config.txt", classes);
+//		writeConfigFile("ormlite_config.txt");
+		writeConfigFile("ormlite_config.txt", classes);
 	}
 }

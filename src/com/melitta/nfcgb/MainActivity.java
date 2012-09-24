@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.melitta.nfcgb.persistence.DatabaseHelper;
-import com.melitta.nfcgb.persistence.EventData;
 
 
 //public class MainActivity  extends Activity  {

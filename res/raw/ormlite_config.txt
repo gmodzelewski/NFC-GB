@@ -1,8 +1,8 @@
 #
-# generated on 2012/06/06 05:55:57
+# generated on 2012/09/25 12:30:46
 #
 # --table-start--
-dataClass=com.melitta.nfcgb.persistence.EventData
+dataClass=com.melitta.nfcgb.EventData
 tableName=eventdata
 # --table-fields-start--
 # --field-start--
@@ -27,6 +27,33 @@ fieldName=tutoremail
 # --field-end--
 # --field-start--
 fieldName=info
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.melitta.nfcgb.PersonData
+tableName=persondata
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=last_name
+indexName=persondata_last_name_idx
+# --field-end--
+# --field-start--
+fieldName=date
+# --field-end--
+# --field-start--
+fieldName=first_name
+# --field-end--
+# --field-start--
+fieldName=email
+# --field-end--
+# --field-start--
+fieldName=course_of_studies
 # --field-end--
 # --table-fields-end--
 # --table-end--
