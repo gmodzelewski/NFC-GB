@@ -10,11 +10,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
 
 public class EventActivity extends Activity implements OnClickListener, OnItemSelectedListener {
 	
@@ -24,8 +22,8 @@ public class EventActivity extends Activity implements OnClickListener, OnItemSe
 	EditText tutor;
 	Button applyButton;
 	Button cancelButton;
-	
-//	MyDbHelper mHelper;
+
+	// MyDbHelper mHelper;
 	SQLiteDatabase mDb;
 	Cursor mCursor;
 	SimpleCursorAdapter mAdapter;
@@ -41,18 +39,16 @@ public class EventActivity extends Activity implements OnClickListener, OnItemSe
 		applyButton = (Button)findViewById(R.id.event_apply_button);
 		applyButton.setOnClickListener(this);
 		
-		cancelButton = (Button)findViewById(R.id.event_cancel_button);
+		cancelButton = (Button) findViewById(R.id.event_cancel_button);
 		cancelButton.setOnClickListener(new OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		      setResult(RESULT_CANCELED);
-		    	finish();
-		    }
-		  });
+			@Override
+			public void onClick(View v) {
+				setResult(RESULT_CANCELED);
+				finish();
+			}
+		});
 		
-//		mHelper = new MyDbHelper(this);
-		
-		
+		// mHelper = new MyDbHelper(this);
 	}
 
 	public void onClick(View v) {
@@ -74,8 +70,8 @@ public class EventActivity extends Activity implements OnClickListener, OnItemSe
 	@Override
 	protected void onPause() {
 		super.onPause();
-//		mDb.close();
-//		mCursor.close();
+		// mDb.close();
+		// mCursor.close();
 	}
 
 	@Override
@@ -89,15 +85,12 @@ public class EventActivity extends Activity implements OnClickListener, OnItemSe
 //		String[] headers = new String[] {MyDbHelper.COL_NAME, MyDbHelper.COL_DATE}; 
 	}
 	
-	public void onItemSelected(AdapterView<?> parent, View view, 
-            int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-         parent.getItemAtPosition(pos);
-    }
+	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+		// An item was selected. You can retrieve the selected item using
+		parent.getItemAtPosition(pos);
+	}
 
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
-
-
+	public void onNothingSelected(AdapterView<?> parent) {
+		// Another interface callback
+	}
 }

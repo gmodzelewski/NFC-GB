@@ -32,12 +32,12 @@ public class PersonData {
 		this.date = new Date(millis);
 	}
 
-	public PersonData(String ln, Date d, String fn, String e, String c) {
-		this.last_name = ln;
+	public PersonData(String firstname, String lastname, Date d, String email, String course) {
+		this.first_name = firstname;
+		this.last_name = lastname;
 		this.date = d;
-		this.first_name = fn;
-		this.email = e;
-		this.course_of_studies = c;
+		this.email = email;
+		this.course_of_studies = course;
 	}
 	
 	@Override

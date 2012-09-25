@@ -31,10 +31,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues(2);
 		cv.put(COL_NAME, "John Doe");
 		// Create a formatter for SQL date format
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
-		cv.put(COL_DATE, dateFormat.format(new Date())); // Insert 'now' as the
-															// date
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		cv.put(COL_DATE, dateFormat.format(new Date())); // Insert 'now' as the date
 		db.insert(TABLE_NAME, null, cv);
 	}
 
