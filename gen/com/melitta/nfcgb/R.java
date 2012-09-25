@@ -188,8 +188,6 @@ public final class R {
         public static final int about_cancel_button=0x7f0b0003;
         public static final int about_tv=0x7f0b0000;
         public static final int btn_events=0x7f0b0006;
-        public static final int course_of_studies=0x7f0b001e;
-        public static final int course_of_studies_textview=0x7f0b001d;
         public static final int email=0x7f0b001c;
         public static final int email_textview=0x7f0b001b;
         public static final int eventExpLV=0x7f0b0008;
@@ -204,12 +202,12 @@ public final class R {
         public static final int info_textview=0x7f0b0013;
         public static final int last_name=0x7f0b001a;
         public static final int last_name_textview=0x7f0b0019;
-        public static final int menu_about=0x7f0b0022;
-        public static final int menu_add_group=0x7f0b0024;
-        public static final int menu_add_person=0x7f0b0023;
-        public static final int menu_info=0x7f0b0021;
-        public static final int myinfo_apply_button=0x7f0b0020;
-        public static final int myinfo_cancel_button=0x7f0b001f;
+        public static final int menu_about=0x7f0b0020;
+        public static final int menu_add_group=0x7f0b0022;
+        public static final int menu_add_person=0x7f0b0021;
+        public static final int menu_info=0x7f0b001f;
+        public static final int myinfo_apply_button=0x7f0b001e;
+        public static final int myinfo_cancel_button=0x7f0b001d;
         public static final int personsLV=0x7f0b0007;
         public static final int ratingBar=0x7f0b0002;
         public static final int semester=0x7f0b000c;

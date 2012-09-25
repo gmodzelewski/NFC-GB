@@ -45,20 +45,7 @@
         android:hint="@string/email_hint" >
     </EditText>
 
-    <TextView
-        android:id="@+id/course_of_studies_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/course_of_studies" />
-
-    <EditText
-        android:id="@+id/course_of_studies"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/course_of_studies_hint" >
-    </EditText>
-
+    
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

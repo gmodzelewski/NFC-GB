@@ -1,8 +1,8 @@
 package com.melitta.nfcgb;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.LinkedList;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
 public class EventData {
@@ -13,32 +13,43 @@ public class EventData {
 	@DatabaseField(index = true)
 	String eventname;
 	@DatabaseField
-	Date date;
+	int year;
 	@DatabaseField
-	String year;
+	boolean wintersemester;
 	@DatabaseField
 	String tutor;
 	@DatabaseField
 	String tutoremail;
 	@DatabaseField
 	String info;
+	@DatabaseField(dataType = DataType.SERIALIZABLE)
+	LinkedList<PersonData> persons = new LinkedList<PersonData>();
+	@DatabaseField(dataType = DataType.SERIALIZABLE)
+	LinkedList<GroupData> groups = new LinkedList<GroupData>();
 
+	/**
+	 * needed for OrmLite
+	 */
 	EventData() {
-		// needed by ormlite
 	}
 
-	public EventData(long millis) {
-		this.date = new Date(millis);
+	public EventData(String eventname, int year, boolean wintersemester, String tutor, String tutoremail, String info) {
+		this.eventname = eventname;
+		this.year = year;
+		this.wintersemester= wintersemester;
+		this.tutor= tutor;
+		this.tutoremail = tutoremail;
+		this.info = info;
 	}
 
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("id=").append(id);
 		sb.append(", ").append("eventname=").append(eventname);
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.S");
-		sb.append(", ").append("date=").append(dateFormatter.format(date));
 		sb.append(", ").append("year=").append(year);
+		sb.append(", ").append("wintersemester=").append(wintersemester);
 		sb.append(", ").append("tutor=").append(tutor);
 		sb.append(", ").append("tutoremail=").append(tutoremail);
 		sb.append(", ").append("info=").append(info);

@@ -43,38 +43,42 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		Log.i(LOG_TAG,
-				"creating " + getClass() + " at " + System.currentTimeMillis());
-		doEventDatabaseStuff("onCreate");
+		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
+		doDatabaseStuff();
 
 		createSpinner();
 		createListView();
 		createExpandableListView();
 	}
 
-	private void doEventDatabaseStuff(String string) {
-		// delete all PersonData daos
-		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper()
-				.getPersonDataDao();
+	private void doDatabaseStuff() {
+		// delete all Data daos
+		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
+		RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
 		List<PersonData> personList = personDao.queryForAll();
+		List<EventData> eventList = eventDao.queryForAll();
+		List<GroupData> groupList = groupDao.queryForAll();
 		for (PersonData person : personList)
 			personDao.delete(person);
+		for (EventData event : eventList)
+			eventDao.delete(event);
+		for (GroupData group : groupList)
+			groupDao.delete(group);
 
-		Log.i(LOG_TAG,
-				"-------------------------------------------------------------------\n");
+		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
 		Log.i(LOG_TAG, "Should be empty now\n");
-		Log.i(LOG_TAG,
-				"-------------------------------------------------------------------\n");
+		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
 
 		// populate empty database
+		DatabasePopulation.populateEventDAO(eventDao);
 		DatabasePopulation.populatePersonDAO(personDao);
-
-		// // TODO: why sleep?
-		// try {
-		// Thread.sleep(5);
-		// } catch (InterruptedException e) {
-		// // ignore
-		// }
+		DatabasePopulation.populateGroupDAO(groupDao);
+		 try {
+		 Thread.sleep(5);
+		 } catch (InterruptedException e) {
+		 // ignore
+		 }
 	}
 
 	/**
@@ -82,17 +86,21 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 */
 	private void createSpinner() {
 		Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
-		// TODO: load events from database
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, R.array.events_array,
-				android.R.layout.simple_spinner_item);
+		// load events from database
+		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
+		List<EventData> eventList = eventDao.queryForAll();
+		ArrayList<String> eventNames = new ArrayList<String>();
+		for (EventData ed : eventList) {
+			eventNames.add(ed.eventname);
+		}
+		// assign Data as single items
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, eventNames);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 	}
 
 	/**
-	 * Create expandable list view with groups and their member of selected
-	 * event.
+	 * Create expandable list view with groups and their member of selected event.
 	 */
 	private void createExpandableListView() {
 		ExpandableListView eventExpLV = (ExpandableListView) findViewById(R.id.eventExpLV);
@@ -103,26 +111,21 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			Map<String, String> curGroupMap = new HashMap<String, String>();
 			groupData.add(curGroupMap);
 			curGroupMap.put(NAME, "Group " + i);
-			curGroupMap.put(IS_EVEN, (i % 2 == 0) ? "This group is even"
-					: "This group is odd");
+			curGroupMap.put(IS_EVEN, (i % 2 == 0) ? "This group is even" : "This group is odd");
 			List<Map<String, String>> children = new ArrayList<Map<String, String>>();
 			// TODO: load member of groups
 			for (int j = 0; j < 15; j++) {
 				Map<String, String> curChildMap = new HashMap<String, String>();
 				children.add(curChildMap);
 				curChildMap.put(NAME, "Child " + j);
-				curChildMap.put(IS_EVEN, (j % 2 == 0) ? "This child is even"
-						: "This child is odd");
+				curChildMap.put(IS_EVEN, (j % 2 == 0) ? "This child is even" : "This child is odd");
 			}
 			childData.add(children);
 		}
 		// Set up our adapter
-		expLVAdapter = new SimpleExpandableListAdapter(this, groupData,
-				android.R.layout.simple_expandable_list_item_1, new String[] {
-						NAME, IS_EVEN }, new int[] { android.R.id.text1,
-						android.R.id.text2 }, childData,
-				android.R.layout.simple_expandable_list_item_2, new String[] {
-						NAME, IS_EVEN }, new int[] { android.R.id.text1,
+		expLVAdapter = new SimpleExpandableListAdapter(this, groupData, android.R.layout.simple_expandable_list_item_1,
+				new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1, android.R.id.text2 }, childData,
+				android.R.layout.simple_expandable_list_item_2, new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
 						android.R.id.text2 });
 		eventExpLV.setAdapter(expLVAdapter);
 
@@ -132,19 +135,16 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * Create list with names and mail.
 	 */
 	private void createListView() {
-		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper()
-				.getPersonDataDao();
+		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 		List<PersonData> personList = personDao.queryForAll();
 		ArrayList<String> personsFullNames = new ArrayList<String>();
 		for (PersonData pd : personList) {
-			personsFullNames.add(String.format("%s %s\n%s", pd.first_name,
-					pd.last_name, pd.email));
+			personsFullNames.add(String.format("%s %s\n%s", pd.first_name, pd.last_name, pd.email));
 		}
 
 		ListView personsLV = (ListView) findViewById(R.id.personsLV);
 		// TODO: individual layout for individual design
-		ListAdapter adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, personsFullNames);
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, personsFullNames);
 		personsLV.setAdapter(adapter);
 		registerForContextMenu(personsLV);
 	}
@@ -156,14 +156,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.personsLV) {
 			// AdapterView.AdapterContextMenuInfo info =
 			// (AdapterView.AdapterContextMenuInfo)menuInfo;
 			// menu.setHeaderTitle(Countries[info.position]);
-			String[] menuItems = getResources().getStringArray(
-					R.array.persons_context_menu);
+			String[] menuItems = getResources().getStringArray(R.array.persons_context_menu);
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(Menu.NONE, i, i, menuItems[i]);
 			}
@@ -188,37 +186,33 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		CharSequence selectedItem = item.getTitle();
-		Toast toast0 = Toast.makeText(getApplicationContext(), selectedItem,
-				Toast.LENGTH_SHORT);
+		Toast toast0 = Toast.makeText(getApplicationContext(), selectedItem, Toast.LENGTH_SHORT);
 		toast0.show();
-		
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int menuItemIndex = item.getItemId();
-		String[] menuItems = getResources().getStringArray(
-				R.array.persons_context_menu);
+		String[] menuItems = getResources().getStringArray(R.array.persons_context_menu);
 		String menuItemName = menuItems[menuItemIndex];
 		if (menuItemIndex == 0) {
 			CharSequence text = menuItemName + " not yet implemented";
-			Toast toast = Toast.makeText(getApplicationContext(), text,
-					Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
 			toast.show();
 		}
 		if (menuItemIndex == 1) {
 			AlertDialog.Builder adb = new AlertDialog.Builder(this);
-			adb.setTitle("remove " );
+			adb.setTitle("remove ");
 			adb.setMessage("Ya sure?");
 			adb.setNegativeButton("Cancel", null);
-	        adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
-	            public void onClick(DialogInterface dialog, int which) {
-//	                MyDataObject.remove(positionToRemove);
-//	                adapter.notifyDataSetChanged();
-	            	CharSequence text = "Not yet implemented";
-	    			Toast toast = Toast.makeText(getApplicationContext(), text,
-	    					Toast.LENGTH_SHORT);
-	    			toast.show();
-	            }});
-	        adb.show();
+			adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					// MyDataObject.remove(positionToRemove);
+					// adapter.notifyDataSetChanged();
+					CharSequence text = "Not yet implemented";
+					Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+					toast.show();
+				}
+			});
+			adb.show();
 		}
 		return true;
 	}
@@ -233,15 +227,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	public void startEventActivity(View view) {
-		startActivityForResult(new Intent("com.melitta.EventActivity"),
-				request_Code);
+		startActivityForResult(new Intent("com.melitta.EventActivity"), request_Code);
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == request_Code) {
 			if (resultCode == RESULT_OK) {
-				Toast.makeText(this, data.getData().toString(),
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(this, data.getData().toString(), Toast.LENGTH_LONG).show();
 			}
 		}
 	}
