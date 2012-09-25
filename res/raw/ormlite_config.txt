@@ -1,5 +1,5 @@
 #
-# generated on 2012/09/25 12:30:46
+# generated on 2012/09/25 01:03:56
 #
 # --table-start--
 dataClass=com.melitta.nfcgb.EventData

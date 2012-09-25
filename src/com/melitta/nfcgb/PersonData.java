@@ -32,6 +32,14 @@ public class PersonData {
 		this.date = new Date(millis);
 	}
 
+	public PersonData(String ln, Date d, String fn, String e, String c) {
+		this.last_name = ln;
+		this.date = d;
+		this.first_name = fn;
+		this.email = e;
+		this.course_of_studies = c;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

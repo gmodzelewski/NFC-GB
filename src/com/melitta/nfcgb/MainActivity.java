@@ -1,6 +1,7 @@
 package com.melitta.nfcgb;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
@@ -32,7 +34,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private static final String NAME = "NAME";
 	private static final String IS_EVEN = "IS_EVEN";
 	private ExpandableListAdapter expLVAdapter;
-	private DatabaseHelper databaseHelper = null;
 	private final String LOG_TAG = getClass().getSimpleName();
 
 	@Override
@@ -40,14 +41,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// Log.i(LOG_TAG, "creating " + getClass() + " at " +
-		// System.currentTimeMillis());
-		// TextView tv = new TextView(this);
+		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
 		doEventDatabaseStuff("onCreate");
-		// get our DAOs
-		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper()
-				.getEventDataDao();
-		// setContentView(tv);
+
 		createSpinner();
 		createListView();
 		createExpandableListView();
@@ -57,21 +53,25 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private void doEventDatabaseStuff(String string) {
 		// get our dao
 		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
+		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 		// query for all of the data objects in the database
-		List<EventData> list = eventDao.queryForAll();
+		List<EventData> eventList = eventDao.queryForAll();
+		List<PersonData> personList = personDao.queryForAll();
 		// our string builder for building the content-view
 		StringBuilder sb = new StringBuilder();
-		sb.append("got ").append(list.size()).append(" entries in ").append("EventData").append("\n");
+		sb.append("got ").append(eventList.size()).append(" entries in ").append("EventData").append("\n");
+		sb.append("got ").append(personList.size()).append(" entries in ").append("PersonData").append("\n");
 
+		//--------------   Database foo to try if it works from Homepage  ----------------------------------------------------------------
 		// if we already have items in the database
 		int eventC = 0;
-		for (EventData event : list) {
+		for (EventData event : eventList) {
 			sb.append("------------------------------------------\n");
 			sb.append("[").append(eventC).append("] = ").append(event).append("\n");
 			eventC++;
 		}
 		sb.append("------------------------------------------\n");
-		for (EventData event : list) {
+		for (EventData event : eventList) {
 			eventDao.delete(event);
 			sb.append("deleted id ").append(event.id).append("\n");
 			Log.i(LOG_TAG, "deleting simple(" + event.id + ")");
@@ -81,7 +81,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		int createNum;
 		do {
 			createNum = new Random().nextInt(3) + 1;
-		} while (createNum == list.size());
+		} while (createNum == eventList.size());
 		for (int i = 0; i < createNum; i++) {
 			// create a new simple object
 			long millis = System.currentTimeMillis();
@@ -101,7 +101,31 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 
 		Log.i(LOG_TAG, "Done with page at " + System.currentTimeMillis());
-
+		//-------------- end of Database foo to try if it works. Now mine database foo   -----------------------------------------------------
+		
+		//Show me the persons Info
+		int personC = 0;
+		for (PersonData person : personList) {
+			Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
+			Log.i(LOG_TAG, "[" + personC + "] = " + person + "\n");
+			eventC++;
+		}
+		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
+		PersonData aNewPerson = new PersonData("Meiser", new Date(System.currentTimeMillis()), "Hans", "hansi@gmail.com", "Medieninformatik2");
+		personDao.create(aNewPerson);
+		personDao.update(aNewPerson);
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			// ignore
+		}
+		personC = 0;
+		for (PersonData personN : personList) {
+			Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
+			Log.i(LOG_TAG, "[" + personC + "] = " + personN + "\n");
+			eventC++;
+		}
+		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
 	}
 
 	private void createSpinner() {
@@ -146,14 +170,21 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	private void createListView() {
-		String[] presidents = { "Dwight D. Eisenhower", "John F. Kennedy",
-				"Lyndon B. Johnson", "Richard Nixon", "Gerald Ford",
-				"Jimmy Carter", "Ronald Reagan", "George H. W. Bush",
-				"Bill Clinton", "George W. Bush", "Barack Obama" };
+//		String[] presidents = { "Dwight D. Eisenhower", "John F. Kennedy",
+//				"Lyndon B. Johnson", "Richard Nixon", "Gerald Ford",
+//				"Jimmy Carter", "Ronald Reagan", "George H. W. Bush",
+//				"Bill Clinton", "George W. Bush", "Barack Obama" };
 
+		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+		List<PersonData> personList = personDao.queryForAll();
+		ArrayList<String> personsFullNames = new ArrayList<String>();
+		for(PersonData pd : personList) {
+			personsFullNames.add(pd.first_name + " " + pd.last_name);
+		}
+		
 		ListView eventLV = (ListView) findViewById(R.id.eventLV);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, presidents);
+		ListAdapter adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_dropdown_item_1line, personsFullNames);
 		eventLV.setAdapter(adapter);
 
 	}
