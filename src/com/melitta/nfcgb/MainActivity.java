@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -76,11 +77,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		DatabasePopulation.populateEventDAO(eventDao);
 		DatabasePopulation.populatePersonDAO(personDao);
 		DatabasePopulation.populateGroupDAO(groupDao);
-		 try {
-		 Thread.sleep(5);
-		 } catch (InterruptedException e) {
-		 // ignore
-		 }
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			// ignore
+		}
 	}
 
 	/**
@@ -97,23 +98,45 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			eventNames.add(String.format("%s (%s %d)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe", ed.year));
 		}
 		// assign Data as single items
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, eventNames);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, eventNames);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 		spinner.setOnLongClickListener(new OnLongClickListener() {
-			
+
 			@Override
 			public boolean onLongClick(View v) {
 				startEventActivity(v);
 				return false;
 			}
 		});
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				refreshListViews();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				return;
+			}
+
+		});
+	}
+
+	protected void refreshListViews() {
+		ExpandableListView eventExpLV = (ExpandableListView) findViewById(R.id.eventExpLV);
+		ListView personsLV = (ListView) findViewById(R.id.personsLV);
+		eventExpLV.invalidateViews();
+		personsLV.invalidateViews();
 	}
 
 	/**
-	 * Create expandable list view with groups and their member of selected event.
+	 * Create expandable list view with groups and their member of selected
+	 * event.
 	 */
 	private void createExpandableListView() {
+		Spinner spinner = (Spinner)findViewById(R.id.events_spinner);
+		int iCurrentSelection = spinner.getSelectedItemPosition();
 		ExpandableListView eventExpLV = (ExpandableListView) findViewById(R.id.eventExpLV);
 		List<Map<String, String>> groupData = new ArrayList<Map<String, String>>();
 		List<List<Map<String, String>>> childData = new ArrayList<List<Map<String, String>>>();
@@ -136,8 +159,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// Set up our adapter
 		expLVAdapter = new SimpleExpandableListAdapter(this, groupData, android.R.layout.simple_expandable_list_item_1,
 				new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1, android.R.id.text2 }, childData,
-				android.R.layout.simple_expandable_list_item_2, new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
-						android.R.id.text2 });
+				android.R.layout.simple_expandable_list_item_2, new String[] { NAME, IS_EVEN }, new int[] {
+						android.R.id.text1, android.R.id.text2 });
 		eventExpLV.setAdapter(expLVAdapter);
 
 	}
@@ -146,16 +169,19 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * Create list with names and mail.
 	 */
 	private void createListView() {
+		Spinner spinner = (Spinner)findViewById(R.id.events_spinner);
+		int currentSpinnerSelection = spinner.getSelectedItemPosition();
 		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 		List<PersonData> personList = personDao.queryForAll();
+//		List<PersonData> personList = personDao.query(personDao.queryBuilder().where().eq("event_id", event_id));
 		ArrayList<String> personsFullNames = new ArrayList<String>();
 		for (PersonData pd : personList) {
 			personsFullNames.add(String.format("%s %s\n%s", pd.first_name, pd.last_name, pd.email));
 		}
 
-		ListView personsLV = (ListView) findViewById(R.id.personsLV);
 		// TODO: individual layout for individual design
 		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, personsFullNames);
+		ListView personsLV = (ListView) findViewById(R.id.personsLV);
 		personsLV.setAdapter(adapter);
 		registerForContextMenu(personsLV);
 	}
