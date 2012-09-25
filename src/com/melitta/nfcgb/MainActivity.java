@@ -56,76 +56,44 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 		// query for all of the data objects in the database
 		List<EventData> eventList = eventDao.queryForAll();
-		List<PersonData> personList = personDao.queryForAll();
-		// our string builder for building the content-view
-		StringBuilder sb = new StringBuilder();
-		sb.append("got ").append(eventList.size()).append(" entries in ").append("EventData").append("\n");
-		sb.append("got ").append(personList.size()).append(" entries in ").append("PersonData").append("\n");
-
-		//--------------   Database foo to try if it works from Homepage  ----------------------------------------------------------------
-		// if we already have items in the database
-		int eventC = 0;
-		for (EventData event : eventList) {
-			sb.append("------------------------------------------\n");
-			sb.append("[").append(eventC).append("] = ").append(event).append("\n");
-			eventC++;
-		}
-		sb.append("------------------------------------------\n");
-		for (EventData event : eventList) {
-			eventDao.delete(event);
-			sb.append("deleted id ").append(event.id).append("\n");
-			Log.i(LOG_TAG, "deleting simple(" + event.id + ")");
-			eventC++;
-		}
-
-		int createNum;
-		do {
-			createNum = new Random().nextInt(3) + 1;
-		} while (createNum == eventList.size());
-		for (int i = 0; i < createNum; i++) {
-			// create a new simple object
-			long millis = System.currentTimeMillis();
-			EventData event = new EventData(millis);
-			// store it in the database
-			eventDao.create(event);
-			Log.i(LOG_TAG, "created event(" + millis + ")");
-			// output it
-			sb.append("------------------------------------------\n");
-			sb.append("created new entry #").append(i + 1).append(":\n");
-			sb.append(event).append("\n");
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				// ignore
-			}
-		}
-
-		Log.i(LOG_TAG, "Done with page at " + System.currentTimeMillis());
-		//-------------- end of Database foo to try if it works. Now mine database foo   -----------------------------------------------------
+		List<PersonData> personList = personDao.queryForAll();		
 		
-		//Show me the persons Info
-		int personC = 0;
 		for (PersonData person : personList) {
-			Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
-			Log.i(LOG_TAG, "[" + personC + "] = " + person + "\n");
-			eventC++;
+			personDao.delete(person);
 		}
 		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
-		PersonData aNewPerson = new PersonData("Meiser", new Date(System.currentTimeMillis()), "Hans", "hansi@gmail.com", "Medieninformatik2");
-		personDao.create(aNewPerson);
-		personDao.update(aNewPerson);
+		Log.i(LOG_TAG, "Should be empty now\n");
+		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
+		
+		PersonData aNewPerson0 = new PersonData("Eisenhower", new Date(System.currentTimeMillis()), "Dwight D.", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson1 = new PersonData("Kennedy", new Date(System.currentTimeMillis()), "John F.", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson2 = new PersonData("Johnson", new Date(System.currentTimeMillis()), "Lyndon B.", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson3 = new PersonData("Nixon", new Date(System.currentTimeMillis()), "Richard", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson4 = new PersonData("Ford", new Date(System.currentTimeMillis()), "Gerald", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson5 = new PersonData("Carter", new Date(System.currentTimeMillis()), "Jimmy", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson6 = new PersonData("Reagan", new Date(System.currentTimeMillis()), "Ronald", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson7 = new PersonData("Bush", new Date(System.currentTimeMillis()), "George H. W.", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson8 = new PersonData("Clinton", new Date(System.currentTimeMillis()), "Bill", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson9 = new PersonData("Bush", new Date(System.currentTimeMillis()), "George W.", "hansi@gmail.com", "Medieninformatik2");
+		PersonData aNewPerson10 = new PersonData("Obama", new Date(System.currentTimeMillis()), "Barack", "hansi@gmail.com", "Medieninformatik2");
+		
+		personDao.create(aNewPerson0);
+		personDao.create(aNewPerson1);
+		personDao.create(aNewPerson2);
+		personDao.create(aNewPerson3);
+		personDao.create(aNewPerson4);
+		personDao.create(aNewPerson5);
+		personDao.create(aNewPerson6);
+		personDao.create(aNewPerson7);
+		personDao.create(aNewPerson8);
+		personDao.create(aNewPerson9);
+		personDao.create(aNewPerson10);
 		try {
 			Thread.sleep(5);
 		} catch (InterruptedException e) {
 			// ignore
 		}
-		personC = 0;
-		for (PersonData personN : personList) {
-			Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
-			Log.i(LOG_TAG, "[" + personC + "] = " + personN + "\n");
-			eventC++;
-		}
-		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
+		
 	}
 
 	private void createSpinner() {
