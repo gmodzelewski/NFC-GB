@@ -51,11 +51,13 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+    <string-array name="persons_context_menu">
+        <item>Edit Person</item>
+        <item>Remove Person</item>
+    </string-array>
     
     <string name="prompt">Select</string>
     <string name="about">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</string>
     <string name="about_tv">See what this all about</string>
-    
-    
     
 </resources>

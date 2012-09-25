@@ -10,6 +10,7 @@ package com.melitta.nfcgb;
 public final class R {
     public static final class array {
         public static final int events_array=0x7f080000;
+        public static final int persons_context_menu=0x7f080001;
     }
     public static final class attr {
     }
@@ -192,7 +193,6 @@ public final class R {
         public static final int email=0x7f0b001c;
         public static final int email_textview=0x7f0b001b;
         public static final int eventExpLV=0x7f0b0008;
-        public static final int eventLV=0x7f0b0007;
         public static final int event_apply_button=0x7f0b0016;
         public static final int event_cancel_button=0x7f0b0015;
         public static final int eventname=0x7f0b000a;
@@ -210,6 +210,7 @@ public final class R {
         public static final int menu_info=0x7f0b0021;
         public static final int myinfo_apply_button=0x7f0b0020;
         public static final int myinfo_cancel_button=0x7f0b001f;
+        public static final int personsLV=0x7f0b0007;
         public static final int ratingBar=0x7f0b0002;
         public static final int semester=0x7f0b000c;
         public static final int semester_textview=0x7f0b000b;
