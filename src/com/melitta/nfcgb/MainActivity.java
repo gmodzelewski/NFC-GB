@@ -1,6 +1,7 @@
 package com.melitta.nfcgb;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
@@ -89,14 +91,23 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
 		List<EventData> eventList = eventDao.queryForAll();
+		Collections.sort(eventList);
 		ArrayList<String> eventNames = new ArrayList<String>();
 		for (EventData ed : eventList) {
-			eventNames.add(ed.eventname);
+			eventNames.add(String.format("%s (%s %d)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe", ed.year));
 		}
 		// assign Data as single items
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, eventNames);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
+		spinner.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				startEventActivity(v);
+				return false;
+			}
+		});
 	}
 
 	/**

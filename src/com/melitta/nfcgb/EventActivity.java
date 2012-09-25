@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
@@ -29,6 +30,8 @@ public class EventActivity extends Activity implements OnClickListener, OnItemSe
 	SimpleCursorAdapter mAdapter;
 	
 	public void onCreate(Bundle savedInstanceState) {
+//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		this.setTitle(R.string.edit_events);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.event);		
 		

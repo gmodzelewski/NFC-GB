@@ -27,6 +27,7 @@ public class DatabasePopulation {
 		eventDao.create(new EventData("Medieninformatik 2 - Tutorium 2", 2011, false, "Hans Meiser", "ich@hier.de", ""));
 		eventDao.create(new EventData("Medieninformatik 2 - Tutorium 5", 2012, true, "Mr. McScuzzypants", "ich@hier.de", ""));
 		eventDao.create(new EventData("Mobile digitale Kommunikation - Tutorium 5", 2012, true, "Batman Supaman", "ich@hier.de", "here be dragons"));
+		eventDao.create(new EventData("Ich AG", 2005, true, "Peter", "ich@auchhier.de", "here be dragons"));
 	}
 
 	public static void populateGroupDAO(RuntimeExceptionDao<GroupData, Integer> groupDao) {
