@@ -45,7 +45,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private ExpandableListAdapter expLVAdapter;
 	private final String LOG_TAG = getClass().getSimpleName();
 
+	// TODO: maybe save db-query-result visible and filter in Java
 	List<EventData> events;
+	//List<EventMembershipData> memberships;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,11 +62,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		// load persons and groups for selected event
 		Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
-		// TODO: get correct event_id
+		
+		// update content, if there's a pre-selected event
+		if (spinner == null)
+			return;
+		
 		EventData currentSpinnerEvent = events.get((int) spinner.getSelectedItemId());
-
 		createListView(currentSpinnerEvent);
-		createExpandableListView();
+		createExpandableListView(currentSpinnerEvent);
 	}
 
 	private void doDatabaseStuff() {
@@ -162,15 +167,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	/**
 	 * Create expandable list view with groups and their member of selected
 	 * event.
+	 * @param currentSpinnerEvent 
 	 */
-	private void createExpandableListView() {
-		// Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
-		// int iCurrentSelection = spinner.getSelectedItemPosition();
+	private void createExpandableListView(EventData currentSpinnerEvent) {
 		ExpandableListView eventExpLV = (ExpandableListView) findViewById(R.id.eventExpLV);
 		List<Map<String, String>> groupData = new ArrayList<Map<String, String>>();
 		List<List<Map<String, String>>> childData = new ArrayList<List<Map<String, String>>>();
 		// TODO: load groups
-		for (int i = 0; i < 20; i++) {
+		/*for (int i = 0; i < 20; i++) {
 			Map<String, String> curGroupMap = new HashMap<String, String>();
 			groupData.add(curGroupMap);
 			curGroupMap.put(NAME, "Group " + i);
@@ -183,6 +187,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				curChildMap.put(NAME, "Child " + j);
 				curChildMap.put(IS_EVEN, (j % 2 == 0) ? "This child is even" : "This child is odd");
 			}
+			childData.add(children);
+		}*/
+		// TODO: query for groups
+		// TODO: load persons
+		for (int i = 0; i < 20; i++) {
+			Map<String, String> curGroupMap = new HashMap<String, String>();
+			groupData.add(curGroupMap);
+			curGroupMap.put(NAME, "Group " + i);
+			curGroupMap.put(IS_EVEN, (i % 2 == 0) ? "This group is even" : "This group is odd");
+			List<Map<String, String>> children = new ArrayList<Map<String, String>>();
+			// TODO: add children
 			childData.add(children);
 		}
 		// Set up our adapter

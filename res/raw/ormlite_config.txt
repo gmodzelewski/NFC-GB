@@ -1,5 +1,5 @@
 #
-# generated on 2012/09/26 05:34:01
+# generated on 2012/09/26 06:19:28
 #
 # --table-start--
 dataClass=com.melitta.nfcgb.EventData
@@ -69,6 +69,9 @@ fieldName=event_id
 # --field-end--
 # --field-start--
 fieldName=person_id
+# --field-end--
+# --field-start--
+fieldName=group_id
 # --field-end--
 # --table-fields-end--
 # --table-end--
