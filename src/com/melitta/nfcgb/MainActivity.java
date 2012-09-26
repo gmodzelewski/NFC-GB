@@ -1,5 +1,6 @@
 package com.melitta.nfcgb;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +32,9 @@ import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import com.melitta.nfcgb.persistence.DatabaseConfigUtil;
 import com.melitta.nfcgb.persistence.DatabaseHelper;
 import com.melitta.nfcgb.persistence.DatabasePopulation;
 
@@ -41,42 +45,52 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private ExpandableListAdapter expLVAdapter;
 	private final String LOG_TAG = getClass().getSimpleName();
 
+	List<EventData> events;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_main);
 
 		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
 		doDatabaseStuff();
 
 		createSpinner();
-		createListView();
+		
+		// load persons and groups for selected event
+		Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
+		// TODO: get correct event_id
+		EventData currentSpinnerEvent = events.get((int) spinner.getSelectedItemId());
+
+		createListView(currentSpinnerEvent);
 		createExpandableListView();
 	}
 
 	private void doDatabaseStuff() {
 		// delete all Data daos
-		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
-		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
-		RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
-		List<PersonData> personList = personDao.queryForAll();
-		List<EventData> eventList = eventDao.queryForAll();
-		List<GroupData> groupList = groupDao.queryForAll();
-		for (PersonData person : personList)
-			personDao.delete(person);
-		for (EventData event : eventList)
-			eventDao.delete(event);
-		for (GroupData group : groupList)
-			groupDao.delete(group);
+		// TODO: reset here database every time; remove at release
+		ConnectionSource connectionSource = getHelper().getConnectionSource();
+		try {
+			for (Class<?> c : DatabaseConfigUtil.classes) {
+				TableUtils.dropTable(connectionSource, c, true);
+				TableUtils.createTable(connectionSource, c);
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
 		Log.i(LOG_TAG, "Should be empty now\n");
 		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
 
 		// populate empty database
-		DatabasePopulation.populateEventDAO(eventDao);
-		DatabasePopulation.populatePersonDAO(personDao);
-		DatabasePopulation.populateGroupDAO(groupDao);
+		DatabasePopulation.populateEventDAO(getHelper().getEventDataDao());
+		DatabasePopulation.populatePersonDAO(getHelper().getPersonDataDao());
+		DatabasePopulation.populateGroupDAO(getHelper().getGroupDataDao());
+		DatabasePopulation.populateEventMembershipDao(getHelper().getEventMembershipDataDao());
+		
 		try {
 			Thread.sleep(5);
 		} catch (InterruptedException e) {
@@ -91,10 +105,25 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
-		List<EventData> eventList = eventDao.queryForAll();
-		Collections.sort(eventList);
+		events = eventDao.queryForAll();
+		Collections.sort(events);
+
+		// ArrayList<String> eventNames = new ArrayList<String>();
+		// CloseableIterator<EventData> eventIterator =
+		// eventDao.closeableIterator();
+		// try {
+		// while (eventIterator.hasNext()) {
+		// EventData ed = eventIterator.next();
+		// eventNames.add(String.format("%s (%s %d)", ed.eventname,
+		// ed.wintersemester ? "WiSe" : "SoSe", ed.year));
+		// }
+		// } finally {
+		// // close it at the end to close underlying SQL statement
+		// eventIterator.close();
+		// }
+
 		ArrayList<String> eventNames = new ArrayList<String>();
-		for (EventData ed : eventList) {
+		for (EventData ed : events) {
 			eventNames.add(String.format("%s (%s %d)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe", ed.year));
 		}
 		// assign Data as single items
@@ -112,14 +141,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-				refreshListViews();
+				// refresh all user
+				createListView(events.get(position));
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parentView) {
 				return;
 			}
-
 		});
 	}
 
@@ -135,8 +164,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * event.
 	 */
 	private void createExpandableListView() {
-		Spinner spinner = (Spinner)findViewById(R.id.events_spinner);
-		int iCurrentSelection = spinner.getSelectedItemPosition();
+		// Spinner spinner = (Spinner) findViewById(R.id.events_spinner);
+		// int iCurrentSelection = spinner.getSelectedItemPosition();
 		ExpandableListView eventExpLV = (ExpandableListView) findViewById(R.id.eventExpLV);
 		List<Map<String, String>> groupData = new ArrayList<Map<String, String>>();
 		List<List<Map<String, String>>> childData = new ArrayList<List<Map<String, String>>>();
@@ -157,25 +186,35 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			childData.add(children);
 		}
 		// Set up our adapter
-		expLVAdapter = new SimpleExpandableListAdapter(this, groupData, android.R.layout.simple_expandable_list_item_1,
-				new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1, android.R.id.text2 }, childData,
-				android.R.layout.simple_expandable_list_item_2, new String[] { NAME, IS_EVEN }, new int[] {
-						android.R.id.text1, android.R.id.text2 });
+		expLVAdapter = new SimpleExpandableListAdapter(this, groupData, android.R.layout.simple_expandable_list_item_1, new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
+				android.R.id.text2 }, childData, android.R.layout.simple_expandable_list_item_2, new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1, android.R.id.text2 });
 		eventExpLV.setAdapter(expLVAdapter);
 
 	}
 
 	/**
 	 * Create list with names and mail.
+	 * 
+	 * @param currentSpinnerEvent
 	 */
-	private void createListView() {
-		Spinner spinner = (Spinner)findViewById(R.id.events_spinner);
-		int currentSpinnerSelection = spinner.getSelectedItemPosition();
-		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
-		List<PersonData> personList = personDao.queryForAll();
-//		List<PersonData> personList = personDao.query(personDao.queryBuilder().where().eq("event_id", event_id));
+	// TODO: OPTIMIZE! OPTIMIZE! OPTIMIZE!
+	private void createListView(EventData currentSpinnerEvent) {
+		Log.i(NAME, "currentItemId ist " + currentSpinnerEvent.id);
+		
+		// TODO: cross-select
+		RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+		List<EventMembershipData> eventMemberships = null;
+		//List<PersonData> personList = null;
+		try {
+			eventMemberships = eventMembershipDao.queryBuilder().where().eq("event_id", currentSpinnerEvent.id).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		ArrayList<String> personsFullNames = new ArrayList<String>();
-		for (PersonData pd : personList) {
+		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+		for (EventMembershipData emd : eventMemberships) {
+			PersonData pd = personDao.queryForId(emd.person_id);
 			personsFullNames.add(String.format("%s %s\n%s", pd.first_name, pd.last_name, pd.email));
 		}
 
@@ -226,7 +265,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		Toast toast0 = Toast.makeText(getApplicationContext(), selectedItem, Toast.LENGTH_SHORT);
 		toast0.show();
 
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		// AdapterView.AdapterContextMenuInfo info =
+		// (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int menuItemIndex = item.getItemId();
 		String[] menuItems = getResources().getStringArray(R.array.persons_context_menu);
 		String menuItemName = menuItems[menuItemIndex];

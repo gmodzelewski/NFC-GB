@@ -209,12 +209,12 @@ public final class R {
         public static final int myinfo_cancel_button=0x7f0b001c;
         public static final int personsLV=0x7f0b0006;
         public static final int ratingBar=0x7f0b0002;
-        public static final int semester=0x7f0b000b;
         public static final int semester_textview=0x7f0b000a;
         public static final int tutor=0x7f0b000f;
         public static final int tutor_email=0x7f0b0011;
         public static final int tutor_email_textview=0x7f0b0010;
         public static final int tutor_textview=0x7f0b000e;
+        public static final int wintersemester=0x7f0b000b;
         public static final int year=0x7f0b000d;
         public static final int year_textview=0x7f0b000c;
     }
@@ -239,6 +239,7 @@ public final class R {
         public static final int course_of_studies=0x7f07001c;
         public static final int course_of_studies_hint=0x7f07001d;
         public static final int edit_events=0x7f070006;
+        public static final int edit_person=0x7f070023;
         public static final int email=0x7f07001a;
         public static final int email_hint=0x7f07001b;
         public static final int event=0x7f070007;

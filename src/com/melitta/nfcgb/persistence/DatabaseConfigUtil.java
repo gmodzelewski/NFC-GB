@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 import com.melitta.nfcgb.EventData;
+import com.melitta.nfcgb.EventMembershipData;
 import com.melitta.nfcgb.GroupData;
 import com.melitta.nfcgb.PersonData;
 
@@ -14,7 +15,7 @@ import com.melitta.nfcgb.PersonData;
  * classes.
  */
 public class DatabaseConfigUtil extends OrmLiteConfigUtil {
-	private static final Class<?>[] classes = new Class[] { EventData.class, PersonData.class, GroupData.class};
+	public static final Class<?>[] classes = new Class[] { EventData.class, PersonData.class, EventMembershipData.class, GroupData.class};
 
 	public static void main(String[] args) throws SQLException, IOException {
 		writeConfigFile("ormlite_config.txt", classes);

@@ -1,46 +1,52 @@
 package com.melitta.nfcgb;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
+import android.widget.Switch;
 
-public class EventActivity extends Activity implements OnClickListener, OnItemSelectedListener {
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.melitta.nfcgb.persistence.DatabaseHelper;
+
+public class EventActivity extends OrmLiteBaseActivity<DatabaseHelper> implements OnClickListener, OnItemSelectedListener {
 	
+	RuntimeExceptionDao<EventData, Integer> eventDao;
+	EventData event;
 	EditText eventname;
-	EditText semester; 
+	Switch wintersemester;
 	EditText year;
 	EditText tutor;
 	Button applyButton;
 	Button cancelButton;
 
-	// MyDbHelper mHelper;
-	SQLiteDatabase mDb;
-	Cursor mCursor;
-	SimpleCursorAdapter mAdapter;
-	
 	public void onCreate(Bundle savedInstanceState) {
 //		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.setTitle(R.string.edit_events);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.event);		
 		
+		//TODO: Bekomme EventData Objekt, schreibe in event
+		eventDao = getHelper().getEventDataDao();
+		
 		eventname = (EditText)findViewById(R.id.eventname); 
-		semester = (EditText)findViewById(R.id.semester);
+		wintersemester = (Switch)findViewById(R.id.wintersemester);
 		year = (EditText)findViewById(R.id.year);
 		tutor = (EditText)findViewById(R.id.tutor);
 		applyButton = (Button)findViewById(R.id.event_apply_button);
 		applyButton.setOnClickListener(this);
+		
+//		//TODO Befülle EditTexts mit Daten aus dem EventData Objekt
+//		eventname.setText(event.eventname);
+//		wintersemester.setActivated(event.wintersemester);
+//		year.setText(event.year);
+//		tutor.setText(event.tutor);
 		
 		cancelButton = (Button) findViewById(R.id.event_cancel_button);
 		cancelButton.setOnClickListener(new OnClickListener() {
@@ -55,14 +61,12 @@ public class EventActivity extends Activity implements OnClickListener, OnItemSe
 	}
 
 	public void onClick(View v) {
-//		Add a new value to the database 
-//		ContentValues cv = new ContentValues(2); 
-//		cv.put(MyDbHelper.COL_NAME, mText.getText().toString()); 
-//		Create a formatter for SQL date format 
-//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-//		cv.put(MyDbHelper.COL_DATE, dateFormat.format(new Date())); //Insert 'now' as the date 
-//		mDb.insert(MyDbHelper.TABLE_NAME, null, cv); 
-//		mAdapter.notifyDataSetChanged(); 
+//		//TODO beschreibe richtig, wenn richtiges event da ist
+//		event.eventname = eventname.getText().toString();
+//		event.wintersemester = wintersemester.isChecked();
+//		event.year = Integer.parseInt(year.getText().toString());
+//		event.tutor = tutor.getText().toString();
+//		eventDao.update(event);
 		
 		Intent data = new Intent();
 		data.setData(Uri.parse(eventname.getText().toString() + " changes confirmed"));

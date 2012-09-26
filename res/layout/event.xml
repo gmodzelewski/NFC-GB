@@ -23,13 +23,13 @@
         android:layout_height="wrap_content"
         android:text="@string/semester" />
 
-    <EditText
-        android:id="@+id/semester"
-        android:layout_width="match_parent"
+    <Switch
+        android:id="@+id/wintersemester"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/semester_hint" >
-    </EditText>
+        android:textOn="Winter Semester"
+        android:textOff="Sommer Semester"
+        />
 
     <TextView
         android:id="@+id/year_textview"
@@ -41,6 +41,8 @@
         android:id="@+id/year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:digits="true"
+        android:inputType="number"
         android:ems="10"
         android:hint="@string/year_hint" >
     </EditText>

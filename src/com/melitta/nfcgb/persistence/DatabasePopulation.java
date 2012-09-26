@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.melitta.nfcgb.EventData;
+import com.melitta.nfcgb.EventMembershipData;
 import com.melitta.nfcgb.GroupData;
 import com.melitta.nfcgb.PersonData;
 
@@ -29,7 +30,27 @@ public class DatabasePopulation {
 		eventDao.create(new EventData("Mobile digitale Kommunikation - Tutorium 5", 2012, true, "Batman Supaman", "ich@hier.de", "here be dragons"));
 		eventDao.create(new EventData("Ich AG", 2005, true, "Peter", "ich@auchhier.de", "here be dragons"));
 	}
-
+	
+	public static void populateEventMembershipDao(RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao) {
+		eventMembershipDao.create(new EventMembershipData(1, 1));
+		eventMembershipDao.create(new EventMembershipData(1, 2));
+		eventMembershipDao.create(new EventMembershipData(1, 3));
+		eventMembershipDao.create(new EventMembershipData(1, 4));
+		eventMembershipDao.create(new EventMembershipData(1, 5));
+		eventMembershipDao.create(new EventMembershipData(1, 6));
+		eventMembershipDao.create(new EventMembershipData(2, 5));
+		eventMembershipDao.create(new EventMembershipData(2, 6));
+		eventMembershipDao.create(new EventMembershipData(2, 7));
+		eventMembershipDao.create(new EventMembershipData(2, 8));
+		eventMembershipDao.create(new EventMembershipData(3, 9));
+		eventMembershipDao.create(new EventMembershipData(3, 1));
+		eventMembershipDao.create(new EventMembershipData(3, 4));
+		eventMembershipDao.create(new EventMembershipData(4, 11));
+		eventMembershipDao.create(new EventMembershipData(4, 2));
+		eventMembershipDao.create(new EventMembershipData(4, 5));
+		eventMembershipDao.create(new EventMembershipData(4, 9));
+	}
+	
 	public static void populateGroupDAO(RuntimeExceptionDao<GroupData, Integer> groupDao) {
 		groupDao.create(new GroupData("Die Flitzer", 1));
 		groupDao.create(new GroupData("Die Medieninformatik Gefahr", 2));

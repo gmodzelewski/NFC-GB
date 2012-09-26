@@ -1,5 +1,5 @@
 #
-# generated on 2012/09/25 08:33:29
+# generated on 2012/09/26 05:34:01
 #
 # --table-start--
 dataClass=com.melitta.nfcgb.EventData
@@ -11,7 +11,6 @@ generatedId=true
 # --field-end--
 # --field-start--
 fieldName=eventname
-indexName=eventdata_eventname_idx
 # --field-end--
 # --field-start--
 fieldName=year
@@ -28,14 +27,6 @@ fieldName=tutoremail
 # --field-start--
 fieldName=info
 # --field-end--
-# --field-start--
-fieldName=persons
-dataPersister=SERIALIZABLE
-# --field-end--
-# --field-start--
-fieldName=groups
-dataPersister=SERIALIZABLE
-# --field-end--
 # --table-fields-end--
 # --table-end--
 #################################
@@ -48,17 +39,36 @@ fieldName=id
 generatedId=true
 # --field-end--
 # --field-start--
-fieldName=last_name
-indexName=persondata_last_name_idx
-# --field-end--
-# --field-start--
-fieldName=date
+fieldName=event_id
 # --field-end--
 # --field-start--
 fieldName=first_name
 # --field-end--
 # --field-start--
+fieldName=last_name
+# --field-end--
+# --field-start--
+fieldName=date
+# --field-end--
+# --field-start--
 fieldName=email
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.melitta.nfcgb.EventMembershipData
+tableName=eventmembershipdata
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=event_id
+# --field-end--
+# --field-start--
+fieldName=person_id
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -77,10 +87,6 @@ indexName=groupdata_groupName_idx
 # --field-end--
 # --field-start--
 fieldName=eventId
-# --field-end--
-# --field-start--
-fieldName=persons
-dataPersister=SERIALIZABLE
 # --field-end--
 # --table-fields-end--
 # --table-end--
