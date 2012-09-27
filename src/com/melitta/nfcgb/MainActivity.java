@@ -31,16 +31,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-import com.melitta.nfcgb.persistence.DatabaseConfigUtil;
 import com.melitta.nfcgb.persistence.DatabaseHelper;
-import com.melitta.nfcgb.persistence.DatabasePopulation;
 
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	int request_Code = 1;
@@ -307,9 +302,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.menu_info:
-			menuInfo();
-			return true;
 		case R.id.menu_about:
 			menuAbout();
 			return true;
@@ -325,8 +317,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			final EventData currentEvent = getCurrentEvent();
 			LayoutInflater inflater = LayoutInflater.from(this);
 			final View addView = inflater.inflate(R.layout.person_dialog, null);
-
-			new AlertDialog.Builder(this).setTitle(currentEvent.eventname).setView(addView).setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			
+			AlertDialog.Builder adb = new AlertDialog.Builder(this);
+			adb.setTitle(getString(R.string.add_person_in) + " " + currentEvent.eventname);
+			adb.setView(addView);
+			adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					EditText nameET = (EditText) addView.findViewById(R.id.pd_name);
 					EditText emailET = (EditText) addView.findViewById(R.id.pd_email);
@@ -370,7 +365,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(currentEvent.eventname);
+		adb.setTitle(getString(R.string.edit_person_in) + " " + currentEvent.eventname);
 		adb.setView(editView);
 		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 			
@@ -432,10 +427,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			adb.show();
 		}
 		return true;
-	}
-
-	private void menuInfo() {
-		startActivity(new Intent(this, MyInfo.class));
 	}
 
 	void menuAbout() {
