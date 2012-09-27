@@ -27,38 +27,30 @@
     
     <string name="groups">Groups</string>
         
-    <string name="my_info">My Info</string>
+    <string name="person_dialog">Edit Person</string>
     
-    <string name="first_name">First name</string>
-    <string name="first_name_hint">My first name</string>
-    <string name="last_name">Last name</string>
-    <string name="last_name_hint">My last name</string>
+    <string name="name">Name</string>
+    <string name="name_hint">The Name</string>
     <string name="email">EMail</string>
     <string name="email_hint">My eMail adress</string>
     <string name="course_of_studies">Course of studies</string>
     <string name="course_of_studies_hint">My course of studies</string>
     
     <string name="apply_button">Apply</string>
+    <string name="ok_button">Okay</string>
     <string name="cancel_button">Cancel</string>
     
-    <string-array name="events_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
-    </string-array>
     <string-array name="persons_context_menu">
         <item>Edit Person</item>
         <item>Remove Person</item>
     </string-array>
     
+    <string name="context_menu_remove_title">Remove</string>
+    <string name="context_menu_remove_message">Do you really want to remove this person?</string>
     <string name="prompt">Select</string>
     <string name="about">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</string>
     <string name="about_tv">See what this all about</string>
     <string name="edit_person">Edit Person</string>
+    <string name="added">added</string>
     
 </resources>

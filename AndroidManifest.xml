@@ -36,6 +36,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PersonActivity"
+            android:label="Person Editor" android:launchMode="standard" android:clearTaskOnLaunch="true">
+            <intent-filter>
+                <action android:name="com.melitta.PersonActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

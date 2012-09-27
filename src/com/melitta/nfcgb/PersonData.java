@@ -21,12 +21,8 @@ public class PersonData implements Serializable {
 	// TODO: make it to foreign key
 	@DatabaseField
 	int event_id;
-	@DatabaseField //(indexName = "person_fullname_idx")
-	String first_name;
-	@DatabaseField //(indexName = "person_fullname_idx")
-	String last_name;
-	@DatabaseField
-	Date date;
+	@DatabaseField (index = true)
+	String name;
 	@DatabaseField
 	String email;
 
@@ -34,10 +30,15 @@ public class PersonData implements Serializable {
 	PersonData() {
 	}
 
-	public PersonData(String firstname, String lastname, Date d, String email) {
-		this.first_name = firstname;
-		this.last_name = lastname;
-		this.date = d;
+	public PersonData(int event_id, String name, String email) {
+		this.event_id = event_id;
+		this.name = name;
+		this.email = email;
+	}
+	
+
+	public PersonData(String name, String email) {
+		this.name = name;
 		this.email = email;
 	}
 
@@ -45,10 +46,7 @@ public class PersonData implements Serializable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("id=").append(id);
-		sb.append(", ").append("first_name=").append(first_name);
-		sb.append(", ").append("last_name=").append(last_name);
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.S");
-		sb.append(", ").append("date=").append(dateFormatter.format(date));
+		sb.append(", ").append("name=").append(name);
 		sb.append(", ").append("email=").append(email);
 		return sb.toString();
 	}
