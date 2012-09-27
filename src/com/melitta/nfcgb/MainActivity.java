@@ -337,26 +337,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 					PersonData person = new PersonData(currentEvent.id, name, email);
 					
 					//group_id == 0 means no group assigned
-					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id, 0);
+					
 					// TODO: Add Person to Database
+					RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
 					RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
-					RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 
 					//create Object
 					personDao.create(person);
-//					eventMembershipDao.create(emd);
-//
-//					persons.add(person);
-					
-//					List<EventMembershipData> emd = null;
-//					try {
-//						emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and().eq("event_id", getCurrentEvent().id).prepare());
-//					} catch (SQLException e) {
-//						e.printStackTrace();
-//					}
-//					eventMembershipDao.delete(emd);
-//					persons.remove(pd);
+					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id, 0);
+					eventMembershipDao.create(emd);
+
 					createListView(currentEvent);
 				}
 			}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
