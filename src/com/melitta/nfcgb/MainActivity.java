@@ -72,34 +72,34 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	private void doDatabaseStuff() {
-		// delete all Data daos
-		// TODO: reset here database every time; remove at release
-		ConnectionSource connectionSource = getHelper().getConnectionSource();
-		try {
-			for (Class<?> c : DatabaseConfigUtil.classes) {
-				TableUtils.dropTable(connectionSource, c, true);
-				TableUtils.createTable(connectionSource, c);
-			}
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
-		Log.i(LOG_TAG, "Should be empty now\n");
-		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
-
-		// populate empty database
-		DatabasePopulation.populateEventDAO(getHelper().getEventDataDao());
-		DatabasePopulation.populatePersonDAO(getHelper().getPersonDataDao());
-		DatabasePopulation.populateGroupDAO(getHelper().getGroupDataDao());
-		DatabasePopulation.populateEventMembershipDao(getHelper().getEventMembershipDataDao());
-
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			// ignore
-		}
+//		// delete all Data daos
+//		// TODO: reset here database every time; remove at release
+//		ConnectionSource connectionSource = getHelper().getConnectionSource();
+//		try {
+//			for (Class<?> c : DatabaseConfigUtil.classes) {
+//				TableUtils.dropTable(connectionSource, c, true);
+//				TableUtils.createTable(connectionSource, c);
+//			}
+//		} catch (SQLException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//
+//		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
+//		Log.i(LOG_TAG, "Should be empty now\n");
+//		Log.i(LOG_TAG, "-------------------------------------------------------------------\n");
+//
+//		// populate empty database
+//		DatabasePopulation.populateEventDAO(getHelper().getEventDataDao());
+//		DatabasePopulation.populatePersonDAO(getHelper().getPersonDataDao());
+//		DatabasePopulation.populateGroupDAO(getHelper().getGroupDataDao());
+//		DatabasePopulation.populateEventMembershipDao(getHelper().getEventMembershipDataDao());
+//
+//		try {
+//			Thread.sleep(5);
+//		} catch (InterruptedException e) {
+//			// ignore
+//		}
 	}
 
 	/**
@@ -322,7 +322,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	private void menuAddPerson() {
-		{
 			final EventData currentEvent = getCurrentEvent();
 			LayoutInflater inflater = LayoutInflater.from(this);
 			final View addView = inflater.inflate(R.layout.person_dialog, null);
@@ -341,7 +340,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 					// TODO: Add Person to Database
 					RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
-					RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
 
 					//create Object
 					personDao.create(person);
@@ -355,46 +353,60 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 					// ignore, just dismiss
 				}
 			}).show();
-		}
-
-		// startActivityForResult(new Intent("com.melitta.PersonActivity"),
-		// request_Code);
-		// if(request_Code == RESULT_OK)
-		// createListView(getCurrentEvent());
-		// mache irgendwas
-
-		// adb.setPositiveButton(R.string.ok_button, new
-		// AlertDialog.OnClickListener() {
-		// public void onClick(DialogInterface dialog, int which) {
-		// PersonData pd = persons.get(pInfo.position);
-		// RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao
-		// = getHelper().getEventMembershipDataDao();
-		// List<EventMembershipData> emd = null;
-		// try {
-		// emd =
-		// eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id",
-		// pd.id).and().eq("event_id", getCurrentEvent().id).prepare());
-		// } catch (SQLException e) {
-		// e.printStackTrace();
-		// }
-		// eventMembershipDao.delete(emd);
-		// persons.remove(pd);
-		// createListView(getCurrentEvent());
-		// }
-		// });
-
 	}
 
+	private void menuEditPerson(MenuItem item) {
+		final EventData currentEvent = getCurrentEvent();
+		LayoutInflater inflater = LayoutInflater.from(this);
+		final View editView = inflater.inflate(R.layout.person_dialog, null);
+		EditText nameET = (EditText) editView.findViewById(R.id.pd_name);
+		EditText emailET = (EditText) editView.findViewById(R.id.pd_email);
+		
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		final AdapterView.AdapterContextMenuInfo pInfo = info;
+		final PersonData pd = persons.get(pInfo.position);
+		nameET.setText(pd.name);
+		emailET.setText(pd.email);
+		
+		
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(currentEvent.eventname);
+		adb.setView(editView);
+		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int whichButton) {
+				EditText nameET = (EditText) editView.findViewById(R.id.pd_name);
+				EditText emailET = (EditText) editView.findViewById(R.id.pd_email);
+				String name = nameET.getText().toString();
+				String email = emailET.getText().toString();
+				RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+				
+				pd.name = name;
+				pd.email = email;
+				
+				personDao.update(pd);
+				personDao.refresh(pd);
+
+				createListView(currentEvent);
+			}
+		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// ignore, just dismiss
+			}
+		}).show();
+}
+	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int menuItemIndex = item.getItemId();
-		String[] menuItems = getResources().getStringArray(R.array.persons_context_menu);
-		String menuItemName = menuItems[menuItemIndex];
+//		String[] menuItems = getResources().getStringArray(R.array.persons_context_menu);
+//		String menuItemName = menuItems[menuItemIndex];
 		if (menuItemIndex == 0) {
-			CharSequence text = menuItemName + " not yet implemented";
-			Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
-			toast.show();
+			menuEditPerson(item);
+//			CharSequence text = menuItemName + " not yet implemented";
+//			Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+//			toast.show();
 		}
 		if (menuItemIndex == 1) {
 			AlertDialog.Builder adb = new AlertDialog.Builder(this);
