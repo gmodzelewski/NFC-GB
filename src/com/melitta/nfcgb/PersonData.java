@@ -1,13 +1,12 @@
 package com.melitta.nfcgb;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.j256.ormlite.field.DatabaseField;
 
 /**
  * A simple demonstration object we are creating and persisting to the database.
+ * @author Georg
  */
 public class PersonData implements Serializable {
 	private static final long serialVersionUID = 2074439586321283138L;
