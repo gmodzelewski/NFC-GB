@@ -35,15 +35,18 @@ import com.melitta.nfcgb.persistence.DatabasePopulation;
 
 /**
  * MainActivity
+ * 
  * @author Georg
  */
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private final String LOG_TAG = getClass().getSimpleName();
+	private final String ADD_PERSON = "ADD PERSON";
+	private final String EDIT_PERSON = "EDIT PERSON";
 
 	private static final int request_Code = 1;
 
 	BackgroundModel model = new BackgroundModel(this);
-	
+
 	// some gui elements
 	Spinner spinner;
 	ListView personsLV;
@@ -150,10 +153,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 */
 	private void createExpandableListView() {
 		ga = new GroupAdapter(this, model.getGroups());
-		eventExpLV.setAdapter((ExpandableListAdapter)ga);
-		
-		//List<Map<String, String>> groupData = new ArrayList<Map<String, String>>();
-		//List<List<Map<String, String>>> childData = new ArrayList<List<Map<String, String>>>();
+		eventExpLV.setAdapter((ExpandableListAdapter) ga);
+
+		// List<Map<String, String>> groupData = new ArrayList<Map<String,
+		// String>>();
+		// List<List<Map<String, String>>> childData = new
+		// ArrayList<List<Map<String, String>>>();
 		// // TODO: load groups
 		//
 		// // TODO: cross-select
@@ -176,40 +181,42 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// groupNames.add(gd.groupName);
 		// }
 		//
-		//expLVAdapter = new SimpleExpandableListAdapter(this, groupData, android.R.layout.simple_expandable_list_item_1,
-		//    new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1, android.R.id.text2 }, childData,
-		//    android.R.layout.simple_expandable_list_item_2, new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
-		//        android.R.id.text2 });
+		// expLVAdapter = new SimpleExpandableListAdapter(this, groupData,
+		// android.R.layout.simple_expandable_list_item_1,
+		// new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
+		// android.R.id.text2 }, childData,
+		// android.R.layout.simple_expandable_list_item_2, new String[] { NAME,
+		// IS_EVEN }, new int[] { android.R.id.text1,
+		// android.R.id.text2 });
 
 		/*
 		 * for (int i = 0; i < 20; i++) { Map<String, String> curGroupMap = new
 		 * HashMap<String, String>(); groupData.add(curGroupMap);
-		 * curGroupMap.put(NAME, "Group " + i); curGroupMap.put(IS_EVEN, (i % 2 ==
-		 * 0) ? "This group is even" : "This group is odd"); List<Map<String,
-		 * String>> children = new ArrayList<Map<String, String>>(); // TODO: load
-		 * member of groups for (int j = 0; j < 15; j++) { Map<String, String>
-		 * curChildMap = new HashMap<String, String>(); children.add(curChildMap);
-		 * curChildMap.put(NAME, "Child " + j); curChildMap.put(IS_EVEN, (j % 2 ==
-		 * 0) ? "This child is even" : "This child is odd"); }
-		 * childData.add(children); }
+		 * curGroupMap.put(NAME, "Group " + i); curGroupMap.put(IS_EVEN, (i % 2
+		 * == 0) ? "This group is even" : "This group is odd"); List<Map<String,
+		 * String>> children = new ArrayList<Map<String, String>>(); // TODO:
+		 * load member of groups for (int j = 0; j < 15; j++) { Map<String,
+		 * String> curChildMap = new HashMap<String, String>();
+		 * children.add(curChildMap); curChildMap.put(NAME, "Child " + j);
+		 * curChildMap.put(IS_EVEN, (j % 2 == 0) ? "This child is even" :
+		 * "This child is odd"); } childData.add(children); }
 		 */
 		// TODO: query for groups
 		// TODO: load persons
-		/*for (int i = 0; i < 20; i++) {
-			Map<String, String> curGroupMap = new HashMap<String, String>();
-			groupData.add(curGroupMap);
-			curGroupMap.put(NAME, "Group " + i);
-			curGroupMap.put(IS_EVEN, (i % 2 == 0) ? "This group is even" : "This group is odd");
-			List<Map<String, String>> children = new ArrayList<Map<String, String>>();
-			// TODO: add children
-			childData.add(children);
-		}
-		// Set up our adapter
-		expLVAdapter = new SimpleExpandableListAdapter(this, groupData, android.R.layout.simple_expandable_list_item_1,
-		    new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1, android.R.id.text2 }, childData,
-		    android.R.layout.simple_expandable_list_item_2, new String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
-		        android.R.id.text2 });
-		eventExpLV.setAdapter(expLVAdapter);*/
+		/*
+		 * for (int i = 0; i < 20; i++) { Map<String, String> curGroupMap = new
+		 * HashMap<String, String>(); groupData.add(curGroupMap);
+		 * curGroupMap.put(NAME, "Group " + i); curGroupMap.put(IS_EVEN, (i % 2
+		 * == 0) ? "This group is even" : "This group is odd"); List<Map<String,
+		 * String>> children = new ArrayList<Map<String, String>>(); // TODO:
+		 * add children childData.add(children); } // Set up our adapter
+		 * expLVAdapter = new SimpleExpandableListAdapter(this, groupData,
+		 * android.R.layout.simple_expandable_list_item_1, new String[] { NAME,
+		 * IS_EVEN }, new int[] { android.R.id.text1, android.R.id.text2 },
+		 * childData, android.R.layout.simple_expandable_list_item_2, new
+		 * String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
+		 * android.R.id.text2 }); eventExpLV.setAdapter(expLVAdapter);
+		 */
 	}
 
 	private void setCurrentEvent(EventData ed) {
@@ -219,7 +226,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			refreshListViews();
 		}
 	}
-	
+
 	protected void refreshListViews() {
 		pa.notifyDataSetChanged();
 		ga.notifyDataSetChanged();
@@ -249,83 +256,70 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			menuAbout();
 			return true;
 		case R.id.menu_add_person:
-			menuAddPerson();
+			// menuAddPerson();
+			menuPerson(ADD_PERSON, item);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
-	private void menuAddPerson() {
-			final EventData currentEvent = model.getCurrentEvent();
-			// TODO: check if event selected
-			
-			LayoutInflater inflater = LayoutInflater.from(this);
-			final View addView = inflater.inflate(R.layout.person_dialog, null);
-			
-			AlertDialog.Builder adb = new AlertDialog.Builder(this);
-			adb.setTitle(getString(R.string.add_person_in) + " " + currentEvent.eventname);
-			adb.setView(addView);
-			adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					EditText nameET = (EditText) addView.findViewById(R.id.pd_name);
-					EditText emailET = (EditText) addView.findViewById(R.id.pd_email);
-					String name = nameET.getText().toString();
-					String email = emailET.getText().toString();
-					
+	private void menuPerson(final String task, final MenuItem item) {
+		final EventData currentEvent = model.getCurrentEvent();
+		LayoutInflater inflater = LayoutInflater.from(this);
+		final View personView = inflater.inflate(R.layout.person_dialog, null);
+
+		String title = null;
+		String addPerson = getString(R.string.add_person_in) + " " + currentEvent.eventname;
+		String editPerson = getString(R.string.edit_person_in) + " " + currentEvent.eventname;
+		if (task == ADD_PERSON)
+			title = addPerson;
+		if (task == EDIT_PERSON) {
+			title = editPerson;
+
+			EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
+			EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
+
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+			final AdapterView.AdapterContextMenuInfo pInfo = info;
+			final PersonData pd = model.persons.get(pInfo.position);
+			nameET.setText(pd.name);
+			emailET.setText(pd.email);
+		}
+
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(title);
+		adb.setView(personView);
+		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
+				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
+				String name = nameET.getText().toString();
+				String email = emailET.getText().toString();
+				RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+
+				if (task == ADD_PERSON) {
 					PersonData person = new PersonData(currentEvent.id, name, email);
-					
-					//group_id == 0 means no group assigned
-					
-					// TODO: Add Person to Database
-					RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
 
-					//create Object
+					// create Object
 					personDao.create(person);
 					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id, 0);
 					eventMembershipDao.create(emd);
 					model.persons.add(person);
-
-					refreshListViews();
 				}
-			}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					// ignore, just dismiss
-				}
-			}).show();
-	}
 
-	private void menuEditPerson(MenuItem item) {
-		final EventData currentEvent = model.getCurrentEvent();
-		LayoutInflater inflater = LayoutInflater.from(this);
-		final View editView = inflater.inflate(R.layout.person_dialog, null);
-		EditText nameET = (EditText) editView.findViewById(R.id.pd_name);
-		EditText emailET = (EditText) editView.findViewById(R.id.pd_email);
-		
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		final AdapterView.AdapterContextMenuInfo pInfo = info;
-		final PersonData pd = model.persons.get(pInfo.position);
-		nameET.setText(pd.name);
-		emailET.setText(pd.email);
-		
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(getString(R.string.edit_person_in) + " " + currentEvent.eventname);
-		adb.setView(editView);
-		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-			
-			public void onClick(DialogInterface dialog, int whichButton) {
-				EditText nameET = (EditText) editView.findViewById(R.id.pd_name);
-				EditText emailET = (EditText) editView.findViewById(R.id.pd_email);
-				String name = nameET.getText().toString();
-				String email = emailET.getText().toString();
-				RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
-				
-				pd.name = name;
-				pd.email = email;
-				
-				personDao.update(pd);
-				personDao.refresh(pd);
+				if (task == EDIT_PERSON) {
+					AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+					final AdapterView.AdapterContextMenuInfo pInfo = info;
+					final PersonData pd = model.persons.get(pInfo.position);
+					pd.name = name;
+					pd.email = email;
+
+					personDao.update(pd);
+					personDao.refresh(pd);
+
+				}
 
 				refreshListViews();
 			}
@@ -334,20 +328,18 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				// ignore, just dismiss
 			}
 		}).show();
-}
-	
+	}
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int menuItemIndex = item.getItemId();
-//		String[] menuItems = getResources().getStringArray(R.array.persons_context_menu);
-//		String menuItemName = menuItems[menuItemIndex];
-		if (menuItemIndex == 0) {
-			menuEditPerson(item);
-//			CharSequence text = menuItemName + " not yet implemented";
-//			Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
-//			toast.show();
-		}
+		// String[] menuItems =
+		// getResources().getStringArray(R.array.persons_context_menu);
+		// String menuItemName = menuItems[menuItemIndex];
+		if (menuItemIndex == 0)
+			menuPerson(EDIT_PERSON, item);
+
 		if (menuItemIndex == 1) {
 			AlertDialog.Builder adb = new AlertDialog.Builder(this);
 			adb.setTitle(R.string.context_menu_remove_title);
@@ -357,12 +349,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					PersonData pd = model.persons.get(pInfo.position);
-					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper()
-					    .getEventMembershipDataDao();
+					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
 					List<EventMembershipData> emd = null;
 					try {
 						emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and()
-						    .eq("event_id", model.getCurrentEvent().id).prepare());
+								.eq("event_id", model.getCurrentEvent().id).prepare());
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
