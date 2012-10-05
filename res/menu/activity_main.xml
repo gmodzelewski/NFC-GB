@@ -8,12 +8,18 @@
         android:title="@string/menu_add_person"
         android:orderInCategory="100"
         android:icon="@drawable/ic_menu_add_person"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
          />
     <item android:id="@+id/menu_add_group"
         android:title="@string/menu_add_group"
         android:orderInCategory="100"
         android:icon="@drawable/ic_menu_add_group"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
+         />
+    <item android:id="@+id/menu_add_event"
+        android:title="@string/menu_add_event"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_menu_add_group"
+        android:showAsAction="always"
          />
 </menu>

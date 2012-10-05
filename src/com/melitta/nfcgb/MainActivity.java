@@ -1,6 +1,7 @@
 package com.melitta.nfcgb;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -130,37 +131,37 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			private void eventdialog(final EventData ed) {
 				LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
 				final RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
-				
+
 				final View eventView = inflater.inflate(R.layout.event_dialog, null);
-				
-				EditText eventname = (EditText)eventView.findViewById(R.id.ed_eventname); 
-				Switch wintersemester = (Switch)eventView.findViewById(R.id.ed_wintersemester);
-				EditText year = (EditText)eventView.findViewById(R.id.ed_year);
-				EditText tutor = (EditText)eventView.findViewById(R.id.ed_tutor);
-				EditText tutoremail = (EditText)eventView.findViewById(R.id.ed_tutor_email);
-				EditText info = (EditText)eventView.findViewById(R.id.ed_info);
-				
+
+				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
+				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
+				EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+				EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
+				EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
+				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
+
 				eventname.setText(ed.eventname);
 				wintersemester.setChecked(ed.wintersemester);
 				year.setText(String.valueOf(ed.year));
 				tutor.setText(ed.tutor);
 				tutoremail.setText(ed.tutoremail);
 				info.setText(ed.info);
-				
+
 				AlertDialog.Builder adb = new AlertDialog.Builder(spinner.getContext());
 				String title = getString(R.string.edit_event);
 				adb.setTitle(title);
 				adb.setView(eventView);
 				adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-					
+
 					public void onClick(DialogInterface dialog, int whichButton) {
-						EditText eventname = (EditText)eventView.findViewById(R.id.ed_eventname); 
-						Switch wintersemester = (Switch)eventView.findViewById(R.id.ed_wintersemester);
-						EditText year = (EditText)eventView.findViewById(R.id.ed_year);
-						EditText tutor = (EditText)eventView.findViewById(R.id.ed_tutor);
-						EditText tutoremail = (EditText)eventView.findViewById(R.id.ed_tutor_email);
-						EditText info = (EditText)eventView.findViewById(R.id.ed_info);
-						
+						EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
+						Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
+						EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+						EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
+						EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
+						EditText info = (EditText) eventView.findViewById(R.id.ed_info);
+
 						ed.eventname = eventname.getText().toString();
 						ed.wintersemester = wintersemester.isChecked();
 						ed.year = Integer.valueOf(year.getText().toString());
@@ -314,9 +315,50 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			// menuAddPerson();
 			menuPerson(ADD_PERSON, item);
 			return true;
+		case R.id.menu_add_event:
+			menuAddEvent();
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void menuAddEvent() {
+
+		LayoutInflater inflater = LayoutInflater.from(this);
+		final View eventView = inflater.inflate(R.layout.event_dialog, null);
+
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(getString(R.string.add_event));
+		adb.setView(eventView);
+		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int whichButton) {
+				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
+				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
+				EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+				EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
+				EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
+				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
+
+				EventData ed = new EventData();
+
+				ed.eventname = eventname.getText().toString();
+				ed.wintersemester = wintersemester.isChecked();
+				ed.year = Integer.valueOf(year.getText().toString());
+				ed.tutor = tutor.getText().toString();
+				ed.tutoremail = tutoremail.getText().toString();
+				ed.info = info.getText().toString();
+
+				RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
+				eventDao.create(ed);
+				model.events.add(ed);
+			}
+		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// ignore, just dismiss
+			}
+		}).show();
+
 	}
 
 	private void menuPerson(final String task, final MenuItem item) {
@@ -407,8 +449,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
 					List<EventMembershipData> emd = null;
 					try {
-						emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and()
-								.eq("event_id", model.getCurrentEvent().id).prepare());
+						emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and().eq("event_id", model.getCurrentEvent().id).prepare());
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}

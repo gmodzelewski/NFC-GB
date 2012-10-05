@@ -4,6 +4,7 @@
      <string name="menu_about">About</string>
      <string name="menu_add_person">Add a new person</string>
      <string name="menu_add_group">Add a new group</string>
+     <string name="menu_add_event">Add a new event</string>
      
     <string name="title_activity_main">NFC GB</string>
 
@@ -54,5 +55,6 @@
     <string name="edit_person_in">Edit Person in</string>
     <string name="add_person_in">Add Person in</string>
     <string name="added">added</string>
+    <string name="add_event">Add Event</string>
     
 </resources>

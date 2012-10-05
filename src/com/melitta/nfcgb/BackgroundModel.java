@@ -14,7 +14,7 @@ public class BackgroundModel {
 	// selected event
 	private EventData currentEvent = null;
 	// event list for spinner
-	private List<EventData> events = new LinkedList<EventData>();
+	public List<EventData> events = new LinkedList<EventData>();
 	// person list for left list
 	public List<PersonData> persons = new LinkedList<PersonData>();
 	// group list for right list
