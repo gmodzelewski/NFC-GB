@@ -4,13 +4,13 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/eventname_textview"
+        android:id="@+id/ed_eventname_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/event" />
 
     <EditText
-        android:id="@+id/eventname"
+        android:id="@+id/ed_eventname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -18,13 +18,13 @@
     </EditText>
 
     <TextView
-        android:id="@+id/semester_textview"
+        android:id="@+id/ed_semester_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/semester" />
 
     <Switch
-        android:id="@+id/wintersemester"
+        android:id="@+id/ed_wintersemester"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textOn="Winter Semester"
@@ -32,29 +32,28 @@
         />
 
     <TextView
-        android:id="@+id/year_textview"
+        android:id="@+id/ed_year_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/year" />
 
     <EditText
-        android:id="@+id/year"
+        android:id="@+id/ed_year"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:digits="true"
         android:inputType="number"
         android:ems="10"
         android:hint="@string/year_hint" >
     </EditText>
 
     <TextView
-        android:id="@+id/tutor_textview"
+        android:id="@+id/ed_tutor_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tutor" />
 
     <EditText
-        android:id="@+id/tutor"
+        android:id="@+id/ed_tutor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -62,13 +61,13 @@
     </EditText>
 
     <TextView
-        android:id="@+id/tutor_email_textview"
+        android:id="@+id/ed_tutor_email_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tutor_email" />
 
     <EditText
-        android:id="@+id/tutor_email"
+        android:id="@+id/ed_tutor_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -77,39 +76,18 @@
     </EditText>
 
     <TextView
-        android:id="@+id/info_textview"
+        android:id="@+id/ed_info_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/info" />
 
     <EditText
-        android:id="@+id/info"
+        android:id="@+id/ed_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/info_hint"
         android:inputType="textMultiLine" >
     </EditText>
-
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="1" >
-
-        <Button
-            android:id="@+id/event_cancel_button"
-            android:layout_column="0"
-            android:layout_gravity="left"
-            android:layout_row="0"
-            android:text="@string/cancel_button" />
-
-        <Button
-            android:id="@+id/event_apply_button"
-            android:layout_column="0"
-            android:layout_gravity="right"
-            android:layout_row="0"
-            android:text="@string/apply_button" 
-            android:onClick="onClick" />
-    </GridLayout>
 
 </LinearLayout>

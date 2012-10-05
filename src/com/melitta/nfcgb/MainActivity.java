@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
@@ -121,8 +123,61 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		spinner.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
-				startEventActivity(v);
-				return false;
+				eventdialog(model.getCurrentEvent());
+				return true;
+			}
+
+			private void eventdialog(final EventData ed) {
+				LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
+				final RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
+				
+				final View eventView = inflater.inflate(R.layout.event_dialog, null);
+				
+				EditText eventname = (EditText)eventView.findViewById(R.id.ed_eventname); 
+				Switch wintersemester = (Switch)eventView.findViewById(R.id.ed_wintersemester);
+				EditText year = (EditText)eventView.findViewById(R.id.ed_year);
+				EditText tutor = (EditText)eventView.findViewById(R.id.ed_tutor);
+				EditText tutoremail = (EditText)eventView.findViewById(R.id.ed_tutor_email);
+				EditText info = (EditText)eventView.findViewById(R.id.ed_info);
+				
+				eventname.setText(ed.eventname);
+				wintersemester.setChecked(ed.wintersemester);
+				year.setText(String.valueOf(ed.year));
+				tutor.setText(ed.tutor);
+				tutoremail.setText(ed.tutoremail);
+				info.setText(ed.info);
+				
+				AlertDialog.Builder adb = new AlertDialog.Builder(spinner.getContext());
+				String title = getString(R.string.edit_event);
+				adb.setTitle(title);
+				adb.setView(eventView);
+				adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int whichButton) {
+						EditText eventname = (EditText)eventView.findViewById(R.id.ed_eventname); 
+						Switch wintersemester = (Switch)eventView.findViewById(R.id.ed_wintersemester);
+						EditText year = (EditText)eventView.findViewById(R.id.ed_year);
+						EditText tutor = (EditText)eventView.findViewById(R.id.ed_tutor);
+						EditText tutoremail = (EditText)eventView.findViewById(R.id.ed_tutor_email);
+						EditText info = (EditText)eventView.findViewById(R.id.ed_info);
+						
+						ed.eventname = eventname.getText().toString();
+						ed.wintersemester = wintersemester.isChecked();
+						ed.year = Integer.valueOf(year.getText().toString());
+						ed.tutor = tutor.getText().toString();
+						ed.tutoremail = tutoremail.getText().toString();
+						ed.info = info.getText().toString();
+
+						eventDao.update(ed);
+						eventDao.refresh(ed);
+
+						ea.notifyDataSetChanged();
+					}
+				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// ignore, just dismiss
+					}
+				}).show();
 			}
 		});
 
