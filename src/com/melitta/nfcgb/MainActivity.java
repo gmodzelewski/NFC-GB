@@ -311,16 +311,46 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		case R.id.menu_about:
 			menuAbout();
 			return true;
-		case R.id.menu_add_person:
-			// menuAddPerson();
-			menuPerson(ADD_PERSON, item);
-			return true;
 		case R.id.menu_add_event:
 			menuAddEvent();
+			return true;
+		case R.id.menu_add_group:
+			menuAddGroup();
+			return true;
+		case R.id.menu_add_person:
+			menuPerson(ADD_PERSON, item);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
+	private void menuAddGroup() {
+			final EventData currentEvent = model.getCurrentEvent();
+			LayoutInflater inflater = LayoutInflater.from(this);
+			final View groupView = inflater.inflate(R.layout.group_dialog, null);
+
+			AlertDialog.Builder adb = new AlertDialog.Builder(this);
+			adb.setTitle(getString(R.string.add_group));
+			adb.setView(groupView);
+			adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
+					String groupName = groupNameET.getText().toString();
+						GroupData group = new GroupData(groupName, currentEvent.id);
+
+						// create Object
+						RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
+						groupDao.create(group);
+						model.groups.add(group);
+					refreshListViews();
+				}
+			}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+				}
+			}).show();
+		}
+		
 
 	private void menuAddEvent() {
 

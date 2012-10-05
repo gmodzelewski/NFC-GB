@@ -56,5 +56,11 @@
     <string name="add_person_in">Add Person in</string>
     <string name="added">added</string>
     <string name="add_event">Add Event</string>
+    <string name="add_group">Add Group</string>
+    
+    <string name="gd_groupName">Group Name</string>
+    <string name="gd_groupName_hint">The name of the group</string>
+    
+    
     
 </resources>

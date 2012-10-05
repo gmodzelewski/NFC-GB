@@ -201,14 +201,16 @@ public final class R {
         public static final int ed_year_tv=0x7f0b000c;
         public static final int eventExpLV=0x7f0b0007;
         public static final int events_spinner=0x7f0b0005;
-        public static final int menu_about=0x7f0b0018;
-        public static final int menu_add_event=0x7f0b001b;
-        public static final int menu_add_group=0x7f0b001a;
-        public static final int menu_add_person=0x7f0b0019;
-        public static final int pd_email=0x7f0b0017;
-        public static final int pd_email_textview=0x7f0b0016;
-        public static final int pd_name=0x7f0b0015;
-        public static final int pd_name_textview=0x7f0b0014;
+        public static final int gd_groupName=0x7f0b0015;
+        public static final int gd_groupName_textview=0x7f0b0014;
+        public static final int menu_about=0x7f0b001a;
+        public static final int menu_add_event=0x7f0b001d;
+        public static final int menu_add_group=0x7f0b001c;
+        public static final int menu_add_person=0x7f0b001b;
+        public static final int pd_email=0x7f0b0019;
+        public static final int pd_email_textview=0x7f0b0018;
+        public static final int pd_name=0x7f0b0017;
+        public static final int pd_name_textview=0x7f0b0016;
         public static final int personsLV=0x7f0b0006;
         public static final int ratingBar=0x7f0b0002;
     }
@@ -216,7 +218,8 @@ public final class R {
         public static final int about_fragment_dialog=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int event_dialog=0x7f030002;
-        public static final int person_dialog=0x7f030003;
+        public static final int group_dialog=0x7f030003;
+        public static final int person_dialog=0x7f030004;
     }
     public static final class menu {
         public static final int activity_main=0x7f0a0000;
@@ -228,6 +231,7 @@ public final class R {
         public static final int about=0x7f070023;
         public static final int about_tv=0x7f070024;
         public static final int add_event=0x7f070029;
+        public static final int add_group=0x7f07002a;
         public static final int add_person_in=0x7f070027;
         public static final int added=0x7f070028;
         public static final int app_name=0x7f070006;
@@ -245,6 +249,8 @@ public final class R {
         public static final int event=0x7f070008;
         public static final int eventname=0x7f070009;
         public static final int eventname_hint=0x7f07000a;
+        public static final int gd_groupName=0x7f07002b;
+        public static final int gd_groupName_hint=0x7f07002c;
         public static final int groups=0x7f070015;
         public static final int info=0x7f070013;
         public static final int info_hint=0x7f070014;
