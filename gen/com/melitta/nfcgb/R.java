@@ -9,6 +9,7 @@ package com.melitta.nfcgb;
 
 public final class R {
     public static final class array {
+        public static final int events_context_menu=0x7f080001;
         public static final int persons_context_menu=0x7f080000;
     }
     public static final class attr {
@@ -177,16 +178,25 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
         public static final int ic_menu_add_group=0x7f020002;
         public static final int ic_menu_add_person=0x7f020003;
-        public static final int ic_menu_delete=0x7f020004;
-        public static final int ic_menu_invite=0x7f020005;
-        public static final int ice_menu_add_person=0x7f020006;
-        public static final int sym_action_add=0x7f020007;
+        public static final int ic_menu_agenda=0x7f020004;
+        public static final int ic_menu_allfriends=0x7f020005;
+        public static final int ic_menu_blocked_user=0x7f020006;
+        public static final int ic_menu_delete=0x7f020007;
+        public static final int ic_menu_friendslist=0x7f020008;
+        public static final int ic_menu_invite=0x7f020009;
+        public static final int ice_menu_add_person=0x7f02000a;
+        public static final int sym_action_add=0x7f02000b;
     }
     public static final class id {
         public static final int about=0x7f0b0001;
         public static final int about_apply_button=0x7f0b0004;
         public static final int about_cancel_button=0x7f0b0003;
         public static final int about_tv=0x7f0b0000;
+        public static final int cm_group_add=0x7f0b001a;
+        public static final int cm_group_edit=0x7f0b001b;
+        public static final int cm_group_remove=0x7f0b001c;
+        public static final int cm_person_edit=0x7f0b001d;
+        public static final int cm_person_remove=0x7f0b001e;
         public static final int ed_eventname=0x7f0b0009;
         public static final int ed_eventname_tv=0x7f0b0008;
         public static final int ed_info=0x7f0b0013;
@@ -199,14 +209,14 @@ public final class R {
         public static final int ed_wintersemester=0x7f0b000b;
         public static final int ed_year=0x7f0b000d;
         public static final int ed_year_tv=0x7f0b000c;
-        public static final int eventExpLV=0x7f0b0007;
         public static final int events_spinner=0x7f0b0005;
         public static final int gd_groupName=0x7f0b0015;
         public static final int gd_groupName_textview=0x7f0b0014;
-        public static final int menu_about=0x7f0b001a;
-        public static final int menu_add_event=0x7f0b001d;
-        public static final int menu_add_group=0x7f0b001c;
-        public static final int menu_add_person=0x7f0b001b;
+        public static final int groupsExpLV=0x7f0b0007;
+        public static final int om_about=0x7f0b001f;
+        public static final int om_add_event=0x7f0b0022;
+        public static final int om_add_group=0x7f0b0021;
+        public static final int om_add_person=0x7f0b0020;
         public static final int pd_email=0x7f0b0019;
         public static final int pd_email_textview=0x7f0b0018;
         public static final int pd_name=0x7f0b0017;
@@ -222,7 +232,9 @@ public final class R {
         public static final int person_dialog=0x7f030004;
     }
     public static final class menu {
-        public static final int activity_main=0x7f0a0000;
+        public static final int context_menu_group=0x7f0a0000;
+        public static final int context_menu_person=0x7f0a0001;
+        public static final int option_menu=0x7f0a0002;
     }
     public static final class raw {
         public static final int ormlite_config=0x7f050000;
@@ -230,10 +242,10 @@ public final class R {
     public static final class string {
         public static final int about=0x7f070023;
         public static final int about_tv=0x7f070024;
-        public static final int add_event=0x7f070029;
-        public static final int add_group=0x7f07002a;
-        public static final int add_person_in=0x7f070027;
-        public static final int added=0x7f070028;
+        public static final int add_event=0x7f07002a;
+        public static final int add_group=0x7f07002b;
+        public static final int add_person_in=0x7f070028;
+        public static final int added=0x7f070029;
         public static final int app_name=0x7f070006;
         public static final int apply_button=0x7f07001d;
         public static final int cancel_button=0x7f07001f;
@@ -242,15 +254,16 @@ public final class R {
         public static final int course_of_studies=0x7f07001b;
         public static final int course_of_studies_hint=0x7f07001c;
         public static final int edit_event=0x7f070007;
+        public static final int edit_group=0x7f07002c;
         public static final int edit_person=0x7f070025;
-        public static final int edit_person_in=0x7f070026;
+        public static final int edit_person_in=0x7f070027;
         public static final int email=0x7f070019;
         public static final int email_hint=0x7f07001a;
         public static final int event=0x7f070008;
         public static final int eventname=0x7f070009;
         public static final int eventname_hint=0x7f07000a;
-        public static final int gd_groupName=0x7f07002b;
-        public static final int gd_groupName_hint=0x7f07002c;
+        public static final int gd_groupName=0x7f07002f;
+        public static final int gd_groupName_hint=0x7f070030;
         public static final int groups=0x7f070015;
         public static final int info=0x7f070013;
         public static final int info_hint=0x7f070014;
@@ -264,6 +277,9 @@ public final class R {
         public static final int ok_button=0x7f07001e;
         public static final int person_dialog=0x7f070016;
         public static final int prompt=0x7f070022;
+        public static final int remove_group=0x7f07002d;
+        public static final int remove_group_message=0x7f07002e;
+        public static final int remove_person=0x7f070026;
         public static final int semester=0x7f07000b;
         public static final int semester_hint=0x7f07000c;
         public static final int title_activity_main=0x7f070005;
