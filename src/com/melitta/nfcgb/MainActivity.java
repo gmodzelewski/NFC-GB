@@ -1,12 +1,10 @@
 package com.melitta.nfcgb;
 
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -176,6 +174,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				adb.setView(eventView);
 				adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 
+					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
 						EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
 						Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
@@ -197,6 +196,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 						ea.notifyDataSetChanged();
 					}
 				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
 						// ignore, just dismiss
 					}
@@ -273,6 +273,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		adb.setView(eventView);
 		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
 				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
@@ -295,38 +296,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				model.events.add(ed);
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// ignore, just dismiss
 			}
 		}).show();
 
 	}
-
-//	private void menuAddGroup() {
-//		final EventData currentEvent = model.getCurrentEvent();
-//		LayoutInflater inflater = LayoutInflater.from(this);
-//		final View groupView = inflater.inflate(R.layout.group_dialog, null);
-//
-//		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-//		adb.setTitle(getString(R.string.add_group));
-//		adb.setView(groupView);
-//		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
-//				String groupName = groupNameET.getText().toString();
-//				GroupData group = new GroupData(groupName, currentEvent.id);
-//
-//				// create Object
-//				RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
-//				groupDao.create(group);
-//				model.groups.add(group);
-//				refreshListViews();
-//			}
-//		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//			}
-//		}).show();
-//	}
 
 	private void menuGroup(final String task, final MenuItem item) {
 		final EventData currentEvent = model.getCurrentEvent();
@@ -350,6 +326,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		adb.setTitle(title);
 		adb.setView(groupView);
 		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 				String groupName = groupNameET.getText().toString();
@@ -372,6 +349,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				refreshListViews();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 			}
 		}).show();
@@ -385,6 +363,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		adb.setNegativeButton(R.string.cancel_button, null);
 		final ExpandableListView.ExpandableListContextMenuInfo pInfo = info;
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				//TODO: Is the id here right?
 				GroupData gd = model.groups.get((int) pInfo.id);
@@ -422,6 +401,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		adb.setTitle(title);
 		adb.setView(personView);
 		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
 				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
@@ -455,6 +435,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				refreshListViews();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// ignore, just dismiss
 			}
@@ -469,6 +450,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		adb.setNegativeButton(R.string.cancel_button, null);
 		final AdapterView.AdapterContextMenuInfo pInfo = info;
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				PersonData pd = model.persons.get(pInfo.position);
 				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
@@ -487,6 +469,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		adb.show();
 	}
 
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == request_Code) {
 			if (resultCode == RESULT_OK) {
