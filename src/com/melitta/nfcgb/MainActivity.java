@@ -45,6 +45,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private final String LOG_TAG = getClass().getSimpleName();
 	private final String ADD_PERSON = "ADD PERSON";
 	private final String EDIT_PERSON = "EDIT PERSON";
+	private final String ADD_GROUP = "ADD GROUP";
+	private final String EDIT_GROUP = "EDIT GROUP";
 
 	private static final int request_Code = 1;
 
@@ -67,7 +69,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		setContentView(R.layout.activity_main);
 		spinner = (Spinner) findViewById(R.id.events_spinner);
 		personsLV = (ListView) findViewById(R.id.personsLV);
-		eventExpLV = (ExpandableListView) findViewById(R.id.eventExpLV);
+		eventExpLV = (ExpandableListView) findViewById(R.id.groupsExpLV);
 		// TODO?: check, if all elements are available?
 
 		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
@@ -210,7 +212,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private void createExpandableListView() {
 		ga = new GroupAdapter(this, model.getGroups());
 		eventExpLV.setAdapter((ExpandableListAdapter) ga);
-
+		registerForContextMenu(eventExpLV);
 		// List<Map<String, String>> groupData = new ArrayList<Map<String,
 		// String>>();
 		// List<List<Map<String, String>>> childData = new
@@ -290,17 +292,23 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		getMenuInflater().inflate(R.menu.option_menu, menu);
 		return true;
 	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.personsLV) {
-			String[] menuItems = getResources().getStringArray(R.array.persons_context_menu);
-			for (int i = 0; i < menuItems.length; i++) {
-				menu.add(Menu.NONE, i, i, menuItems[i]);
-			}
+			getMenuInflater().inflate(R.menu.context_menu_person, menu);
+		}
+
+		// //TODO Context Menu for Spinner? Not so nice...
+		// if (v.getId() == R.id.events_spinner) {
+		// getMenuInflater().inflate(R.menu.context_menu_, menu);
+		// }
+
+		if (v.getId() == R.id.groupsExpLV) {
+			getMenuInflater().inflate(R.menu.context_menu_group, menu);
 		}
 	}
 
@@ -308,16 +316,16 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.menu_about:
+		case R.id.om_about:
 			menuAbout();
 			return true;
-		case R.id.menu_add_event:
+		case R.id.om_add_event:
 			menuAddEvent();
 			return true;
-		case R.id.menu_add_group:
+		case R.id.om_add_group:
 			menuAddGroup();
 			return true;
-		case R.id.menu_add_person:
+		case R.id.om_add_person:
 			menuPerson(ADD_PERSON, item);
 			return true;
 		default:
@@ -326,31 +334,79 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	}
 
 	private void menuAddGroup() {
-			final EventData currentEvent = model.getCurrentEvent();
-			LayoutInflater inflater = LayoutInflater.from(this);
-			final View groupView = inflater.inflate(R.layout.group_dialog, null);
+		final EventData currentEvent = model.getCurrentEvent();
+		LayoutInflater inflater = LayoutInflater.from(this);
+		final View groupView = inflater.inflate(R.layout.group_dialog, null);
 
-			AlertDialog.Builder adb = new AlertDialog.Builder(this);
-			adb.setTitle(getString(R.string.add_group));
-			adb.setView(groupView);
-			adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
-					String groupName = groupNameET.getText().toString();
-						GroupData group = new GroupData(groupName, currentEvent.id);
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(getString(R.string.add_group));
+		adb.setView(groupView);
+		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
+				String groupName = groupNameET.getText().toString();
+				GroupData group = new GroupData(groupName, currentEvent.id);
 
-						// create Object
-						RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
-						groupDao.create(group);
-						model.groups.add(group);
-					refreshListViews();
-				}
-			}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-				}
-			}).show();
+				// create Object
+				RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
+				groupDao.create(group);
+				model.groups.add(group);
+				refreshListViews();
+			}
+		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+			}
+		}).show();
+	}
+
+	private void menuGroup(final String task, final MenuItem item) {
+		final EventData currentEvent = model.getCurrentEvent();
+		LayoutInflater inflater = LayoutInflater.from(this);
+		final View groupView = inflater.inflate(R.layout.group_dialog, null);
+
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		String title = null;
+		if (task == ADD_GROUP)
+			title = getString(R.string.add_group);
+		if (task == EDIT_GROUP) {
+			title = getString(R.string.edit_group);
+
+			EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
+
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+			final AdapterView.AdapterContextMenuInfo pInfo = info;
+			final GroupData gd = model.groups.get(pInfo.position);
+			groupNameET.setText(gd.groupName);
 		}
-		
+		adb.setTitle(title);
+		adb.setView(groupView);
+		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
+				String groupName = groupNameET.getText().toString();
+				GroupData group = new GroupData(groupName, currentEvent.id);
+
+				// create Object
+				RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
+				if (task == ADD_GROUP) {
+					groupDao.create(group);
+					model.groups.add(group);
+				}
+				if (task == EDIT_GROUP) {
+					AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+					final AdapterView.AdapterContextMenuInfo pInfo = info;
+					final GroupData gd = model.groups.get(pInfo.position);
+					gd.groupName = groupName;
+					groupDao.update(gd);
+					groupDao.refresh(gd);
+				}
+				refreshListViews();
+			}
+		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+			}
+		}).show();
+	}
 
 	private void menuAddEvent() {
 
@@ -457,41 +513,74 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}).show();
 	}
 
+	private void menuPersonRemove(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(R.string.context_menu_remove_title);
+		adb.setMessage(R.string.context_menu_remove_message);
+		adb.setNegativeButton(R.string.cancel_button, null);
+		final AdapterView.AdapterContextMenuInfo pInfo = info;
+		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				PersonData pd = model.persons.get(pInfo.position);
+				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+				List<EventMembershipData> emd = null;
+				try {
+					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and().eq("event_id", model.getCurrentEvent().id).prepare());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				// TODO: outsource
+				eventMembershipDao.delete(emd);
+				model.persons.remove(pd);
+				refreshListViews();
+			}
+		});
+		adb.show();
+	}
+	
+	private void menuGroupRemove(MenuItem item) {
+		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(R.string.remove_group);
+		adb.setMessage(R.string.remove_group_message);
+		adb.setNegativeButton(R.string.cancel_button, null);
+		final ExpandableListView.ExpandableListContextMenuInfo pInfo = info;
+		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				//TODO: Is the id here right?
+				GroupData gd = model.groups.get((int) pInfo.id);
+				model.groups.remove(gd);
+				refreshListViews();
+			}
+		});
+		adb.show();
+	}
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		int menuItemIndex = item.getItemId();
-		// String[] menuItems =
-		// getResources().getStringArray(R.array.persons_context_menu);
-		// String menuItemName = menuItems[menuItemIndex];
-		if (menuItemIndex == 0)
-			menuPerson(EDIT_PERSON, item);
 
-		if (menuItemIndex == 1) {
-			AlertDialog.Builder adb = new AlertDialog.Builder(this);
-			adb.setTitle(R.string.context_menu_remove_title);
-			adb.setMessage(R.string.context_menu_remove_message);
-			adb.setNegativeButton(R.string.cancel_button, null);
-			final AdapterView.AdapterContextMenuInfo pInfo = info;
-			adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					PersonData pd = model.persons.get(pInfo.position);
-					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
-					List<EventMembershipData> emd = null;
-					try {
-						emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and().eq("event_id", model.getCurrentEvent().id).prepare());
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					// TODO: outsource
-					eventMembershipDao.delete(emd);
-					model.persons.remove(pd);
-					refreshListViews();
-				}
-			});
-			adb.show();
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.cm_group_add:
+			menuGroup(ADD_GROUP, item);
+			return true;
+		case R.id.cm_group_edit:
+			menuGroup(EDIT_GROUP, item);
+			return true;
+		case R.id.cm_group_remove:
+			menuGroupRemove(item);
+			return true;
+		case R.id.cm_person_edit:
+			menuPerson(EDIT_PERSON, item);
+			return true;
+		case R.id.cm_person_remove:
+			menuPersonRemove(item);
+			return true;
+		default:
+			return super.onContextItemSelected(item);
 		}
-		return true;
+
 	}
 
 	void menuAbout() {

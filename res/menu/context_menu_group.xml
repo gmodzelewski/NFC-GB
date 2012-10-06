@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/cm_group_add"
+        android:title="@string/add_group"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+         />
+    <item android:id="@+id/cm_group_edit"
+        android:title="@string/edit_group"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+         />
+    <item android:id="@+id/cm_group_remove"
+        android:title="@string/remove_group"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+         />
+</menu>

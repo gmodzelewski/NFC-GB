@@ -28,7 +28,7 @@
             android:background="@color/LightGrey" />
 
         <ExpandableListView
-            android:id="@+id/eventExpLV"
+            android:id="@+id/groupsExpLV"
             android:layout_width="0dp"
             android:layout_weight="1" >
         </ExpandableListView>

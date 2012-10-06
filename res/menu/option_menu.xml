@@ -1,25 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_about"
+    <item android:id="@+id/om_about"
         android:title="@string/menu_about"
         android:orderInCategory="100"
         android:showAsAction="never"
          />
-    <item android:id="@+id/menu_add_person"
+    <item android:id="@+id/om_add_person"
         android:title="@string/menu_add_person"
         android:orderInCategory="100"
         android:icon="@drawable/ic_menu_add_person"
         android:showAsAction="always"
          />
-    <item android:id="@+id/menu_add_group"
+    <item android:id="@+id/om_add_group"
         android:title="@string/menu_add_group"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_menu_add_group"
+        android:icon="@drawable/ic_menu_allfriends"
         android:showAsAction="always"
          />
-    <item android:id="@+id/menu_add_event"
+    <item android:id="@+id/om_add_event"
         android:title="@string/menu_add_event"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_menu_add_group"
+        android:icon="@drawable/ic_menu_agenda"
         android:showAsAction="always"
          />
 </menu>
