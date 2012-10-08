@@ -1,4 +1,4 @@
-package com.melitta.nfcgb;
+package com.modzelewski.nfcgb;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.melitta.nfcgb.persistence.DatabaseHelper;
+import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public class BackgroundModel {
 	private MainActivity mainActivity;

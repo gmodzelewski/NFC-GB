@@ -1,4 +1,4 @@
-package com.melitta.nfcgb.persistence;
+package com.modzelewski.nfcgb.persistence;
 
 import java.sql.SQLException;
 
@@ -11,11 +11,11 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.melitta.nfcgb.EventData;
-import com.melitta.nfcgb.EventMembershipData;
-import com.melitta.nfcgb.GroupData;
-import com.melitta.nfcgb.PersonData;
-import com.melitta.nfcgb.R;
+import com.modzelewski.nfcgb.EventData;
+import com.modzelewski.nfcgb.EventMembershipData;
+import com.modzelewski.nfcgb.GroupData;
+import com.modzelewski.nfcgb.PersonData;
+import com.modzelewski.nfcgb.R;
 
 /**
  * Database helper class used to manage the creation and upgrading of your

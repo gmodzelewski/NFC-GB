@@ -1,13 +1,13 @@
-package com.melitta.nfcgb.persistence;
+package com.modzelewski.nfcgb.persistence;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
-import com.melitta.nfcgb.EventData;
-import com.melitta.nfcgb.EventMembershipData;
-import com.melitta.nfcgb.GroupData;
-import com.melitta.nfcgb.PersonData;
+import com.modzelewski.nfcgb.EventData;
+import com.modzelewski.nfcgb.EventMembershipData;
+import com.modzelewski.nfcgb.GroupData;
+import com.modzelewski.nfcgb.PersonData;
 
 /**
  * Database helper class used to manage the creation and upgrading of your

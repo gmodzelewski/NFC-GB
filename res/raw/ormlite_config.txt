@@ -1,8 +1,8 @@
 #
-# generated on 2012/09/27 01:12:12
+# generated on 2012/10/08 09:35:34
 #
 # --table-start--
-dataClass=com.melitta.nfcgb.EventData
+dataClass=com.modzelewski.nfcgb.EventData
 tableName=eventdata
 # --table-fields-start--
 # --field-start--
@@ -31,7 +31,7 @@ fieldName=info
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.melitta.nfcgb.PersonData
+dataClass=com.modzelewski.nfcgb.PersonData
 tableName=persondata
 # --table-fields-start--
 # --field-start--
@@ -52,7 +52,7 @@ fieldName=email
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.melitta.nfcgb.EventMembershipData
+dataClass=com.modzelewski.nfcgb.EventMembershipData
 tableName=eventmembershipdata
 # --table-fields-start--
 # --field-start--
@@ -72,7 +72,7 @@ fieldName=group_id
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.melitta.nfcgb.GroupData
+dataClass=com.modzelewski.nfcgb.GroupData
 tableName=groupdata
 # --table-fields-start--
 # --field-start--

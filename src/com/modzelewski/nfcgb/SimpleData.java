@@ -1,4 +1,4 @@
-package com.melitta.nfcgb;
+package com.modzelewski.nfcgb;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

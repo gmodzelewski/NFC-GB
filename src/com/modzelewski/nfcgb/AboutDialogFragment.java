@@ -1,4 +1,4 @@
-package com.melitta.nfcgb;
+package com.modzelewski.nfcgb;
 
 import android.app.DialogFragment;
 import android.os.Bundle;

@@ -1,5 +1,6 @@
-package com.melitta.nfcgb;
+package com.modzelewski.nfcgb;
 
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -7,7 +8,13 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -30,21 +37,22 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.melitta.nfcgb.persistence.DatabaseConfigUtil;
-import com.melitta.nfcgb.persistence.DatabaseHelper;
-import com.melitta.nfcgb.persistence.DatabasePopulation;
+import com.modzelewski.nfcgb.persistence.DatabaseConfigUtil;
+import com.modzelewski.nfcgb.persistence.DatabaseHelper;
+import com.modzelewski.nfcgb.persistence.DatabasePopulation;
 
 /**
  * MainActivity
  * 
  * @author Georg
  */
-public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
+public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements CreateNdefMessageCallback {
 	private final String LOG_TAG = getClass().getSimpleName();
 	private final String ADD_PERSON = "ADD PERSON";
 	private final String EDIT_PERSON = "EDIT PERSON";
 	private final String ADD_GROUP = "ADD GROUP";
 	private final String EDIT_GROUP = "EDIT GROUP";
+	private NfcAdapter nfcAdapter;
 
 	private static final int request_Code = 1;
 
@@ -58,7 +66,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	EventAdapter ea;
 	PersonAdapter pa;
 	GroupAdapter ga;
-
 	/**
 	 * Create expandable list referencing at groups in background model.
 	 */
@@ -137,6 +144,33 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		pa = new PersonAdapter(this, android.R.layout.simple_list_item_1, model.getPersons());
 		personsLV.setAdapter(pa);
 		registerForContextMenu(personsLV);
+	}
+
+	/**
+	 * Creates a custom MIME type encapsulated in an NDEF record
+	 */
+	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
+		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+		NdefRecord mimeRecord = new NdefRecord(
+				NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
+		return mimeRecord;
+	}
+
+	@Override
+	public NdefMessage createNdefMessage(NfcEvent event) {
+		String text = ("Beam me up, Android!\n\n" + "Beam Time: " + System.currentTimeMillis());
+		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", text.getBytes())
+				/**
+				 * The Android Application Record (AAR) is commented out. When a device
+				 * receives a push with an AAR in it, the application specified in the
+				 * AAR is guaranteed to run. The AAR overrides the tag dispatch system.
+				 * You can add it back in to guarantee that this activity starts when
+				 * receiving a beamed message. For now, this code uses the tag dispatch
+				 * system.
+				 */
+				// ,NdefRecord.createApplicationRecord("com.modzelewski.nfcgb")
+		});
+		return msg;
 	}
 
 	/**
@@ -365,7 +399,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				//TODO: Is the id here right?
+				// TODO: Is the id here right?
 				GroupData gd = model.groups.get((int) pInfo.id);
 				model.groups.remove(gd);
 				refreshListViews();
@@ -521,6 +555,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		createSpinner();
 		createListView();
 		createExpandableListView();
+
+		// Check for available NFC Adapter
+		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		if (nfcAdapter == null) {
+			Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		} else
+			Toast.makeText(this, "NFC is available. Yeyy", Toast.LENGTH_LONG).show();
+		// Register callback
+		nfcAdapter.setNdefPushMessageCallback(this, this);
 	}
 
 	@Override
@@ -538,11 +583,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			getMenuInflater().inflate(R.menu.context_menu_group, menu);
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.option_menu, menu);
 		return true;
+	}
+
+	@Override
+	public void onNewIntent(Intent intent) {
+		// onResume gets called after this to handle the intent
+		setIntent(intent);
 	}
 
 	@Override
@@ -566,6 +617,32 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	public void onResume() {
+		super.onResume();
+		// Check to see that the Activity started due to an Android Beam
+		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			processIntent(getIntent());
+		}
+	}
+
+	/**
+	 * Parses the NDEF Message from the intent and prints to a Toast
+	 */
+	void processIntent(Intent intent) {
+		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
+				NfcAdapter.EXTRA_NDEF_MESSAGES);
+		// only one message sent during the beam
+		NdefMessage msg = (NdefMessage) rawMsgs[0];
+		// record 0 contains the MIME type, record 1 is the AAR, if present
+		Toast.makeText(this, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
+	}
+
 	protected void refreshListViews() {
 		pa.notifyDataSetChanged();
 		ga.notifyDataSetChanged();
@@ -577,9 +654,5 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			model.setCurrentEvent(ed);
 			refreshListViews();
 		}
-	}
-
-	public void startEventActivity(View view) {
-		startActivityForResult(new Intent("com.melitta.EventActivity"), request_Code);
 	}
 }

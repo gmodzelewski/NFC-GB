@@ -1,4 +1,4 @@
-package com.melitta.nfcgb;
+package com.modzelewski.nfcgb;
 
 import com.j256.ormlite.field.DatabaseField;
 
