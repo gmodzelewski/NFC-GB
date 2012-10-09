@@ -103,9 +103,12 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 		text.setPadding(70, 30, 10, 30);
 		text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
 
-		if (isExpanded)
-			text.setTypeface(Typeface.DEFAULT_BOLD);
-
+		if (isExpanded) {
+			text.setTypeface(Typeface.create("serif", Typeface.BOLD));
+			text.setBackgroundResource(R.color.AliceBlue);
+		} else
+			text.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+			
 		text.setText(items.get(groupPosition).groupName.toString());
 		return text;
 	}
