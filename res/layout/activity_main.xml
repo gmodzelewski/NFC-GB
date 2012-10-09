@@ -9,8 +9,8 @@
 
         <Spinner
             android:id="@+id/events_spinner"
-            android:layout_height="fill_parent"
             android:layout_width="0dp"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:prompt="@string/prompt" />
     </TableRow>
