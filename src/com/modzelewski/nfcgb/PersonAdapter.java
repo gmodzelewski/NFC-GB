@@ -20,7 +20,7 @@ public class PersonAdapter extends ArrayAdapter<PersonData> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TextView text = (TextView)super.getDropDownView(position, convertView, parent);
+		TextView text = (TextView)super.getView(position, convertView, parent);
 		PersonData pd = getItem(position);
 		text.setText(preparePersonData(pd));
 		return text;

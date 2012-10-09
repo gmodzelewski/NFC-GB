@@ -1,6 +1,8 @@
 package com.modzelewski.nfcgb;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.j256.ormlite.field.DatabaseField;
 
@@ -19,12 +21,20 @@ public class GroupData implements Serializable {
 	int eventId;
 	/*@ForeignCollectionField(eager = false)
 	ForeignCollection<PersonData> persons;*/
-
+	List<PersonData> person = new LinkedList<PersonData>();
+	
+	
 	GroupData() {
 		// needed by ormlite
+		/*person.add(new PersonData("Hans", "hans@gmail.com"));
+		person.add(new PersonData("Klaus", "klausi@gmail.com"));
+		person.add(new PersonData("Egon", "egoni@gmail.com"));
+		person.add(new PersonData("Waltraud", "walle@gmail.com"));*/
+		
 	}
 
 	public GroupData(String groupName, int eventId) {
+		super();
 		this.groupName = groupName;
 		this.eventId = eventId;
 	}

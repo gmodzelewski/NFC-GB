@@ -3,7 +3,6 @@ package com.modzelewski.nfcgb;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -49,30 +48,24 @@ public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
 
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
-		return items.get(groupPosition * 3 + childPosition + 1);
+		return items.get(groupPosition).person.get(childPosition);
 	}
 
 	@Override
 	public long getChildId(int groupPosition, int childPosition) {
-		return groupPosition * 3 + childPosition + 1;
+		return childPosition;
 	}
 
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		TextView text = new TextView(context);
-		text.setText("  child: "+items.get(groupPosition * 3 + childPosition + 1));
+		text.setText(items.get(groupPosition).person.get(childPosition).name);
 		return text;
 	}
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		if (groupPosition < items.size() / 3)
-			return 2;
-		int count = items.size() % 3 - 1;
-		Log.e("GA", ""+count);
-		count = Math.max(0, count);
-		Log.e("GA2", ""+count);
-		return count;
+		return items.get(groupPosition).person.size();
 	}
 
 	@Override
@@ -89,13 +82,12 @@ public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
 
 	@Override
 	public Object getGroup(int groupPosition) {
-		// TODO Auto-generated method stub
-		return null;
+		return items.get(groupPosition);
 	}
 
 	@Override
 	public int getGroupCount() {
-		return (items.size()+2)/3;
+		return items.size();
 	}
 
 	@Override
@@ -106,7 +98,7 @@ public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 		TextView text = new TextView(context);
-		text.setText("group: "+items.get(groupPosition*3));
+		text.setText(items.get(groupPosition).groupName);
 		return text;
 	}
 

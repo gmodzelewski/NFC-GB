@@ -38,6 +38,24 @@ public class BackgroundModel {
 		if (this.currentEvent != currentEvent) {
 			this.currentEvent = currentEvent;
 			reloadPersons();
+			reloadGroups();
+		}
+	}
+
+	private void reloadGroups() {
+		RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
+		List<GroupData> groupResult = null;
+		try {
+			groupResult = groupDao.queryBuilder().where().eq("eventId", currentEvent.id).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		groups.clear();
+
+		for (GroupData gd : groupResult) {
+			GroupData group = groupDao.queryForId(gd.id);
+			groups.add(group);
 		}
 	}
 
@@ -52,7 +70,7 @@ public class BackgroundModel {
 			e.printStackTrace();
 		}
 
-		ArrayList<String> personsFullNames = new ArrayList<String>();
+		// ArrayList<String> personsFullNames = new ArrayList<String>();
 		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 
 		persons.clear();
@@ -60,7 +78,7 @@ public class BackgroundModel {
 		for (EventMembershipData emd : eventMemberships) {
 			PersonData pd = personDao.queryForId(emd.person_id);
 			persons.add(pd);
-			personsFullNames.add(String.format("%s\n%s", pd.name, pd.email));
+			// personsFullNames.add(String.format("%s\n%s", pd.name, pd.email));
 		}
 	}
 
@@ -91,6 +109,11 @@ public class BackgroundModel {
 	}
 
 	public List<GroupData> getGroups() {
-	  return groups;
-  }
+		return groups;
+	}
+
+	public void setGroups(List<GroupData> groups) {
+		this.groups.clear();
+		this.groups.addAll(groups);
+	}
 }
