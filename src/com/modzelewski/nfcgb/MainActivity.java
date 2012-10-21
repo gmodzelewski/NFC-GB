@@ -27,7 +27,7 @@ import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
@@ -56,6 +56,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private final String EDIT_PERSON = "EDIT PERSON";
 	private final String ADD_GROUP = "ADD GROUP";
 	private final String EDIT_GROUP = "EDIT GROUP";
+
+	// Create and set the tags for the Buttons
+	final String SOURCELIST_TAG = "listSource";
+	final String TARGETLIST_TAG = "listTarget";
+	final String TARGETLAYOUT_TAG = "targetLayout";
+
 	private NfcAdapter nfcAdapter;
 
 	private static final int request_Code = 1;
@@ -70,7 +76,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	EventAdapter ea;
 	PersonAdapter pa;
 	GroupAdapter ga;
-	
+
 	/**
 	 * Create expandable list referencing at groups in background model.
 	 */
@@ -148,89 +154,64 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private void createListView() {
 		pa = new PersonAdapter(this, android.R.layout.simple_list_item_1, model.getPersons());
 		personsLV.setAdapter(pa);
-//		registerForContextMenu(personsLV);
-		
-		personsLV.setOnLongClickListener(new OnLongClickListener() {
-			
-			// Defines the one method for the interface, which is called when the View is long-clicked
-		    public boolean onLongClick(View v) {
+		registerForContextMenu(personsLV);
 
-		    // Create a new ClipData.
-		    // This is done in two steps to provide clarity. The convenience method
-		    // ClipData.newPlainText() can create a plain text ClipData in one step.
+		// DragEventListener dragEL = new DragEventListener();
+		// personsLV.setOnDragListener(dragEL);
 
-		    // Create a new ClipData.Item from the ImageView object's tag
-//		    ClipData.Item item = new ClipData.Item(v.getTag());
+		personsLV.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-		    // Create a new ClipData using the tag as a label, the plain text MIME type, and
-		    // the already-created item. This will create a new ClipDescription object within the
-		    // ClipData, and set its MIME type entry to "text/plain"
-//		    ClipData dragData = new ClipData(v.getTag(),ClipData.MIMETYPE_TEXT_PLAIN,item);
+			@Override
+			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
 
-		    ClipData dragData = ClipData.newPlainText("label", "text");
-		    
-		    
-		    // Instantiates the drag shadow builder.
-		    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(personsLV);
+				PersonData person = (PersonData) l.getItemAtPosition(position);
+				Log.i(LOG_TAG, person.toString());
 
-		    // Starts the drag
+				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), person.toString());
 
-		            return v.startDrag(dragData,  // the data to be dragged
-		                        myShadow,  // the drag shadow builder
-		                        null,      // no need to use local data
-		                        0          // flags (not currently used, set to 0)
-		            );
+				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
 
-		    }
+				l.startDrag(dragData, // the data to be dragged
+						shadowBuilder, // the drag shadow builder
+						null, // no need to use local data
+						0 // flags (not currently used, set to 0)
+				);
+				return true;
+			}
 		});
-		
-//		personsLV.setOnItemClickListener(new OnItemClickListener() {
-//			
-//			@Override
-//			public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
-//				
-//				// Create a new ClipData.
-//				// This is done in two steps to provide clarity. The convenience method
-//				// ClipData.newPlainText() can create a plain text ClipData in one step.
-//				ClipData dragData = ClipData.newPlainText("label", "text");
-//				DragShadowBuilder shadowBuilder = new MyDragShadowBuilder(personsLV);
-//				v.startDrag(dragData, shadowBuilder, arg0, 0);
-//			}
-//		});
-		
 	}
 
 	/**
 	 * Creates a custom MIME type encapsulated in an NDEF record
 	 */
 	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
-		
+
 		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
-		NdefRecord mimeRecord = new NdefRecord(
-				NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
+		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
 		return mimeRecord;
 	}
 
 	@Override
 	public NdefMessage createNdefMessage(NfcEvent event) {
-//		String text = ("Beam me up, Android!\n\n" + "Beam Time: " + System.currentTimeMillis());
-		PersonData person1 = new PersonData("Hans","hans@email.de");
-//		PersonData person2 = new PersonData("Peter", "peter@email.de");
+		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
+		// System.currentTimeMillis());
+		PersonData person1 = new PersonData("Hans", "hans@email.de");
+		// PersonData person2 = new PersonData("Peter", "peter@email.de");
 		String person1Name = person1.name;
 		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", person1Name.getBytes())
-				/**
-				 * The Android Application Record (AAR) is commented out. When a device
-				 * receives a push with an AAR in it, the application specified in the
-				 * AAR is guaranteed to run. The AAR overrides the tag dispatch system.
-				 * You can add it back in to guarantee that this activity starts when
-				 * receiving a beamed message. For now, this code uses the tag dispatch
-				 * system.
-				 */
-				// ,NdefRecord.createApplicationRecord("com.modzelewski.nfcgb")
-		});
+		/**
+		 * The Android Application Record (AAR) is commented out. When a device
+		 * receives a push with an AAR in it, the application specified in the
+		 * AAR is guaranteed to run. The AAR overrides the tag dispatch system.
+		 * You can add it back in to guarantee that this activity starts when
+		 * receiving a beamed message. For now, this code uses the tag dispatch
+		 * system.
+		 */
+		// ,NdefRecord.createApplicationRecord("com.modzelewski.nfcgb")
+				});
 		return msg;
 	}
-	
+
 	public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
 		byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
 		Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
@@ -627,11 +608,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		createSpinner();
 		createListView();
 		createExpandableListView();
-		
-		//TODO DragListener implementieren
+
+		// ------------------Drag
+		// Kram------------------------------------------------------------------
+		// TODO DragListener implementieren
 		DragEventListener dragEL = new DragEventListener();
-		personsLV.setOnDragListener(dragEL);	
 		eventExpLV.setOnDragListener(dragEL);
+
+		personsLV.setTag(SOURCELIST_TAG);
+		eventExpLV.setTag(TARGETLIST_TAG);
+		// ------------------/Drag
+		// Kram------------------------------------------------------------------
 
 		// Check for available NFC Adapter
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -712,8 +699,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	 * Parses the NDEF Message from the intent and prints to a Toast
 	 */
 	void processIntent(Intent intent) {
-		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
-				NfcAdapter.EXTRA_NDEF_MESSAGES);
+		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
 		// only one message sent during the beam
 		NdefMessage msg = (NdefMessage) rawMsgs[0];
 		// record 0 contains the MIME type, record 1 is the AAR, if present

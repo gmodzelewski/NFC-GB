@@ -3,6 +3,7 @@ package com.modzelewski.nfcgb;
 import android.content.ClipDescription;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
 
@@ -21,9 +22,18 @@ public class DragEventListener implements OnDragListener {
 				Log.i(getClass().getSimpleName(), "ACTION DRAG STARTED rejected");
 				return false;
 			}
+		
+		
+		case MotionEvent.ACTION_DOWN:
+			if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+				Log.i(getClass().getSimpleName(), "ACTION DRAG STARTED accept");
+				return true;
+			} else {
+				Log.i(getClass().getSimpleName(), "ACTION DRAG STARTED rejected");
+				return false;
+			}
 		}
 
 		return true;
 	}
-
 }
