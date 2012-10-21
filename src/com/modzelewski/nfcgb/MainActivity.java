@@ -147,6 +147,42 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		 * String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
 		 * android.R.id.text2 }); eventExpLV.setAdapter(expLVAdapter);
 		 */
+		
+		DragEventListener dragEL = new DragEventListener();
+		eventExpLV.setOnDragListener(dragEL);
+		
+		// On normal Click: Context Menu
+		eventExpLV.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+				registerForContextMenu(l);
+				openContextMenu(l);
+			}
+		});
+
+		// On Long Click: Drag'n'Drop
+		eventExpLV.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
+				//TODO Abfragen, ob es auch wirklich nur eine Person ist und nicht die Gruppe
+//				PersonData person = (PersonData) ;
+				Log.i(LOG_TAG, "GroupID: " + String.valueOf(id));
+				if(id == 0)
+					Toast.makeText(getApplicationContext(), "Sorry, you can't drag a group", Toast.LENGTH_SHORT).show();
+//
+//				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), person.toString());
+//
+//				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+//
+//				l.startDrag(dragData, // the data to be dragged
+//						shadowBuilder, // the drag shadow builder
+//						null, // no need to use local data
+//						0 // flags (not currently used, set to 0)
+//				);
+				return true;
+			}
+		});
 	}
 
 	/**
@@ -173,6 +209,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
 
+//				PersonData person = (PersonData) l.getSelectedItem(); Gibt es auch, funktioniert aber nicht
 				PersonData person = (PersonData) l.getItemAtPosition(position);
 				Log.i(LOG_TAG, person.toString());
 
