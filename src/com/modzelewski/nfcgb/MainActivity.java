@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
@@ -154,11 +155,19 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private void createListView() {
 		pa = new PersonAdapter(this, android.R.layout.simple_list_item_1, model.getPersons());
 		personsLV.setAdapter(pa);
-		registerForContextMenu(personsLV);
+		DragEventListener dragEL = new DragEventListener();
+		personsLV.setOnDragListener(dragEL);
+		
+		// On normal Click: Context Menu
+		personsLV.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+				registerForContextMenu(l);
+				openContextMenu(l);
+			}
+		});
 
-		// DragEventListener dragEL = new DragEventListener();
-		// personsLV.setOnDragListener(dragEL);
-
+		// On Long Click: Drag'n'Drop
 		personsLV.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
