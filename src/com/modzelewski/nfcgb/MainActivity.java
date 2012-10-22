@@ -147,10 +147,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		 * String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
 		 * android.R.id.text2 }); eventExpLV.setAdapter(expLVAdapter);
 		 */
-		
+
 		DragEventListener dragEL = new DragEventListener();
 		eventExpLV.setOnDragListener(dragEL);
-		
+
 		// On normal Click: Context Menu
 		eventExpLV.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -165,21 +165,25 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
-				//TODO Abfragen, ob es auch wirklich nur eine Person ist und nicht die Gruppe
-//				PersonData person = (PersonData) ;
+				// TODO Abfragen, ob es auch wirklich nur eine Person ist und
+				// nicht die Gruppe
+				// PersonData person = (PersonData) ;
 				Log.i(LOG_TAG, "GroupID: " + String.valueOf(id));
-				if(id == 0)
+				if (id == 0)
 					Toast.makeText(getApplicationContext(), "Sorry, you can't drag a group", Toast.LENGTH_SHORT).show();
-//
-//				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), person.toString());
-//
-//				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-//
-//				l.startDrag(dragData, // the data to be dragged
-//						shadowBuilder, // the drag shadow builder
-//						null, // no need to use local data
-//						0 // flags (not currently used, set to 0)
-//				);
+				//
+				// ClipData dragData =
+				// ClipData.newPlainText(person.getClass().getSimpleName(),
+				// person.toString());
+				//
+				// DragShadowBuilder shadowBuilder = new
+				// View.DragShadowBuilder(v);
+				//
+				// l.startDrag(dragData, // the data to be dragged
+				// shadowBuilder, // the drag shadow builder
+				// null, // no need to use local data
+				// 0 // flags (not currently used, set to 0)
+				// );
 				return true;
 			}
 		});
@@ -193,15 +197,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		personsLV.setAdapter(pa);
 		DragEventListener dragEL = new DragEventListener();
 		personsLV.setOnDragListener(dragEL);
-		
-		// On normal Click: Context Menu
-		personsLV.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
-				registerForContextMenu(l);
-				openContextMenu(l);
-			}
-		});
 
 		// On Long Click: Drag'n'Drop
 		personsLV.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -209,8 +204,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
 
-//				PersonData person = (PersonData) l.getSelectedItem(); Gibt es auch, funktioniert aber nicht
-				PersonData person = (PersonData) l.getItemAtPosition(position);
+				// PersonData person = (PersonData) l.getSelectedItem(); Gibt es
+				// auch, funktioniert aber nicht
+				PersonData person = model.persons.get(position);
+
+				// PersonData person = (PersonData)
+				// l.getItemAtPosition(position);
 				Log.i(LOG_TAG, person.toString());
 
 				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), person.toString());
@@ -222,7 +221,25 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 						null, // no need to use local data
 						0 // flags (not currently used, set to 0)
 				);
-				return true;
+				return false;
+			}
+		});
+
+		// On normal Click: Context Menu
+		personsLV.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+				registerForContextMenu(l);
+				// l.showContextMenuForChild(v);
+				openContextMenu(v);
+				unregisterForContextMenu(l);
+
+				// registerForContextMenu(l);
+				// l.showContextMenuForChild(v);
+				// l.setLongClickable(false);
+				// l.showContextMenuForChild(v);
+				// l.createContextMenu(v);
+				// onButtonClickEvent(v);
 			}
 		});
 	}
@@ -630,8 +647,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.cm_person_remove:
 			menuPersonRemove(item);
+			Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
 		default:
+			Log.i("DEFAULT", "ItemID " + item.getItemId());
 			return super.onContextItemSelected(item);
 		}
 
@@ -680,6 +699,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+
 		if (v.getId() == R.id.personsLV) {
 			getMenuInflater().inflate(R.menu.context_menu_person, menu);
 		}
