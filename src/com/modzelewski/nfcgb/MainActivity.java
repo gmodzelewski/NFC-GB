@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -208,8 +208,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				// auch, funktioniert aber nicht
 				PersonData person = model.persons.get(position);
 
-				// PersonData person = (PersonData)
-				// l.getItemAtPosition(position);
 				Log.i(LOG_TAG, person.toString());
 
 				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), person.toString());
@@ -230,16 +228,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			@Override
 			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
 				registerForContextMenu(l);
-				// l.showContextMenuForChild(v);
 				openContextMenu(v);
 				unregisterForContextMenu(l);
-
-				// registerForContextMenu(l);
-				// l.showContextMenuForChild(v);
-				// l.setLongClickable(false);
-				// l.showContextMenuForChild(v);
-				// l.createContextMenu(v);
-				// onButtonClickEvent(v);
 			}
 		});
 	}
@@ -297,6 +287,22 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		ea = new EventAdapter(this, android.R.layout.simple_spinner_item, model.getEvents());
 		spinner.setAdapter(ea);
 
+		createSpinnerDialog();
+
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				setCurrentEvent(model.getEvents().get(position));
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				return;
+			}
+		});
+	}
+
+	private void createSpinnerDialog() {
 		spinner.setOnLongClickListener(new OnLongClickListener() {
 			private void eventdialog(final EventData ed) {
 				LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
@@ -359,18 +365,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				return true;
 			}
 		});
-
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-				setCurrentEvent(model.getEvents().get(position));
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parentView) {
-				return;
-			}
-		});
 	}
 
 	private void doDatabaseStuff() {
@@ -409,8 +403,33 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	}
 
 	void menuAbout() {
-		DialogFragment newFragment = AboutDialogFragment.newInstance();
-		newFragment.show(getFragmentManager(), "dialog");
+		// DialogFragment newFragment = AboutDialogFragment.newInstance();
+		// newFragment.show(getFragmentManager(), "dialog");
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		String title = getString(R.string.about_tv);
+		adb.setMessage(R.string.about).setTitle(title);
+		adb.setNeutralButton(R.string.about_goto_github, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				Uri uri = Uri.parse("https://github.com/melitta/NFC-GB");
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				startActivity(intent);
+			}
+		}).setPositiveButton(R.string.about_send_mail, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				Intent i = new Intent(Intent.ACTION_SEND);
+				i.setType("message/rfc822");
+				i.putExtra(Intent.EXTRA_EMAIL, new String[] { "melitta@tzi.de" });
+				i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.about_email_subject));
+				i.putExtra(Intent.EXTRA_TEXT, getString(R.string.about_email_body));
+				try {
+					startActivity(Intent.createChooser(i, getString(R.string.about_email_chooser)));
+				} catch (android.content.ActivityNotFoundException ex) {
+					Toast.makeText(getBaseContext(), getString(R.string.about_no_email_apps), Toast.LENGTH_SHORT).show();
+				}
+			}
+		}).show();
 	}
 
 	private void menuAddEvent() {
@@ -688,11 +707,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// Check for available NFC Adapter
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		if (nfcAdapter == null) {
-			Toast.makeText(this, "NFC is not available on your Phone", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
 			finish();
 			return;
 		} else
-			Toast.makeText(this, "NFC is available on your Phone. You can use the NFC Features. Yeyy", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
 		// Register callback
 		nfcAdapter.setNdefPushMessageCallback(this, this);
 	}

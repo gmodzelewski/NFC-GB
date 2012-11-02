@@ -1,5 +1,7 @@
 <resources>
     
+     <string name="nfc_available">"NFC is available on your Phone.\n\t You can use the NFC Features.\n\t Yeyy"</string>
+     <string name="nfc_not_available">"NFC is not available on your Phone.\n\t You can't use the NFC Features.\n\t Sorry."</string>
      <string name="menu_info">My Information</string>
      <string name="menu_about">About</string>
      <string name="menu_add_person">Add a new person</string>
@@ -33,12 +35,13 @@
     <string name="name">Name</string>
     <string name="name_hint">The Name</string>
     <string name="email">EMail</string>
-    <string name="email_hint">My eMail adress</string>
+    <string name="email_hint">My EMail adress</string>
     <string name="course_of_studies">Course of studies</string>
     <string name="course_of_studies_hint">My course of studies</string>
     
     <string name="apply_button">Apply</string>
     <string name="ok_button">Okay</string>
+    <string name="neutral_button">That`s quite interesting.</string>
     <string name="cancel_button">Cancel</string>
     
     <string-array name="persons_context_menu">
@@ -55,8 +58,15 @@
     <string name="context_menu_remove_title">Remove</string>
     <string name="context_menu_remove_message">Do you really want to remove this person?</string>
     <string name="prompt">Select</string>
-    <string name="about">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</string>
-    <string name="about_tv">See what this all about</string>
+    <string name="about">\tYou are awesome!\n\n\tThis App was made as a part of a bachelor thesis at the University of Bremen. You can download the code on github: \n \thttps://github.com/melitta/NFC-GB \n \nIf you have Feedback, send it to me. I love Feedback.\nYours sincerely, \n\tGeorg Modzelewski</string>
+    <string name="about_tv">About the NFC-GB</string>
+    <string name="about_email_chooser">Please choose an Email App</string>
+    <string name="about_no_email_apps">I´m sorry. There are no Email Apps installed.</string>
+    <string name="about_goto_github">Go to the github Page</string>
+    <string name="about_send_mail">Send Email with Feedback</string>
+    <string name="about_email_subject">Feedback for NFC-GB</string>
+    <string name="about_email_body"></string>
+    
     <string name="edit_person">Edit Person</string>
     <string name="remove_person">Remove Person</string>
     
