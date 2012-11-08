@@ -83,6 +83,7 @@
     <string name="gd_groupName">Group Name</string>
     <string name="gd_groupName_hint">The name of the group</string>
     
-    
+    <string name="deleted">deleted</string>
+    <string name="add_new_event">Please add a new event.</string>
     
 </resources>

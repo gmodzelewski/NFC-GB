@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -56,8 +57,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private final String EDIT_PERSON = "EDIT PERSON";
 	private final String ADD_GROUP = "ADD GROUP";
 	private final String EDIT_GROUP = "EDIT GROUP";
-//	private final String EDIT_EVENT = "EDIT EVENT";
-//	private final String REMOVE_EVENT = "REMOVE EVENT";
+	// private final String EDIT_EVENT = "EDIT EVENT";
+	// private final String REMOVE_EVENT = "REMOVE EVENT";
 
 	// Create and set the tags for the Buttons
 	final String SOURCELIST_TAG = "listSource";
@@ -638,22 +639,34 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				EventData currentEvent = model.getCurrentEvent();
+				RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
 				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
-				// RuntimeExceptionDao<PersonData, Integer> PersonDao =
-				// getHelper().getPersonDataDao();
-				// RuntimeExceptionDao<GroupData, Integer> GroupDao =
-				// getHelper().getGroupDataDao();
+//				RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+				List<GroupData> gd = null;
 				List<EventMembershipData> emd = null;
+//				List<PersonData> pd = null;
 				try {
+//					pd = personDao.query(personDao.queryBuilder().where().eq("event_id", currentEvent.id).prepare());
+					gd = groupDao.query(groupDao.queryBuilder().where().eq("eventId", model.getCurrentEvent().id).prepare());
 					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				// TODO: outsource
+//				personDao.delete(pd);
+				groupDao.delete(gd);
 				eventMembershipDao.delete(emd);
+				
+				model.persons.clear();
+				model.groups.clear();
 				model.events.remove(currentEvent);
-				ea.notifyDataSetChanged();
+
 				refreshListViews();
+				ea.notifyDataSetChanged();
+				
+				if(!model.events.isEmpty())
+					model.setCurrentEvent(model.getEvents().get(0));
+				
+				Toast.makeText(getBaseContext(), currentEvent.eventname + " " + getString(R.string.deleted), Toast.LENGTH_LONG).show();
 			}
 		});
 		adb.show();
@@ -686,7 +699,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.cm_person_remove:
 			menuPersonRemove(item);
-//			Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
+			// Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
 		case R.id.cm_event_edit:
 			menuEvent(item);
@@ -694,7 +707,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		case R.id.cm_event_remove:
 			menuEventRemove(item);
 		default:
-//			Log.i("DEFAULT", "ItemID " + item.getItemId());
+			// Log.i("DEFAULT", "ItemID " + item.getItemId());
 			return super.onContextItemSelected(item);
 		}
 	}
@@ -749,9 +762,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		}
 
 		if (v.getId() == R.id.events_spinner) {
-			Toast.makeText(this, "Bin drin", Toast.LENGTH_LONG).show();
-
-			getMenuInflater().inflate(R.menu.context_menu_event, menu);
+			if(model.getEvents().isEmpty())
+				Toast.makeText(this, getString(R.string.add_new_event), Toast.LENGTH_SHORT).show();
+			else
+				getMenuInflater().inflate(R.menu.context_menu_event, menu);
 		}
 
 		if (v.getId() == R.id.groupsExpLV) {
