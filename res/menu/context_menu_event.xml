@@ -1,19 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/cm_group_add"
+        android:id="@+id/cm_event_add"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:title="@string/add_group"/>
+        android:title="@string/add_event"/>
     <item
-        android:id="@+id/cm_group_edit"
+        android:id="@+id/cm_event_edit"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:title="@string/edit_group"/>
+        android:title="@string/edit_event"/>
     <item
-        android:id="@+id/cm_group_remove"
+        android:id="@+id/cm_event_remove"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:title="@string/remove_group"/>
+        android:title="@string/remove_event"/>
 
 </menu>

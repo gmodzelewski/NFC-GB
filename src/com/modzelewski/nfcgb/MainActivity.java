@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -57,6 +56,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private final String EDIT_PERSON = "EDIT PERSON";
 	private final String ADD_GROUP = "ADD GROUP";
 	private final String EDIT_GROUP = "EDIT GROUP";
+//	private final String EDIT_EVENT = "EDIT EVENT";
+//	private final String REMOVE_EVENT = "REMOVE EVENT";
 
 	// Create and set the tags for the Buttons
 	final String SOURCELIST_TAG = "listSource";
@@ -286,8 +287,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// assign Data as single items
 		ea = new EventAdapter(this, android.R.layout.simple_spinner_item, model.getEvents());
 		spinner.setAdapter(ea);
-
-		createSpinnerDialog();
+		registerForContextMenu(spinner);
 
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -298,71 +298,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			@Override
 			public void onNothingSelected(AdapterView<?> parentView) {
 				return;
-			}
-		});
-	}
-
-	private void createSpinnerDialog() {
-		spinner.setOnLongClickListener(new OnLongClickListener() {
-			private void eventdialog(final EventData ed) {
-				LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
-				final RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
-
-				final View eventView = inflater.inflate(R.layout.event_dialog, null);
-
-				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
-				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-				EditText year = (EditText) eventView.findViewById(R.id.ed_year);
-				EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
-				EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
-				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-
-				eventname.setText(ed.eventname);
-				wintersemester.setChecked(ed.wintersemester);
-				year.setText(String.valueOf(ed.year));
-				tutor.setText(ed.tutor);
-				tutoremail.setText(ed.tutoremail);
-				info.setText(ed.info);
-
-				AlertDialog.Builder adb = new AlertDialog.Builder(spinner.getContext());
-				String title = getString(R.string.edit_event);
-				adb.setTitle(title);
-				adb.setView(eventView);
-				adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-						EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
-						Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-						EditText year = (EditText) eventView.findViewById(R.id.ed_year);
-						EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
-						EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
-						EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-
-						ed.eventname = eventname.getText().toString();
-						ed.wintersemester = wintersemester.isChecked();
-						ed.year = Integer.valueOf(year.getText().toString());
-						ed.tutor = tutor.getText().toString();
-						ed.tutoremail = tutoremail.getText().toString();
-						ed.info = info.getText().toString();
-
-						eventDao.update(ed);
-						eventDao.refresh(ed);
-
-						ea.notifyDataSetChanged();
-					}
-				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-						// ignore, just dismiss
-					}
-				}).show();
-			}
-
-			@Override
-			public boolean onLongClick(View v) {
-				eventdialog(model.getCurrentEvent());
-				return true;
 			}
 		});
 	}
@@ -638,6 +573,92 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		adb.show();
 	}
 
+	private void menuEvent(final MenuItem item) {
+		final EventData currentEvent = model.getCurrentEvent();
+		LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
+		final RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
+
+		final View eventView = inflater.inflate(R.layout.event_dialog, null);
+
+		EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
+		Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
+		EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+		EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
+		EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
+		EditText info = (EditText) eventView.findViewById(R.id.ed_info);
+
+		eventname.setText(currentEvent.eventname);
+		wintersemester.setChecked(currentEvent.wintersemester);
+		year.setText(String.valueOf(currentEvent.year));
+		tutor.setText(currentEvent.tutor);
+		tutoremail.setText(currentEvent.tutoremail);
+		info.setText(currentEvent.info);
+
+		AlertDialog.Builder adb = new AlertDialog.Builder(spinner.getContext());
+		String title = getString(R.string.edit_event);
+		adb.setTitle(title);
+		adb.setView(eventView);
+		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
+				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
+				EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+				EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
+				EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
+				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
+
+				currentEvent.eventname = eventname.getText().toString();
+				currentEvent.wintersemester = wintersemester.isChecked();
+				currentEvent.year = Integer.valueOf(year.getText().toString());
+				currentEvent.tutor = tutor.getText().toString();
+				currentEvent.tutoremail = tutoremail.getText().toString();
+				currentEvent.info = info.getText().toString();
+
+				eventDao.update(currentEvent);
+				eventDao.refresh(currentEvent);
+
+				ea.notifyDataSetChanged();
+			}
+		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// ignore, just dismiss
+			}
+		}).show();
+	}
+
+	private void menuEventRemove(final MenuItem item) {
+		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		adb.setTitle(R.string.context_menu_remove_title);
+		adb.setMessage(R.string.context_menu_remove_message);
+		adb.setNegativeButton(R.string.cancel_button, null);
+		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				EventData currentEvent = model.getCurrentEvent();
+				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+				// RuntimeExceptionDao<PersonData, Integer> PersonDao =
+				// getHelper().getPersonDataDao();
+				// RuntimeExceptionDao<GroupData, Integer> GroupDao =
+				// getHelper().getGroupDataDao();
+				List<EventMembershipData> emd = null;
+				try {
+					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				// TODO: outsource
+				eventMembershipDao.delete(emd);
+				model.events.remove(currentEvent);
+				ea.notifyDataSetChanged();
+				refreshListViews();
+			}
+		});
+		adb.show();
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == request_Code) {
@@ -649,7 +670,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.cm_group_add:
@@ -666,13 +686,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.cm_person_remove:
 			menuPersonRemove(item);
-			Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
+//			Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
+		case R.id.cm_event_edit:
+			menuEvent(item);
+			return true;
+		case R.id.cm_event_remove:
+			menuEventRemove(item);
 		default:
-			Log.i("DEFAULT", "ItemID " + item.getItemId());
+//			Log.i("DEFAULT", "ItemID " + item.getItemId());
 			return super.onContextItemSelected(item);
 		}
-
 	}
 
 	@Override
@@ -724,10 +748,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			getMenuInflater().inflate(R.menu.context_menu_person, menu);
 		}
 
-		// //TODO Context Menu for Spinner? Not so nice...
-		// if (v.getId() == R.id.events_spinner) {
-		// getMenuInflater().inflate(R.menu.context_menu_, menu);
-		// }
+		if (v.getId() == R.id.events_spinner) {
+			Toast.makeText(this, "Bin drin", Toast.LENGTH_LONG).show();
+
+			getMenuInflater().inflate(R.menu.context_menu_event, menu);
+		}
 
 		if (v.getId() == R.id.groupsExpLV) {
 			getMenuInflater().inflate(R.menu.context_menu_group, menu);

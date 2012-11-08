@@ -13,6 +13,7 @@
     <string name="app_name">NFC-GB</string>
         
     <string name="edit_event">Edit Event</string>
+    <string name="remove_event">Remove Event</string>
     <string name="event">Event</string>
     
     <string name="eventname">Eventname</string>
