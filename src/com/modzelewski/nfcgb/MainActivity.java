@@ -153,42 +153,33 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		DragEventListener dragEL = new DragEventListener();
 		eventExpLV.setOnDragListener(dragEL);
 
-		// On normal Click: Context Menu
-		eventExpLV.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
-				registerForContextMenu(l);
-				openContextMenu(l);
-			}
-		});
-
-		// On Long Click: Drag'n'Drop
-		eventExpLV.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
-				// TODO Abfragen, ob es auch wirklich nur eine Person ist und
-				// nicht die Gruppe
-				// PersonData person = (PersonData) ;
-				Log.i(LOG_TAG, "GroupID: " + String.valueOf(id));
-				if (id == 0)
-					Toast.makeText(getApplicationContext(), "Sorry, you can't drag a group", Toast.LENGTH_SHORT).show();
-				//
-				// ClipData dragData =
-				// ClipData.newPlainText(person.getClass().getSimpleName(),
-				// person.toString());
-				//
-				// DragShadowBuilder shadowBuilder = new
-				// View.DragShadowBuilder(v);
-				//
-				// l.startDrag(dragData, // the data to be dragged
-				// shadowBuilder, // the drag shadow builder
-				// null, // no need to use local data
-				// 0 // flags (not currently used, set to 0)
-				// );
-				return true;
-			}
-		});
+//		eventExpLV.setOnItemLongClickListener(new OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
+//				// TODO Abfragen, ob es auch wirklich nur eine Person ist und
+//				// nicht die Gruppe
+//				// PersonData person = (PersonData) ;
+////				Log.i(LOG_TAG, "GroupID: " + String.valueOf(id));
+//				if (id == 0) 
+//					openContextMenu(l);
+////					Toast.makeText(getApplicationContext(), "Sorry, you can't drag a group", Toast.LENGTH_SHORT).show();
+//				//
+//				// ClipData dragData =
+//				// ClipData.newPlainText(person.getClass().getSimpleName(),
+//				// person.toString());
+//				//
+//				// DragShadowBuilder shadowBuilder = new
+//				// View.DragShadowBuilder(v);
+//				//
+//				// l.startDrag(dragData, // the data to be dragged
+//				// shadowBuilder, // the drag shadow builder
+//				// null, // no need to use local data
+//				// 0 // flags (not currently used, set to 0)
+//				// );
+//				return false;
+//			}
+//		});
 	}
 
 	/**
@@ -423,6 +414,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 			EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 
+			//TODO: BUG FIXXEN -> pInfo doesn't work	
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 			final AdapterView.AdapterContextMenuInfo pInfo = info;
 			final GroupData gd = model.groups.get(pInfo.position);

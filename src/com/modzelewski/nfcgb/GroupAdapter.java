@@ -18,8 +18,7 @@ import android.widget.TextView;
  * 
  */
 public class GroupAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
-	// public class GroupAdapter extends BaseAdapter implements
-	// ExpandableListAdapter {
+//public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
 	Context context;
 	List<GroupData> items;
 
@@ -108,7 +107,7 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 			text.setBackgroundResource(R.color.AliceBlue);
 		} else
 			text.setTypeface(Typeface.create("serif", Typeface.NORMAL));
-			
+
 		text.setText(items.get(groupPosition).groupName.toString());
 		return text;
 	}
