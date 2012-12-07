@@ -4,7 +4,9 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -20,20 +22,30 @@ import android.widget.TextView;
 public class GroupAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
 //public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
 	Context context;
-	List<GroupData> items;
+	List<GroupData> groups;
+	List<List<PersonData>> persons;
+	private final LayoutInflater inflater;
 
-	public GroupAdapter(Context context, List<GroupData> items) {
+	public GroupAdapter(Context context, List<GroupData> groups) {
 		super();
 		this.context = context;
-		this.items = items;
+		this.groups = groups;
+		this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
+	
+//	public GroupAdapter(Context context, List<GroupData> groups, List<List<PersonData>> persons) {
+//		super();
+//		this.context = context;
+//		this.groups = groups;
+//		this.persons = persons;
+//	}
 
 	public int getCount() {
-		return items.size();
+		return groups.size();
 	}
 
 	public Object getItem(int position) {
-		return items.get(position);
+		return groups.get(position);
 	}
 
 	public long getItemId(int position) {
@@ -42,13 +54,13 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView text = (TextView) getView(position, convertView, parent);
-		text.setText(items.get(position).groupName);
+		text.setText(groups.get(position).groupName);
 		return text;
 	}
 
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
-		return items.get(groupPosition).person.get(childPosition);
+		return groups.get(groupPosition).person.get(childPosition);
 	}
 
 	@Override
@@ -60,13 +72,13 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		TextView text = new TextView(context);
 		text.setPadding(20, 0, 0, 0); // indent the child element a bit
-		text.setText(items.get(groupPosition).person.get(childPosition).name);
+		text.setText(groups.get(groupPosition).person.get(childPosition).name);
 		return text;
 	}
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return items.get(groupPosition).person.size();
+		return groups.get(groupPosition).person.size();
 	}
 
 	@Override
@@ -83,12 +95,12 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 
 	@Override
 	public Object getGroup(int groupPosition) {
-		return items.get(groupPosition);
+		return groups.get(groupPosition);
 	}
 
 	@Override
 	public int getGroupCount() {
-		return items.size();
+		return groups.size();
 	}
 
 	@Override
@@ -108,7 +120,7 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 		} else
 			text.setTypeface(Typeface.create("serif", Typeface.NORMAL));
 
-		text.setText(items.get(groupPosition).groupName.toString());
+		text.setText(groups.get(groupPosition).groupName.toString());
 		return text;
 	}
 
@@ -122,6 +134,10 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 	public void onGroupCollapsed(int groupPosition) {
 	}
 
+    public void  onGroupExpand  (int groupPosition) {
+        Log.i( getClass().getSimpleName(),"onGroupExpand: "+groupPosition );
+    }
+    
 	@Override
 	public void onGroupExpanded(int groupPosition) {
 	}
@@ -130,6 +146,10 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 	public boolean hasStableIds() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public void remove(List<List<PersonData>> person) {
+		//TODO
 	}
 
 }

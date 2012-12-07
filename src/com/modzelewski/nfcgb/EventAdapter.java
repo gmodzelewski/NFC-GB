@@ -41,6 +41,9 @@ public class EventAdapter extends ArrayAdapter<EventData> {
 	 * @return prepared String
 	 */
 	private String prepareEventData(EventData ed) {
-		return String.format("%s (%s %d)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe", ed.year);
+		if(ed.year != 0)
+			return String.format("%s (%s %d)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe", ed.year);
+		else
+			return String.format("%s (%s)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe");			
 	}
 }

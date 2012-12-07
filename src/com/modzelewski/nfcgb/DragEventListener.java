@@ -6,6 +6,8 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 public class DragEventListener implements OnDragListener {
 
@@ -32,8 +34,19 @@ public class DragEventListener implements OnDragListener {
 				Log.i(getClass().getSimpleName(), "ACTION DRAG STARTED rejected");
 				return false;
 			}
-		}
+		
 
+		case DragEvent.ACTION_DROP:
+	        // Dropped, reassign View to ViewGroup
+	        View view = (View) event.getLocalState();
+	        ViewGroup owner = (ViewGroup) view.getParent();
+	        owner.removeView(view);
+	        LinearLayout container = (LinearLayout) v;
+	        container.addView(view);
+	        view.setVisibility(View.VISIBLE);        
+	        return false;
+	        //return true; if drop accepted 
+		}
 		return true;
 	}
 }

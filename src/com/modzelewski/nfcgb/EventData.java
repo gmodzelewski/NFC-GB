@@ -9,7 +9,7 @@ public class EventData implements Comparable<EventData> {
 	int id;
 	@DatabaseField
 	String eventname;
-	@DatabaseField
+	@DatabaseField(useGetSet = true)
 	int year;
 	@DatabaseField
 	boolean wintersemester;
@@ -60,4 +60,23 @@ public class EventData implements Comparable<EventData> {
 			return wintersemester ? 1 : -1;
 		return eventname.compareTo(another.eventname);
 	}
+	
+	/**
+	 * @return the year
+	 */
+	public int getYear() {
+		return year;
+	}
+
+	/**
+	 * @param year the year to set
+	 */
+	public void setYear(int year) {
+		if(year < 1900 && year > 3000) {
+			throw new ValidatorException("invalid Year");
+		}
+		this.year = year;
+			
+	}
+
 }

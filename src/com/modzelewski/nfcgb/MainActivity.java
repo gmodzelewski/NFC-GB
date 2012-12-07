@@ -25,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -368,7 +367,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		adb.setTitle(getString(R.string.add_event));
 		adb.setView(eventView);
 		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-
 			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
@@ -567,6 +565,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	}
 
 	private void menuEvent(final MenuItem item) {
+		//TODO menuAddEvent hier rein
 		final EventData currentEvent = model.getCurrentEvent();
 		LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
 		final RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
@@ -620,6 +619,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				// ignore, just dismiss
 			}
 		}).show();
+
 	}
 
 	private void menuEventRemove(final MenuItem item) {
@@ -655,8 +655,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				refreshListViews();
 				ea.notifyDataSetChanged();
 				
-				if(!model.events.isEmpty())
-					model.setCurrentEvent(model.getEvents().get(0));
+//				if(!model.events.isEmpty())
+//					model.setCurrentEvent(model.getEvents().get(0));
 				
 				Toast.makeText(getBaseContext(), currentEvent.eventname + " " + getString(R.string.deleted), Toast.LENGTH_LONG).show();
 			}
