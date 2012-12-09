@@ -2,6 +2,7 @@ package com.modzelewski.nfcgb;
 
 import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
@@ -388,6 +389,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
 				eventDao.create(ed);
 				model.events.add(ed);
+				model.setCurrentEvent(ed);
+				setCurrentEvent(ed);
+				ea.notifyDataSetChanged();
+				
+				Toast.makeText(getApplicationContext(), "currentEvent gesetzt auf " + ed.eventname, Toast.LENGTH_SHORT).show();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -652,13 +658,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				model.groups.clear();
 				model.events.remove(currentEvent);
 
-				refreshListViews();
 				ea.notifyDataSetChanged();
+				refreshListViews();
+
+				if(!model.getEvents().isEmpty())
+					setCurrentEvent(model.getEvents().get(0));
 				
-//				if(!model.events.isEmpty())
-//					model.setCurrentEvent(model.getEvents().get(0));
-				
-				Toast.makeText(getBaseContext(), currentEvent.eventname + " " + getString(R.string.deleted), Toast.LENGTH_LONG).show();
 			}
 		});
 		adb.show();
