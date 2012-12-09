@@ -34,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -367,12 +368,15 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
 		adb.setTitle(getString(R.string.add_event));
 		adb.setView(eventView);
+		NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
+		year.setMinValue(1940);
+		year.setMaxValue(2300);
 		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
 				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-				EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
 				EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
 				EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
 				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
@@ -381,7 +385,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 				ed.eventname = eventname.getText().toString();
 				ed.wintersemester = wintersemester.isChecked();
-				ed.year = Integer.valueOf(year.getText().toString());
+				ed.year = year.getValue();
+//				ed.year = Integer.valueOf(year.getText().toString());
 				ed.tutor = tutor.getText().toString();
 				ed.tutoremail = tutoremail.getText().toString();
 				ed.info = info.getText().toString();
@@ -580,14 +585,16 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 		EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
 		Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-		EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+		NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
 		EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
 		EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
 		EditText info = (EditText) eventView.findViewById(R.id.ed_info);
 
 		eventname.setText(currentEvent.eventname);
 		wintersemester.setChecked(currentEvent.wintersemester);
-		year.setText(String.valueOf(currentEvent.year));
+		year.setMinValue(1940);
+		year.setMaxValue(2300);
+		year.setValue(currentEvent.year);
 		tutor.setText(currentEvent.tutor);
 		tutoremail.setText(currentEvent.tutoremail);
 		info.setText(currentEvent.info);
@@ -602,14 +609,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
 				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-				EditText year = (EditText) eventView.findViewById(R.id.ed_year);
+				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
 				EditText tutor = (EditText) eventView.findViewById(R.id.ed_tutor);
 				EditText tutoremail = (EditText) eventView.findViewById(R.id.ed_tutor_email);
 				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
 
 				currentEvent.eventname = eventname.getText().toString();
 				currentEvent.wintersemester = wintersemester.isChecked();
-				currentEvent.year = Integer.valueOf(year.getText().toString());
+				currentEvent.year = year.getValue();
 				currentEvent.tutor = tutor.getText().toString();
 				currentEvent.tutoremail = tutoremail.getText().toString();
 				currentEvent.info = info.getText().toString();

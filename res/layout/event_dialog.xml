@@ -1,93 +1,99 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/ed_eventname_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event" />
-
-    <EditText
-        android:id="@+id/ed_eventname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/eventname_hint" >
-    </EditText>
-
-    <TextView
-        android:id="@+id/ed_semester_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/semester" />
-
-    <Switch
-        android:id="@+id/ed_wintersemester"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textOn="Winter Semester"
-        android:textOff="Sommer Semester"
-        />
+        android:orientation="vertical"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical" >
 
-    <TextView
-        android:id="@+id/ed_year_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/year" />
+        <TextView
+            android:id="@+id/ed_eventname_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/event" />
 
-    <EditText
-        android:id="@+id/ed_year"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:hint="@string/year_hint" >
-    </EditText>
+        <EditText
+            android:id="@+id/ed_eventname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/eventname_hint" >
+        </EditText>
 
-    <TextView
-        android:id="@+id/ed_tutor_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tutor" />
+        <TextView
+            android:id="@+id/ed_semester_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/semester" />
 
-    <EditText
-        android:id="@+id/ed_tutor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/tutor_hint" >
-    </EditText>
+        <Switch
+            android:id="@+id/ed_wintersemester"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textOff="Sommer Semester"
+            android:textOn="Winter Semester" />
 
-    <TextView
-        android:id="@+id/ed_tutor_email_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tutor_email" />
+        <TextView
+            android:id="@+id/ed_year_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/year" />
 
-    <EditText
-        android:id="@+id/ed_tutor_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/tutor_email_hint"
-        android:inputType="textEmailAddress" >
-    </EditText>
+        <NumberPicker
+            android:id="@+id/np_year"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical" />
 
-    <TextView
-        android:id="@+id/ed_info_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/info" />
+        <TextView
+            android:id="@+id/ed_tutor_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tutor" />
 
-    <EditText
-        android:id="@+id/ed_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/info_hint"
-        android:inputType="textMultiLine" >
-    </EditText>
+        <EditText
+            android:id="@+id/ed_tutor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/tutor_hint" >
+        </EditText>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/ed_tutor_email_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tutor_email" />
+
+        <EditText
+            android:id="@+id/ed_tutor_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/tutor_email_hint"
+            android:inputType="textEmailAddress" >
+        </EditText>
+
+        <TextView
+            android:id="@+id/ed_info_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/info" />
+
+        <EditText
+            android:id="@+id/ed_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/info_hint"
+            android:inputType="textMultiLine" >
+        </EditText>
+    </LinearLayout>
+
+</ScrollView>
