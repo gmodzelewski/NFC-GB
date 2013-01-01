@@ -14,7 +14,6 @@ import android.widget.ExpandableListAdapter;
 import android.widget.TextView;
 
 /**
- * TODO: just a demo adapter
  * 
  * @author Georg
  * 

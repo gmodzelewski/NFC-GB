@@ -2,7 +2,6 @@ package com.modzelewski.nfcgb;
 
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
@@ -151,36 +150,38 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		 * android.R.id.text2 }); eventExpLV.setAdapter(expLVAdapter);
 		 */
 
-		DragEventListener dragEL = new DragEventListener();
+		DragEventListener dragEL = new DragEventListener(model);
 		eventExpLV.setOnDragListener(dragEL);
 
-//		eventExpLV.setOnItemLongClickListener(new OnItemLongClickListener() {
-//
-//			@Override
-//			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
-//				// TODO Abfragen, ob es auch wirklich nur eine Person ist und
-//				// nicht die Gruppe
-//				// PersonData person = (PersonData) ;
-////				Log.i(LOG_TAG, "GroupID: " + String.valueOf(id));
-//				if (id == 0) 
-//					openContextMenu(l);
-////					Toast.makeText(getApplicationContext(), "Sorry, you can't drag a group", Toast.LENGTH_SHORT).show();
-//				//
-//				// ClipData dragData =
-//				// ClipData.newPlainText(person.getClass().getSimpleName(),
-//				// person.toString());
-//				//
-//				// DragShadowBuilder shadowBuilder = new
-//				// View.DragShadowBuilder(v);
-//				//
-//				// l.startDrag(dragData, // the data to be dragged
-//				// shadowBuilder, // the drag shadow builder
-//				// null, // no need to use local data
-//				// 0 // flags (not currently used, set to 0)
-//				// );
-//				return false;
-//			}
-//		});
+		// eventExpLV.setOnItemLongClickListener(new OnItemLongClickListener() {
+		//
+		// @Override
+		// public boolean onItemLongClick(AdapterView<?> l, View v, int
+		// position, long id) {
+		// // TODO Abfragen, ob es auch wirklich nur eine Person ist und
+		// // nicht die Gruppe
+		// // PersonData person = (PersonData) ;
+		// // Log.i(LOG_TAG, "GroupID: " + String.valueOf(id));
+		// if (id == 0)
+		// openContextMenu(l);
+		// // Toast.makeText(getApplicationContext(),
+		// "Sorry, you can't drag a group", Toast.LENGTH_SHORT).show();
+		// //
+		// // ClipData dragData =
+		// // ClipData.newPlainText(person.getClass().getSimpleName(),
+		// // person.toString());
+		// //
+		// // DragShadowBuilder shadowBuilder = new
+		// // View.DragShadowBuilder(v);
+		// //
+		// // l.startDrag(dragData, // the data to be dragged
+		// // shadowBuilder, // the drag shadow builder
+		// // null, // no need to use local data
+		// // 0 // flags (not currently used, set to 0)
+		// // );
+		// return false;
+		// }
+		// });
 	}
 
 	/**
@@ -189,7 +190,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private void createListView() {
 		pa = new PersonAdapter(this, android.R.layout.simple_list_item_1, model.getPersons());
 		personsLV.setAdapter(pa);
-		DragEventListener dragEL = new DragEventListener();
+		DragEventListener dragEL = new DragEventListener(model);
 		personsLV.setOnDragListener(dragEL);
 
 		// On Long Click: Drag'n'Drop
@@ -204,8 +205,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 				Log.i(LOG_TAG, person.toString());
 
-				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), person.toString());
-
+				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), String.valueOf(person.id));
+				// TODO: ClipData als URI
+				// ClipData dragData2 = ClipData.newUri(getContentResolver(),
+				// person.getClass().getSimpleName(), person);
 				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
 
 				l.startDrag(dragData, // the data to be dragged
@@ -386,7 +389,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				ed.eventname = eventname.getText().toString();
 				ed.wintersemester = wintersemester.isChecked();
 				ed.year = year.getValue();
-//				ed.year = Integer.valueOf(year.getText().toString());
+				// ed.year = Integer.valueOf(year.getText().toString());
 				ed.tutor = tutor.getText().toString();
 				ed.tutoremail = tutoremail.getText().toString();
 				ed.info = info.getText().toString();
@@ -397,7 +400,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				model.setCurrentEvent(ed);
 				setCurrentEvent(ed);
 				ea.notifyDataSetChanged();
-				
+
 				Toast.makeText(getApplicationContext(), "currentEvent gesetzt auf " + ed.eventname, Toast.LENGTH_SHORT).show();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
@@ -423,7 +426,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 			EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 
-			//TODO: BUG FIXXEN -> pInfo doesn't work	
+			// TODO: BUG FIXXEN -> pInfo doesn't work
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 			final AdapterView.AdapterContextMenuInfo pInfo = info;
 			final GroupData gd = model.groups.get(pInfo.position);
@@ -447,7 +450,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				if (task == EDIT_GROUP) {
 					AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 					final AdapterView.AdapterContextMenuInfo pInfo = info;
-					final GroupData gd = model.groups.get(pInfo.position);
+					final GroupData gd = model.groups.get((int) pInfo.id);
 					gd.groupName = groupName;
 					groupDao.update(gd);
 					groupDao.refresh(gd);
@@ -576,7 +579,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	}
 
 	private void menuEvent(final MenuItem item) {
-		//TODO menuAddEvent hier rein
+		// TODO menuAddEvent hier rein
 		final EventData currentEvent = model.getCurrentEvent();
 		LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
 		final RuntimeExceptionDao<EventData, Integer> eventDao = getHelper().getEventDataDao();
@@ -646,21 +649,24 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				EventData currentEvent = model.getCurrentEvent();
 				RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
 				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
-//				RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+				// RuntimeExceptionDao<PersonData, Integer> personDao =
+				// getHelper().getPersonDataDao();
 				List<GroupData> gd = null;
 				List<EventMembershipData> emd = null;
-//				List<PersonData> pd = null;
+				// List<PersonData> pd = null;
 				try {
-//					pd = personDao.query(personDao.queryBuilder().where().eq("event_id", currentEvent.id).prepare());
+					// pd =
+					// personDao.query(personDao.queryBuilder().where().eq("event_id",
+					// currentEvent.id).prepare());
 					gd = groupDao.query(groupDao.queryBuilder().where().eq("eventId", model.getCurrentEvent().id).prepare());
 					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-//				personDao.delete(pd);
+				// personDao.delete(pd);
 				groupDao.delete(gd);
 				eventMembershipDao.delete(emd);
-				
+
 				model.persons.clear();
 				model.groups.clear();
 				model.events.remove(currentEvent);
@@ -668,9 +674,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				ea.notifyDataSetChanged();
 				refreshListViews();
 
-				if(!model.getEvents().isEmpty())
+				if (!model.getEvents().isEmpty())
 					setCurrentEvent(model.getEvents().get(0));
-				
+
 			}
 		});
 		adb.show();
@@ -719,6 +725,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Check to see that the Activity started due to an Android Beam
+		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			processIntent(getIntent());
+		}
 
 		// set content and cache some important objects
 		setContentView(R.layout.activity_main);
@@ -737,7 +747,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// ------------------Drag
 		// Kram------------------------------------------------------------------
 		// TODO DragListener implementieren
-		DragEventListener dragEL = new DragEventListener();
+		DragEventListener dragEL = new DragEventListener(model);
 		eventExpLV.setOnDragListener(dragEL);
 
 		personsLV.setTag(SOURCELIST_TAG);
@@ -766,7 +776,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		}
 
 		if (v.getId() == R.id.events_spinner) {
-			if(model.getEvents().isEmpty())
+			if (model.getEvents().isEmpty())
 				Toast.makeText(this, getString(R.string.add_new_event), Toast.LENGTH_SHORT).show();
 			else
 				getMenuInflater().inflate(R.menu.context_menu_event, menu);
@@ -818,10 +828,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		// Check to see that the Activity started due to an Android Beam
-		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-			processIntent(getIntent());
-		}
 	}
 
 	/**
