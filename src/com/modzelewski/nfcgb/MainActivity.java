@@ -61,8 +61,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	// private final String REMOVE_EVENT = "REMOVE EVENT";
 
 	// Create and set the tags for the Buttons
-	final String SOURCELIST_TAG = "listSource";
-	final String TARGETLIST_TAG = "listTarget";
+	final String LISTVIEW_TAG = "ListView";
+	final String EXPLISTVIEW_TAG = "ExpandableListView";
 	final String TARGETLAYOUT_TAG = "targetLayout";
 
 	private NfcAdapter nfcAdapter;
@@ -149,10 +149,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		 * String[] { NAME, IS_EVEN }, new int[] { android.R.id.text1,
 		 * android.R.id.text2 }); eventExpLV.setAdapter(expLVAdapter);
 		 */
-
-		DragEventListener dragEL = new DragEventListener(model);
-		eventExpLV.setOnDragListener(dragEL);
-
 		// eventExpLV.setOnItemLongClickListener(new OnItemLongClickListener() {
 		//
 		// @Override
@@ -190,8 +186,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private void createListView() {
 		pa = new PersonAdapter(this, android.R.layout.simple_list_item_1, model.getPersons());
 		personsLV.setAdapter(pa);
-		DragEventListener dragEL = new DragEventListener(model);
-		personsLV.setOnDragListener(dragEL);
 
 		// On Long Click: Drag'n'Drop
 		personsLV.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -744,16 +738,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		createListView();
 		createExpandableListView();
 
-		// ------------------Drag
-		// Kram------------------------------------------------------------------
-		// TODO DragListener implementieren
-		DragEventListener dragEL = new DragEventListener(model);
+		// --- Drag Kram ---
+		DragEventListener dragEL = new DragEventListener(getBaseContext(), model);
 		eventExpLV.setOnDragListener(dragEL);
-
-		personsLV.setTag(SOURCELIST_TAG);
-		eventExpLV.setTag(TARGETLIST_TAG);
-		// ------------------/Drag
-		// Kram------------------------------------------------------------------
+		personsLV.setOnDragListener(dragEL);
+		
+		personsLV.setTag(LISTVIEW_TAG);
+		eventExpLV.setTag(EXPLISTVIEW_TAG);
 
 		// Check for available NFC Adapter
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
