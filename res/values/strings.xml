@@ -70,6 +70,7 @@
     
     <string name="edit_person">Edit Person</string>
     <string name="remove_person">Remove Person</string>
+    <string name="incorrect_mail">Wrong EMail-Address: </string>
     
     <string name="edit_person_in">Edit Person in</string>
     <string name="add_person_in">Add Person in</string>
@@ -78,6 +79,7 @@
     <string name="add_group">Add Group</string>
     <string name="edit_group">Edit Group</string>
     <string name="remove_group">Remove Group</string>
+    <string name="email_group">Email Group</string>
     <string name="remove_group_message">Do you really want to remove this group?</string>
     
     <string name="gd_groupName">Group Name</string>

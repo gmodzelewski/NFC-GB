@@ -2,6 +2,7 @@ package com.modzelewski.nfcgb;
 
 import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +33,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -57,6 +59,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private final String EDIT_PERSON = "EDIT PERSON";
 	private final String ADD_GROUP = "ADD GROUP";
 	private final String EDIT_GROUP = "EDIT GROUP";
+	private final String EMAIL_GROUP = "EMAIL GROUP";
 	// private final String EDIT_EVENT = "EDIT EVENT";
 	// private final String REMOVE_EVENT = "REMOVE EVENT";
 
@@ -420,12 +423,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 			EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 
-			// TODO: BUG FIXXEN -> pInfo doesn't work
-			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-			final AdapterView.AdapterContextMenuInfo pInfo = info;
-			final GroupData gd = model.groups.get(pInfo.position);
+			final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
+			final GroupData gd = model.groups.get((int) pInfo.id);
 			groupNameET.setText(gd.groupName);
 		}
+
 		adb.setTitle(title);
 		adb.setView(groupView);
 		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
@@ -442,8 +444,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					model.groups.add(group);
 				}
 				if (task == EDIT_GROUP) {
-					AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-					final AdapterView.AdapterContextMenuInfo pInfo = info;
+					final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
 					final GroupData gd = model.groups.get((int) pInfo.id);
 					gd.groupName = groupName;
 					groupDao.update(gd);
@@ -456,6 +457,29 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			public void onClick(DialogInterface dialog, int whichButton) {
 			}
 		}).show();
+	}
+
+	private void menuGroupEmail(MenuItem item) {
+		ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
+		GroupData gd = model.groups.get((int) pInfo.id);
+		List<PersonData> persons = gd.person;
+		String emailAddresses = "";
+		for (PersonData person : persons) {
+			if(person.email.contains("@")) {
+				emailAddresses += ", " + person.email;
+			} else {
+				Toast.makeText(getApplicationContext(), getString(R.string.incorrect_mail) + person.name, Toast.LENGTH_LONG).show();
+			}
+		}
+		
+		final Intent i = new Intent(android.content.Intent.ACTION_SEND);
+		i.setType("message/rfc822");
+		i.putExtra(Intent.EXTRA_EMAIL, new String[] { emailAddresses });
+		try {
+			startActivity(Intent.createChooser(i, getString(R.string.about_email_chooser)));
+		} catch (android.content.ActivityNotFoundException ex) {
+			Toast.makeText(getBaseContext(), getString(R.string.about_no_email_apps), Toast.LENGTH_SHORT).show();
+		}		
 	}
 
 	private void menuGroupRemove(MenuItem item) {
@@ -698,6 +722,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		case R.id.cm_group_remove:
 			menuGroupRemove(item);
 			return true;
+		case R.id.cm_group_email:
+			menuGroupEmail(item);
+			return true;
 		case R.id.cm_person_edit:
 			menuPerson(EDIT_PERSON, item);
 			return true;
@@ -742,7 +769,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		DragEventListener dragEL = new DragEventListener(getBaseContext(), model);
 		eventExpLV.setOnDragListener(dragEL);
 		personsLV.setOnDragListener(dragEL);
-		
+
 		personsLV.setTag(LISTVIEW_TAG);
 		eventExpLV.setTag(EXPLISTVIEW_TAG);
 

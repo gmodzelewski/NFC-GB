@@ -56,7 +56,7 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 		text.setText(groups.get(position).groupName);
 		return text;
 	}
-
+	
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
 		return groups.get(groupPosition).person.get(childPosition);

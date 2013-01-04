@@ -18,10 +18,6 @@ public class DragEventListener extends ListView implements OnDragListener {
 	final String EXPLISTVIEW_TAG = "ExpandableListView";
 	final String TARGETLAYOUT_TAG = "targetLayout";
 
-	// public DragEventListener(BackgroundModel model) {
-	// this.model = model;
-	// }
-
 	public DragEventListener(Context context, BackgroundModel model) {
 		super(context);
 		this.model = model;
@@ -68,11 +64,9 @@ public class DragEventListener extends ListView implements OnDragListener {
 																		// checken
 			PersonData person = model.persons.get(personId);
 
-			Log.i(getClass().getSimpleName(), person.toString()); // Person ist
-																	// gegeben
-			Log.i(getClass().getSimpleName(), "String.valueOf(v.getTag()) " + String.valueOf(v.getTag()));
-
-			Log.i(getClass().getSimpleName(), "X-Wert: " + String.valueOf(event.getX()) + "\nY-Wert: " + String.valueOf(event.getY()));
+//			Log.i(getClass().getSimpleName(), person.toString());
+//			Log.i(getClass().getSimpleName(), "String.valueOf(v.getTag()) " + String.valueOf(v.getTag()));
+//			Log.i(getClass().getSimpleName(), "X-Wert: " + String.valueOf(event.getX()) + "\nY-Wert: " + String.valueOf(event.getY()));
 
 			if (v.getTag() == EXPLISTVIEW_TAG) {
 				ExpandableListView expLv = (ExpandableListView) v;
