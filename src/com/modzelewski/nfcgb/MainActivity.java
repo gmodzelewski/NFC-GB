@@ -545,6 +545,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id, 0);
 					eventMembershipDao.create(emd);
 					model.persons.add(person);
+					personsLV.invalidate();
 				}
 
 				if (task == EDIT_PERSON) {
@@ -556,6 +557,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 					personDao.update(pd);
 					personDao.refresh(pd);
+					personsLV.invalidate();
 
 				}
 

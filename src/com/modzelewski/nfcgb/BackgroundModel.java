@@ -103,6 +103,14 @@ public class BackgroundModel {
 	public List<PersonData> getPersons() {
 		return persons;
 	}
+	
+	public PersonData getPersonById(int id) {
+		PersonData person = null;
+		for(PersonData p : persons)
+			if(p.id == id)
+				person = p;
+		return person;
+	}
 
 	public void setPersons(List<PersonData> persons) {
 		this.persons = persons;

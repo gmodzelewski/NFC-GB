@@ -1,5 +1,7 @@
 package com.modzelewski.nfcgb;
 
+import java.util.List;
+
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -54,28 +56,27 @@ public class DragEventListener extends ListView implements OnDragListener {
 			}
 
 		case DragEvent.ACTION_DROP:
+			List<PersonData> personList = model.persons;
+			Log.i(getClass().getSimpleName(), personList.toString());
 			ClipData.Item i = event.getClipData().getItemAt(0);
-			int personId = Integer.parseInt((String) i.getText()) - 1; // Location
-																		// ist
-																		// anscheinend
-																		// PersonID
-																		// -1 ->
-																		// Nochmal
-																		// checken
-			PersonData person = model.persons.get(personId);
+			Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
+			
+			int personId = Integer.parseInt((String) i.getText()); 
+			PersonData person = model.getPersonById(personId);
+//			PersonData person = model.persons.get(personId);
 
-//			Log.i(getClass().getSimpleName(), person.toString());
+			Log.i(getClass().getSimpleName(), "person.toString(): " + person.toString());
 //			Log.i(getClass().getSimpleName(), "String.valueOf(v.getTag()) " + String.valueOf(v.getTag()));
 //			Log.i(getClass().getSimpleName(), "X-Wert: " + String.valueOf(event.getX()) + "\nY-Wert: " + String.valueOf(event.getY()));
 
 			if (v.getTag() == EXPLISTVIEW_TAG) {
 				ExpandableListView expLv = (ExpandableListView) v;
 				int pos = expLv.pointToPosition((int) event.getX(), (int) event.getY());
-				Log.i(getClass().getSimpleName(), String.valueOf(pos));
+//				Log.i(getClass().getSimpleName(), String.valueOf(pos));
 				GroupData group = null;
 				if (pos >= 0) {
 					group = model.groups.get(pos);
-					Log.i(getClass().getSimpleName(), String.valueOf(group.toString()));
+//					Log.i(getClass().getSimpleName(), String.valueOf(group.toString()));
 				}
 				group.person.add(person);
 				expLv.invalidate();
