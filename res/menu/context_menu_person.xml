@@ -1,10 +1,12 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/cm_person_edit"
-        android:title="@string/edit_person"
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/cm_person_edit"
         android:orderInCategory="100"
-         />
-    <item android:id="@+id/cm_person_remove"
-        android:title="@string/remove_person"
+        android:title="@string/edit_person"/>
+    <item
+        android:id="@+id/cm_person_remove"
         android:orderInCategory="100"
-         />
+        android:title="@string/remove_person"/>
+
 </menu>

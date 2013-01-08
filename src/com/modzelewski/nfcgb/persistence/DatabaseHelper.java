@@ -29,7 +29,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "nfcgb.db";
 	// any time you make changes to your database objects, you may have to
 	// increase the database version
-	private static final int DATABASE_VERSION = 14;
+	private static final int DATABASE_VERSION = 15;
 
 	// the DAO object we use to access the eventData table
 	private Dao<EventData, Integer> eventDao = null;
@@ -54,7 +54,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
-			Log.i(DatabaseHelper.class.getName(), "onCreate");
+//			Log.i(DatabaseHelper.class.getName(), "onCreate");
 			// create tables
 			TableUtils.createTable(connectionSource, EventData.class);
 			TableUtils.createTable(connectionSource, GroupData.class);
@@ -90,7 +90,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
-			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
+//			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
 			TableUtils.dropTable(connectionSource, EventData.class, true);
 			TableUtils.dropTable(connectionSource, GroupData.class, true);
 			TableUtils.dropTable(connectionSource, PersonData.class, true);

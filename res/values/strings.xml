@@ -1,21 +1,18 @@
 <resources>
-    
-     <string name="nfc_available">"NFC is available on your Phone.\n\t You can use the NFC Features.\n\t Yeyy"</string>
-     <string name="nfc_not_available">"NFC is not available on your Phone.\n\t You can't use the NFC Features.\n\t Sorry."</string>
-     <string name="menu_info">My Information</string>
-     <string name="menu_about">About</string>
-     <string name="menu_add_person">Add a new person</string>
-     <string name="menu_add_group">Add a new group</string>
-     <string name="menu_add_event">Add a new event</string>
-     
-    <string name="title_activity_main">NFC GB</string>
 
+    <string name="menu_is_nfc_supported">Is NFC supported?</string>
+    <string name="nfc_available">"NFC is available on your Phone.\n\t You can use the NFC Features.\n\t Yeyy"</string>
+    <string name="nfc_not_available">"NFC is not available on your Phone.\n\t You can't use the NFC Features.\n\t Sorry."</string>
+    <string name="menu_info">My Information</string>
+    <string name="menu_about">About</string>
+    <string name="menu_add_person">Add a new person</string>
+    <string name="menu_add_group">Add a new group</string>
+    <string name="menu_add_event">Add a new event</string>
+    <string name="title_activity_main">NFC GB</string>
     <string name="app_name">NFC-GB</string>
-        
     <string name="edit_event">Edit Event</string>
     <string name="remove_event">Remove Event</string>
     <string name="event">Event</string>
-    
     <string name="eventname">Eventname</string>
     <string name="eventname_hint">The name of this event</string>
     <string name="semester">Semester</string>
@@ -24,38 +21,33 @@
     <string name="year_hint">Current year</string>
     <string name="tutor">Tutor</string>
     <string name="tutor_hint">Name of your tutor</string>
-    <string name="tutor_email">Tutor eMail adress</string>
-    <string name="tutor_email_hint">Email adress of your tutor</string>
+    <string name="tutor_email">Tutor eMail address</string>
+    <string name="tutor_email_hint">Email address of your tutor</string>
     <string name="info">Information</string>
     <string name="info_hint">Other information</string>
-    
     <string name="groups">Groups</string>
-        
     <string name="person_dialog">Edit Person</string>
-    
     <string name="name">Name</string>
     <string name="name_hint">The Name</string>
     <string name="email">EMail</string>
-    <string name="email_hint">My EMail adress</string>
+    <string name="email_hint">My EMail address</string>
     <string name="course_of_studies">Course of studies</string>
     <string name="course_of_studies_hint">My course of studies</string>
-    
     <string name="apply_button">Apply</string>
     <string name="ok_button">Okay</string>
     <string name="neutral_button">That`s quite interesting.</string>
     <string name="cancel_button">Cancel</string>
-    
+
     <string-array name="persons_context_menu">
         <item>Edit Person</item>
         <item>Remove Person</item>
     </string-array>
-        
     <string-array name="events_context_menu">
         <item>Add Event</item>
         <item>Edit Event</item>
         <item>Remove Event</item>
     </string-array>
-    
+
     <string name="context_menu_remove_title">Remove</string>
     <string name="context_menu_remove_message">Do you really want to remove this person?</string>
     <string name="prompt">Select</string>
@@ -67,11 +59,9 @@
     <string name="about_send_mail">Send Email with Feedback</string>
     <string name="about_email_subject">Feedback for NFC-GB</string>
     <string name="about_email_body"></string>
-    
     <string name="edit_person">Edit Person</string>
     <string name="remove_person">Remove Person</string>
     <string name="incorrect_mail">Wrong EMail-Address: </string>
-    
     <string name="edit_person_in">Edit Person in</string>
     <string name="add_person_in">Add Person in</string>
     <string name="added">added</string>
@@ -81,11 +71,11 @@
     <string name="remove_group">Remove Group</string>
     <string name="email_group">Email Group</string>
     <string name="remove_group_message">Do you really want to remove this group?</string>
-    
     <string name="gd_groupName">Group Name</string>
     <string name="gd_groupName_hint">The name of the group</string>
-    
     <string name="deleted">deleted</string>
     <string name="add_new_event">Please add a new event.</string>
-    
+    <string name="unknown_eventname">Unknown event name</string>
+    <string name="person_already_in_group">This person is already in that group.</string>
+
 </resources>

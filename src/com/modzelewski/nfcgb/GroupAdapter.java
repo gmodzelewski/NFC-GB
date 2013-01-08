@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -23,13 +22,13 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 	Context context;
 	List<GroupData> groups;
 	List<List<PersonData>> persons;
-	private final LayoutInflater inflater;
+//	private final LayoutInflater inflater;
 
 	public GroupAdapter(Context context, List<GroupData> groups) {
 		super();
 		this.context = context;
 		this.groups = groups;
-		this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//		this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
 //	public GroupAdapter(Context context, List<GroupData> groups, List<List<PersonData>> persons) {

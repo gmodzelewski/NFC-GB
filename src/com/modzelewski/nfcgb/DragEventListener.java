@@ -2,6 +2,9 @@ package com.modzelewski.nfcgb;
 
 import java.util.List;
 
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.modzelewski.nfcgb.persistence.DatabaseHelper;
+
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -12,17 +15,23 @@ import android.view.View;
 import android.view.View.OnDragListener;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class DragEventListener extends ListView implements OnDragListener {
 
 	BackgroundModel model;
+	private DatabaseHelper databaseHelper = null;
 	final String LISTVIEW_TAG = "ListView";
 	final String EXPLISTVIEW_TAG = "ExpandableListView";
 	final String TARGETLAYOUT_TAG = "targetLayout";
 
-	public DragEventListener(Context context, BackgroundModel model) {
+	public DragEventListener(Context context) {
+		super(context);
+	}
+	public DragEventListener(Context context, BackgroundModel model, DatabaseHelper databaseHelper) {
 		super(context);
 		this.model = model;
+		this.databaseHelper = databaseHelper;
 	}
 
 	@Override
@@ -60,25 +69,31 @@ public class DragEventListener extends ListView implements OnDragListener {
 			Log.i(getClass().getSimpleName(), personList.toString());
 			ClipData.Item i = event.getClipData().getItemAt(0);
 			Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
-			
-			int personId = Integer.parseInt((String) i.getText()); 
+
+			int personId = Integer.parseInt((String) i.getText());
+			RuntimeExceptionDao<PersonData, Integer> personDao = databaseHelper.getPersonDataDao();
 			PersonData person = model.getPersonById(personId);
-//			PersonData person = model.persons.get(personId);
+			PersonData personInDao = personDao.queryForSameId(person);
 
 			Log.i(getClass().getSimpleName(), "person.toString(): " + person.toString());
-//			Log.i(getClass().getSimpleName(), "String.valueOf(v.getTag()) " + String.valueOf(v.getTag()));
-//			Log.i(getClass().getSimpleName(), "X-Wert: " + String.valueOf(event.getX()) + "\nY-Wert: " + String.valueOf(event.getY()));
 
 			if (v.getTag() == EXPLISTVIEW_TAG) {
 				ExpandableListView expLv = (ExpandableListView) v;
 				int pos = expLv.pointToPosition((int) event.getX(), (int) event.getY());
-//				Log.i(getClass().getSimpleName(), String.valueOf(pos));
 				GroupData group = null;
 				if (pos >= 0) {
 					group = model.groups.get(pos);
-//					Log.i(getClass().getSimpleName(), String.valueOf(group.toString()));
 				}
-				group.person.add(person);
+				if (!group.person.contains(person)) {
+					RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
+					group.person.add(person);
+					GroupData groupInDao = groupDao.queryForSameId(group);
+					groupInDao.person.add(personInDao);
+					groupDao.update(groupInDao);
+					groupDao.refresh(groupInDao);
+				} else {
+					Toast.makeText(getContext(), getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
+				}
 				expLv.invalidate();
 				expLv.invalidateViews();
 			}

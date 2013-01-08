@@ -2,16 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="Category 1" >
-
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="checkboxPref"
             android:summary="True of False"
             android:title="Checkbox" />
     </PreferenceCategory>
-
     <PreferenceCategory android:title="Category 2" >
-
         <EditTextPreference
             android:name="EditText"
             android:defaultValue="[Enter a string here]"
@@ -29,7 +26,6 @@
             android:key="secondPrefScreenPref"
             android:summary="Click here to go to the second Preference Screen"
             android:title="Second Preference Screen" >
-
             <EditTextPreference
                 android:name="EditText"
                 android:key="secondEditTextPref"

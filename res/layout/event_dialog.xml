@@ -52,35 +52,6 @@
             android:orientation="vertical" />
 
         <TextView
-            android:id="@+id/ed_tutor_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tutor" />
-
-        <EditText
-            android:id="@+id/ed_tutor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/tutor_hint" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/ed_tutor_email_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tutor_email" />
-
-        <EditText
-            android:id="@+id/ed_tutor_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/tutor_email_hint"
-            android:inputType="textEmailAddress" >
-        </EditText>
-
-        <TextView
             android:id="@+id/ed_info_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
