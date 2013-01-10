@@ -27,6 +27,7 @@ public class DragEventListener extends ListView implements OnDragListener {
 	final String EXPLISTVIEW_TAG = "ELV";
 	final String TARGETLAYOUT_TAG = "targetLayout";
 	private List<Integer> openedGroups = new LinkedList<Integer>();
+	private int droppedInGroupPos;
 
 	public DragEventListener(Context context) {
 		super(context);
@@ -89,15 +90,12 @@ public class DragEventListener extends ListView implements OnDragListener {
 				// person.toString());
 
 				ExpandableListView expLv = (ExpandableListView) v;
-				int pos = expLv.pointToPosition((int) event.getX(), (int) event.getY());
+				droppedInGroupPos = expLv.pointToPosition((int) event.getX(), (int) event.getY());
 
 				GroupData group = null;
-				if (pos >= 0) {
-					group = model.groups.get(pos);
+				if (droppedInGroupPos >= 0) {
+					group = model.groups.get(droppedInGroupPos);
 				}
-
-				// RuntimeExceptionDao<GroupData, Integer> groupDao =
-				// databaseHelper.getGroupDataDao();
 
 				List<GroupMembershipData> groupResult = null;
 				try {
@@ -110,15 +108,10 @@ public class DragEventListener extends ListView implements OnDragListener {
 				if (groupResult.isEmpty()) {
 					groupMembershipDao.create(new GroupMembershipData(group.id, personId));
 					model.getGroupById(group.id).person.add(model.getPersonById(personId));
-					// GroupData groupInDao = groupDao.queryForSameId(group);
-					// groupInDao.person.add(personInDao);
-					// groupDao.update(groupInDao);
-					// groupDao.refresh(groupInDao);
 				} else {
 					Toast.makeText(getContext(), getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
 				}
 			}
-
 			return true; // if drop accepted
 
 		case DragEvent.ACTION_DRAG_ENDED:
@@ -127,8 +120,11 @@ public class DragEventListener extends ListView implements OnDragListener {
 			// (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))
 			// {
 			Log.i(getClass().getSimpleName(), "ACTION DRAG ENDED called");
+			
 			if (v.getTag() == EXPLISTVIEW_TAG) {
 				ExpandableListView expLv = (ExpandableListView) v;
+				
+				expLv.expandGroup(droppedInGroupPos);
 				for (int opened : openedGroups) {
 					expLv.expandGroup(opened);
 				}
