@@ -73,21 +73,10 @@ public class DragEventListener extends ListView implements OnDragListener {
 		case DragEvent.ACTION_DROP:
 			if (v.getTag() == EXPLISTVIEW_TAG) {
 				databaseHelper = model.getHelper();
-				// RuntimeExceptionDao<PersonData, Integer> personDao =
-				// databaseHelper.getPersonDataDao();
 				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
-
-				// List<PersonData> personList = model.persons;
-				// Log.i(getClass().getSimpleName(), personList.toString());
-
 				ClipData.Item i = event.getClipData().getItemAt(0);
 				Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
-
 				int personId = Integer.parseInt((String) i.getText());
-
-				// PersonData person = model.getPersonById(personId);
-				// Log.i(getClass().getSimpleName(), "person.toString(): " +
-				// person.toString());
 
 				ExpandableListView expLv = (ExpandableListView) v;
 				droppedInGroupPos = expLv.pointToPosition((int) event.getX(), (int) event.getY());

@@ -3,7 +3,6 @@ package com.modzelewski.nfcgb;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
@@ -221,6 +220,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 		Log.i(LOG_TAG, "-------------------------------------------------------------------");
 		Log.i(LOG_TAG, "--- Database is new populated ---");
+		Toast.makeText(getBaseContext(), "--- Database is new populated ---", Toast.LENGTH_SHORT).show();
 		Log.i(LOG_TAG, "-------------------------------------------------------------------");
 
 		// try {
@@ -232,7 +232,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
 		model.setEvents(eventDao.queryForAll());
-		
+
 		createSpinner();
 		createListView();
 		createExpandableListView();
@@ -443,6 +443,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				if (task == ADD_PERSON) {
 					PersonData person = new PersonData(name, email);
 					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
+					// RuntimeExceptionDao<GroupMembershipData, Integer>
+					// groupMembershipDao =
+					// databaseHelper.getGroupMembershipDataDao();
 
 					personDao.create(person);
 					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id);
@@ -454,6 +457,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 					final AdapterView.AdapterContextMenuInfo pInfo = info;
 					final PersonData pd = model.persons.get(pInfo.position);
+
 					pd.name = name;
 					pd.email = email;
 
@@ -480,16 +484,26 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				PersonData pd = model.persons.get(pInfo.position);
 				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
+				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
 				List<EventMembershipData> emd = null;
+				List<GroupMembershipData> gmd = null;
+
+				PersonData pd = model.persons.get(pInfo.position);
 				try {
 					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and().eq("event_id", model.getCurrentEvent().id).prepare());
+					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.id).prepare());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				eventMembershipDao.delete(emd);
+				
+				for (GroupMembershipData groupMembershipData : gmd) {
+					model.getGroupById(groupMembershipData.group_id).person.remove(model.getPersonById(pd.id));
+				}
 				model.persons.remove(pd);
+				eventMembershipDao.delete(emd);
+				groupMembershipDao.delete(gmd);
+
 				refreshListViews();
 			}
 		});
