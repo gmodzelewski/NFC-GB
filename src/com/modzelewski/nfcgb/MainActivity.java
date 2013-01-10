@@ -31,7 +31,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ListView;
@@ -42,7 +41,11 @@ import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import com.modzelewski.nfcgb.persistence.DatabaseConfigUtil;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
+import com.modzelewski.nfcgb.persistence.DatabasePopulation;
 
 /**
  * MainActivity
@@ -58,7 +61,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 	// Create and set the tags for the Buttons
 	final String LISTVIEW_TAG = "ListView";
-	final String EXPLISTVIEW_TAG = "ExpandableListView";
+	final String EXPLISTVIEW_TAG = "ELV";
 	final String TARGETLAYOUT_TAG = "targetLayout";
 
 	private DatabaseHelper databaseHelper = null;
@@ -82,7 +85,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	 */
 	private void createExpandableListView() {
 		ga = new GroupAdapter(this, model.getGroups());
-		eventExpLV.setAdapter((ExpandableListAdapter) ga);
+		eventExpLV.setAdapter(ga);
 		registerForContextMenu(eventExpLV);
 	}
 
@@ -90,6 +93,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	 * Create list referencing at persons in background model.
 	 */
 	private void createListView() {
+		
 		pa = new PersonAdapter(this, android.R.layout.simple_list_item_1, model.getPersons());
 		personsLV.setAdapter(pa);
 
@@ -187,55 +191,55 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		});
 	}
 
-	// private void doDatabaseStuff() {
-	// // delete all Data daos
-	// // Reset here database every time; remove at release
-	// ConnectionSource connectionSource = databaseHelper.getConnectionSource();
-	// Log.i(LOG_TAG,
-	// "-------------------------------------------------------------------");
-	// Log.i(LOG_TAG, "--- Processing Database drop ---");
-	// Log.i(LOG_TAG,
-	// "-------------------------------------------------------------------");
-	// try {
-	// for (Class<?> c : DatabaseConfigUtil.classes) {
-	// TableUtils.dropTable(connectionSource, c, true);
-	// TableUtils.createTable(connectionSource, c);
-	// }
-	// } catch (SQLException e1) {
-	// // TODO Auto-generated catch block
-	// e1.printStackTrace();
-	// }
-	//
-	// Log.i(LOG_TAG,
-	// "-------------------------------------------------------------------");
-	// Log.i(LOG_TAG,
-	// "--- Database is empty now. Processing Database Population ---");
-	// Log.i(LOG_TAG,
-	// "-------------------------------------------------------------------");
-	//
-	// // populate empty database
-	// DatabasePopulation.populateEventDAO(databaseHelper.getEventDataDao());
-	// DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDataDao());
-	// DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
-	// DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
-	//
-	// Log.i(LOG_TAG,
-	// "-------------------------------------------------------------------");
-	// Log.i(LOG_TAG, "--- Database is new populated ---");
-	// Log.i(LOG_TAG,
-	// "-------------------------------------------------------------------");
-	//
-	// // try {
-	// // Thread.sleep(5);
-	// // } catch (InterruptedException e) {
-	// // // ignore
-	// // }
-	//
-	// // load events from database
-	// RuntimeExceptionDao<EventData, Integer> eventDao =
-	// databaseHelper.getEventDataDao();
-	// model.setEvents(eventDao.queryForAll());
-	// }
+	 private void doDatabaseStuff() {
+	 // delete all Data daos
+	 // Reset here database every time; remove at release
+	 ConnectionSource connectionSource = databaseHelper.getConnectionSource();
+	 Log.i(LOG_TAG,
+	 "-------------------------------------------------------------------");
+	 Log.i(LOG_TAG, "--- Processing Database drop ---");
+	 Log.i(LOG_TAG,
+	 "-------------------------------------------------------------------");
+	 try {
+	 for (Class<?> c : DatabaseConfigUtil.classes) {
+	 TableUtils.dropTable(connectionSource, c, true);
+	 TableUtils.createTable(connectionSource, c);
+	 }
+	 } catch (SQLException e1) {
+	 // TODO Auto-generated catch block
+	 e1.printStackTrace();
+	 }
+	
+	 Log.i(LOG_TAG,
+	 "-------------------------------------------------------------------");
+	 Log.i(LOG_TAG,
+	 "--- Database is empty now. Processing Database Population ---");
+	 Log.i(LOG_TAG,
+	 "-------------------------------------------------------------------");
+	
+	 // populate empty database
+	 DatabasePopulation.populateEventDAO(databaseHelper.getEventDataDao());
+	 DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDataDao());
+	 DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
+	 DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
+	
+	 Log.i(LOG_TAG,
+	 "-------------------------------------------------------------------");
+	 Log.i(LOG_TAG, "--- Database is new populated ---");
+	 Log.i(LOG_TAG,
+	 "-------------------------------------------------------------------");
+	
+	 // try {
+	 // Thread.sleep(5);
+	 // } catch (InterruptedException e) {
+	 // // ignore
+	 // }
+	
+	 // load events from database
+	 RuntimeExceptionDao<EventData, Integer> eventDao =
+	 databaseHelper.getEventDataDao();
+	 model.setEvents(eventDao.queryForAll());
+	 }
 
 	void menuAbout() {
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -316,14 +320,15 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		final View groupView = inflater.inflate(R.layout.group_dialog, null);
 
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+		EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
+		groupNameET.requestFocus();
+
 		String title = null;
 		if (task == ADD_GROUP)
 			title = getString(R.string.add_group);
+		
 		if (task == EDIT_GROUP) {
 			title = getString(R.string.edit_group);
-
-			EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
-
 			final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
 			final GroupData gd = model.groups.get((int) pInfo.id);
 			groupNameET.setText(gd.groupName);
@@ -439,14 +444,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				RuntimeExceptionDao<PersonData, Integer> personDao = databaseHelper.getPersonDataDao();
 
 				if (task == ADD_PERSON) {
-					PersonData person = new PersonData(currentEvent.id, name, email);
+					PersonData person = new PersonData(name, email);
 					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
 
 					personDao.create(person);
-					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id, 0);
+					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id);
 					eventMembershipDao.create(emd);
 					model.persons.add(person);
-					personsLV.invalidate();
 				}
 
 				if (task == EDIT_PERSON) {
@@ -458,9 +462,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 					personDao.update(pd);
 					personDao.refresh(pd);
-					personsLV.invalidate();
 				}
-
 				refreshListViews();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
@@ -569,7 +571,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					// pd =
 					// personDao.query(personDao.queryBuilder().where().eq("event_id",
 					// currentEvent.id).prepare());
-					gd = groupDao.query(groupDao.queryBuilder().where().eq("eventId", model.getCurrentEvent().id).prepare());
+					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -637,8 +639,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		databaseHelper = getHelper();
+		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		databaseHelper = model.getHelper();
 		// Check to see that the Activity started due to an Android Beam
 		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
 			processIntent(getIntent());
@@ -653,9 +655,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
 
-		// TODO: BEFORE RELEASE DELETE FOLOWING LINE AND METHOD
+		// TODO: BEFORE RELEASE DELETE FOLlOWING LINE AND METHOD
 		// if(model.events.size() < 2)
-		// doDatabaseStuff();
+//		 doDatabaseStuff();
 
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
@@ -666,21 +668,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		createExpandableListView();
 
 		// --- Drag and Drop init
-		DragEventListener dragEL = new DragEventListener(getBaseContext(), model, databaseHelper);
+		DragEventListener dragEL = new DragEventListener(getBaseContext(), model);
 		eventExpLV.setOnDragListener(dragEL);
 		personsLV.setOnDragListener(dragEL);
 
 		personsLV.setTag(LISTVIEW_TAG);
 		eventExpLV.setTag(EXPLISTVIEW_TAG);
 
-		// Check for available NFC Adapter
-		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-		if (nfcAdapter == null) {
-			Toast.makeText(this, getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
-			finish();
-			return;
-		} else
-			Toast.makeText(this, getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
 		// Register callback
 		nfcAdapter.setNdefPushMessageCallback(this, this);
 	}
@@ -742,16 +736,24 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		case R.id.om_add_person:
 			menuPerson(ADD_PERSON, item);
 			return true;
+		case R.id.om_nfc:
+			menuNfcCheck();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onResume()
-	 */
+	private void menuNfcCheck() {
+		if (nfcAdapter == null) {
+			Toast.makeText(this, getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		} else {
+			Toast.makeText(this, getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
+		}
+	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -780,5 +782,4 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			refreshListViews();
 		}
 	}
-
 }

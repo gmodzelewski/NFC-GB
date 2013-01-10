@@ -30,23 +30,23 @@ public class DatabasePopulation {
 	}
 	
 	public static void populateEventMembershipDao(RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao) {
-		eventMembershipDao.create(new EventMembershipData(1, 1, 0));
-		eventMembershipDao.create(new EventMembershipData(1, 2, 0));
-		eventMembershipDao.create(new EventMembershipData(1, 3, 0));
-		eventMembershipDao.create(new EventMembershipData(1, 4, 0));
-		eventMembershipDao.create(new EventMembershipData(1, 5, 0));
-		eventMembershipDao.create(new EventMembershipData(1, 6, 0));
-		eventMembershipDao.create(new EventMembershipData(2, 5, 0));
-		eventMembershipDao.create(new EventMembershipData(2, 6, 0));
-		eventMembershipDao.create(new EventMembershipData(2, 7, 0));
-		eventMembershipDao.create(new EventMembershipData(2, 8, 0));
-		eventMembershipDao.create(new EventMembershipData(3, 9, 0));
-		eventMembershipDao.create(new EventMembershipData(3, 1, 0));
-		eventMembershipDao.create(new EventMembershipData(3, 4, 0));
-		eventMembershipDao.create(new EventMembershipData(4, 11, 0));
-		eventMembershipDao.create(new EventMembershipData(4, 2, 0));
-		eventMembershipDao.create(new EventMembershipData(4, 5, 0));
-		eventMembershipDao.create(new EventMembershipData(4, 9, 0));
+		eventMembershipDao.create(new EventMembershipData(1, 1));
+		eventMembershipDao.create(new EventMembershipData(1, 2));
+		eventMembershipDao.create(new EventMembershipData(1, 3));
+		eventMembershipDao.create(new EventMembershipData(1, 4));
+		eventMembershipDao.create(new EventMembershipData(1, 5));
+		eventMembershipDao.create(new EventMembershipData(1, 6));
+		eventMembershipDao.create(new EventMembershipData(2, 5));
+		eventMembershipDao.create(new EventMembershipData(2, 6));
+		eventMembershipDao.create(new EventMembershipData(2, 7));
+		eventMembershipDao.create(new EventMembershipData(2, 8));
+		eventMembershipDao.create(new EventMembershipData(3, 9));
+		eventMembershipDao.create(new EventMembershipData(3, 1));
+		eventMembershipDao.create(new EventMembershipData(3, 4));
+		eventMembershipDao.create(new EventMembershipData(4, 11));
+		eventMembershipDao.create(new EventMembershipData(4, 2));
+		eventMembershipDao.create(new EventMembershipData(4, 5));
+		eventMembershipDao.create(new EventMembershipData(4, 9));
 	}
 	
 	public static void populateGroupDAO(RuntimeExceptionDao<GroupData, Integer> groupDao) {

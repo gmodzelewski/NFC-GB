@@ -14,6 +14,7 @@ import com.j256.ormlite.table.TableUtils;
 import com.modzelewski.nfcgb.EventData;
 import com.modzelewski.nfcgb.EventMembershipData;
 import com.modzelewski.nfcgb.GroupData;
+import com.modzelewski.nfcgb.GroupMembershipData;
 import com.modzelewski.nfcgb.PersonData;
 import com.modzelewski.nfcgb.R;
 
@@ -29,18 +30,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "nfcgb.db";
 	// any time you make changes to your database objects, you may have to
 	// increase the database version
-	private static final int DATABASE_VERSION = 15;
+	private static final int DATABASE_VERSION = 18;
 
 	// the DAO object we use to access the eventData table
 	private Dao<EventData, Integer> eventDao = null;
 	private Dao<PersonData, Integer> personDao = null;
 	private Dao<GroupData, Integer> groupDao = null;
 	private Dao<EventMembershipData, Integer> eventMembershipDao = null;
+	private Dao<GroupMembershipData, Integer> groupMembershipDao = null;
 
 	private RuntimeExceptionDao<EventData, Integer> eventRuntimeDao = null;
 	private RuntimeExceptionDao<PersonData, Integer> personRuntimeDao = null;
 	private RuntimeExceptionDao<GroupData, Integer> groupRuntimeDao = null;
 	private RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipRuntimeDao = null;
+	private RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipRuntimeDao = null;
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -60,6 +63,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, GroupData.class);
 			TableUtils.createTable(connectionSource, PersonData.class);
 			TableUtils.createTable(connectionSource, EventMembershipData.class);
+			TableUtils.createTable(connectionSource, GroupMembershipData.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
@@ -95,6 +99,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, GroupData.class, true);
 			TableUtils.dropTable(connectionSource, PersonData.class, true);
 			TableUtils.dropTable(connectionSource, EventMembershipData.class, true);
+			TableUtils.dropTable(connectionSource, GroupMembershipData.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -146,6 +151,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return eventMembershipDao;
 	}
+
+	/**
+	 * Returns the Database Access Object (DAO) for our groupData class. It
+	 * will create it or just give the cached value.
+	 */
+	public Dao<GroupMembershipData, Integer> getDaoGM() throws SQLException {
+		if (groupMembershipDao == null) {
+			groupMembershipDao = getDao(GroupMembershipData.class);
+		}
+		return groupMembershipDao;
+	}
 	
 	/**
 	 * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao
@@ -194,6 +210,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return eventMembershipRuntimeDao;
 	}
+	
+	/**
+	 * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao
+	 * for our groupData class. It will create it or just give the cached
+	 * value. RuntimeExceptionDao only through RuntimeExceptions.
+	 */
+	public RuntimeExceptionDao<GroupMembershipData, Integer> getGroupMembershipDataDao() {
+		if (groupMembershipRuntimeDao == null) {
+			groupMembershipRuntimeDao = getRuntimeExceptionDao(GroupMembershipData.class);
+		}
+		return groupMembershipRuntimeDao;
+	}
 
 	/**
 	 * Close the database connections and clear any cached DAOs.
@@ -209,5 +237,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		groupRuntimeDao = null;
 		eventMembershipDao = null;
 		eventMembershipRuntimeDao = null;
+		groupMembershipDao = null;
+		groupMembershipRuntimeDao = null;
 	}
 }

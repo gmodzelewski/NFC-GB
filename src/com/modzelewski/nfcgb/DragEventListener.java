@@ -1,9 +1,8 @@
 package com.modzelewski.nfcgb;
 
+import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
-
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -17,21 +16,25 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.modzelewski.nfcgb.persistence.DatabaseHelper;
+
 public class DragEventListener extends ListView implements OnDragListener {
 
 	BackgroundModel model;
 	private DatabaseHelper databaseHelper = null;
 	final String LISTVIEW_TAG = "ListView";
-	final String EXPLISTVIEW_TAG = "ExpandableListView";
+	final String EXPLISTVIEW_TAG = "ELV";
 	final String TARGETLAYOUT_TAG = "targetLayout";
+	private List<Integer> openedGroups = new LinkedList<Integer>();
 
 	public DragEventListener(Context context) {
 		super(context);
 	}
-	public DragEventListener(Context context, BackgroundModel model, DatabaseHelper databaseHelper) {
+
+	public DragEventListener(Context context, BackgroundModel model) {
 		super(context);
 		this.model = model;
-		this.databaseHelper = databaseHelper;
 	}
 
 	@Override
@@ -45,10 +48,12 @@ public class DragEventListener extends ListView implements OnDragListener {
 					ExpandableListView expLv = (ExpandableListView) v;
 					int count = expLv.getCount();
 					for (int i = 0; i < count; i++) {
-						expLv.collapseGroup(i);
+						if (expLv.isGroupExpanded(i)) {
+							openedGroups.add(i);
+							expLv.collapseGroup(i);
+						}
 					}
 				}
-				v.invalidate();
 				return true;
 			} else {
 				Log.i(getClass().getSimpleName(), "ACTION DRAG STARTED rejected");
@@ -65,40 +70,70 @@ public class DragEventListener extends ListView implements OnDragListener {
 			}
 
 		case DragEvent.ACTION_DROP:
-			List<PersonData> personList = model.persons;
-			Log.i(getClass().getSimpleName(), personList.toString());
-			ClipData.Item i = event.getClipData().getItemAt(0);
-			Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
-
-			int personId = Integer.parseInt((String) i.getText());
-			RuntimeExceptionDao<PersonData, Integer> personDao = databaseHelper.getPersonDataDao();
-			PersonData person = model.getPersonById(personId);
-			PersonData personInDao = personDao.queryForSameId(person);
-
-			Log.i(getClass().getSimpleName(), "person.toString(): " + person.toString());
-
 			if (v.getTag() == EXPLISTVIEW_TAG) {
+				databaseHelper = model.getHelper();
+				// RuntimeExceptionDao<PersonData, Integer> personDao =
+				// databaseHelper.getPersonDataDao();
+				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
+
+				// List<PersonData> personList = model.persons;
+				// Log.i(getClass().getSimpleName(), personList.toString());
+
+				ClipData.Item i = event.getClipData().getItemAt(0);
+				Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
+
+				int personId = Integer.parseInt((String) i.getText());
+
+				// PersonData person = model.getPersonById(personId);
+				// Log.i(getClass().getSimpleName(), "person.toString(): " +
+				// person.toString());
+
 				ExpandableListView expLv = (ExpandableListView) v;
 				int pos = expLv.pointToPosition((int) event.getX(), (int) event.getY());
+
 				GroupData group = null;
 				if (pos >= 0) {
 					group = model.groups.get(pos);
 				}
-				if (!group.person.contains(person)) {
-					RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
-					group.person.add(person);
-					GroupData groupInDao = groupDao.queryForSameId(group);
-					groupInDao.person.add(personInDao);
-					groupDao.update(groupInDao);
-					groupDao.refresh(groupInDao);
+
+				// RuntimeExceptionDao<GroupData, Integer> groupDao =
+				// databaseHelper.getGroupDataDao();
+
+				List<GroupMembershipData> groupResult = null;
+				try {
+					groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and().eq("person_id", personId).query();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				if (groupResult.isEmpty()) {
+					groupMembershipDao.create(new GroupMembershipData(group.id, personId));
+					model.getGroupById(group.id).person.add(model.getPersonById(personId));
+					// GroupData groupInDao = groupDao.queryForSameId(group);
+					// groupInDao.person.add(personInDao);
+					// groupDao.update(groupInDao);
+					// groupDao.refresh(groupInDao);
 				} else {
 					Toast.makeText(getContext(), getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
 				}
-				expLv.invalidate();
-				expLv.invalidateViews();
 			}
-			v.invalidate();
+
 			return true; // if drop accepted
+
+		case DragEvent.ACTION_DRAG_ENDED:
+
+			// if
+			// (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))
+			// {
+			Log.i(getClass().getSimpleName(), "ACTION DRAG ENDED called");
+			if (v.getTag() == EXPLISTVIEW_TAG) {
+				ExpandableListView expLv = (ExpandableListView) v;
+				for (int opened : openedGroups) {
+					expLv.expandGroup(opened);
+				}
+			}
+			return true;
 		}
 		return true;
 	}

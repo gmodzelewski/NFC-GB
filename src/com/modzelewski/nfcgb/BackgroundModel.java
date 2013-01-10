@@ -20,13 +20,11 @@ public class BackgroundModel {
 	// group list for right list
 	public List<GroupData> groups = new LinkedList<GroupData>();
 
-	// List<EventMembershipData> memberships;
-
 	public BackgroundModel(MainActivity mainActivity) {
 		this.mainActivity = mainActivity;
 	}
 
-	private DatabaseHelper getHelper() {
+	public DatabaseHelper getHelper() {
 		return mainActivity.getHelper();
 	}
 
@@ -42,26 +40,13 @@ public class BackgroundModel {
 		}
 	}
 
-	private void reloadGroups() {
-		RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
-		List<GroupData> groupResult = null;
-		try {
-			groupResult = groupDao.queryBuilder().where().eq("eventId", currentEvent.id).query();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		groups.clear();
-
-		for (GroupData gd : groupResult) {
-			GroupData group = groupDao.queryForId(gd.id);
-			groups.add(group);
-		}
-	}
-
 	// TODO: OPTIMIZE! OPTIMIZE! OPTIMIZE!
 	private void reloadPersons() {
-		// TODO: cross-select
+		persons.clear();
+
+		if(currentEvent == null)
+			return;
+		
 		RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
 		List<EventMembershipData> eventMemberships = null;
 		try {
@@ -73,12 +58,45 @@ public class BackgroundModel {
 		// ArrayList<String> personsFullNames = new ArrayList<String>();
 		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
 
-		persons.clear();
 
 		for (EventMembershipData emd : eventMemberships) {
 			PersonData pd = personDao.queryForId(emd.person_id);
 			persons.add(pd);
 			// personsFullNames.add(String.format("%s\n%s", pd.name, pd.email));
+		}
+	}
+	
+	private void reloadGroups() {
+		groups.clear();
+
+		if(currentEvent == null) {
+			return;
+		}
+		
+		RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
+		List<GroupData> groupResult = null;
+		try {
+			groupResult = groupDao.queryBuilder().where().eq("event_id", currentEvent.id).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+		RuntimeExceptionDao<PersonData, Integer> personDao = getHelper().getPersonDataDao();
+		
+		for (GroupData gd : groupResult) {
+			List<GroupMembershipData> groupMemberships = null;
+			try {
+				groupMemberships = groupMembershipDao.queryBuilder().where().eq("group_id", gd.id).query();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			for (GroupMembershipData groupMembershipData : groupMemberships) {
+				gd.person.add(personDao.queryForId(groupMembershipData.person_id));
+			}
+			
+			groups.add(gd);
 		}
 	}
 
@@ -110,6 +128,14 @@ public class BackgroundModel {
 			if(p.id == id)
 				person = p;
 		return person;
+	}
+
+	public GroupData getGroupById(int id) {
+		GroupData group = null;
+		for(GroupData g : groups)
+			if(g.id == id)
+				group = g;
+		return group;
 	}
 
 	public void setPersons(List<PersonData> persons) {

@@ -18,7 +18,7 @@ public class GroupData implements Serializable {
 	@DatabaseField(index = true)
 	String groupName;
 	@DatabaseField
-	int eventId;
+	int event_id;
 	/*@ForeignCollectionField(eager = false)
 	ForeignCollection<PersonData> persons;*/
 	List<PersonData> person = new LinkedList<PersonData>();
@@ -33,10 +33,10 @@ public class GroupData implements Serializable {
 		
 	}
 
-	public GroupData(String groupName, int eventId) {
+	public GroupData(String groupName, int event_id) {
 		super();
 		this.groupName = groupName;
-		this.eventId = eventId;
+		this.event_id = event_id;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class GroupData implements Serializable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("id=").append(id);
 		sb.append(", ").append("groupName=").append(groupName);
-		sb.append(", ").append("eventId=").append(eventId);
+		sb.append(", ").append("event_id=").append(event_id);
 		return sb.toString();
 	}
 }
