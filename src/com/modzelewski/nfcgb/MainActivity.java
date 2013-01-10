@@ -3,6 +3,7 @@ package com.modzelewski.nfcgb;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
@@ -93,7 +94,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	 * Create list referencing at persons in background model.
 	 */
 	private void createListView() {
-		
+
 		pa = new PersonAdapter(this, android.R.layout.simple_list_item_1, model.getPersons());
 		personsLV.setAdapter(pa);
 
@@ -191,55 +192,51 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		});
 	}
 
-	 private void doDatabaseStuff() {
-	 // delete all Data daos
-	 // Reset here database every time; remove at release
-	 ConnectionSource connectionSource = databaseHelper.getConnectionSource();
-	 Log.i(LOG_TAG,
-	 "-------------------------------------------------------------------");
-	 Log.i(LOG_TAG, "--- Processing Database drop ---");
-	 Log.i(LOG_TAG,
-	 "-------------------------------------------------------------------");
-	 try {
-	 for (Class<?> c : DatabaseConfigUtil.classes) {
-	 TableUtils.dropTable(connectionSource, c, true);
-	 TableUtils.createTable(connectionSource, c);
-	 }
-	 } catch (SQLException e1) {
-	 // TODO Auto-generated catch block
-	 e1.printStackTrace();
-	 }
-	
-	 Log.i(LOG_TAG,
-	 "-------------------------------------------------------------------");
-	 Log.i(LOG_TAG,
-	 "--- Database is empty now. Processing Database Population ---");
-	 Log.i(LOG_TAG,
-	 "-------------------------------------------------------------------");
-	
-	 // populate empty database
-	 DatabasePopulation.populateEventDAO(databaseHelper.getEventDataDao());
-	 DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDataDao());
-	 DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
-	 DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
-	
-	 Log.i(LOG_TAG,
-	 "-------------------------------------------------------------------");
-	 Log.i(LOG_TAG, "--- Database is new populated ---");
-	 Log.i(LOG_TAG,
-	 "-------------------------------------------------------------------");
-	
-	 // try {
-	 // Thread.sleep(5);
-	 // } catch (InterruptedException e) {
-	 // // ignore
-	 // }
-	
-	 // load events from database
-	 RuntimeExceptionDao<EventData, Integer> eventDao =
-	 databaseHelper.getEventDataDao();
-	 model.setEvents(eventDao.queryForAll());
-	 }
+	private void doDatabaseStuff() {
+		// delete all Data daos
+		// Reset here database every time; remove at release
+		ConnectionSource connectionSource = databaseHelper.getConnectionSource();
+		Log.i(LOG_TAG, "-------------------------------------------------------------------");
+		Log.i(LOG_TAG, "--- Processing Database drop ---");
+		Log.i(LOG_TAG, "-------------------------------------------------------------------");
+		try {
+			for (Class<?> c : DatabaseConfigUtil.classes) {
+				TableUtils.dropTable(connectionSource, c, true);
+				TableUtils.createTable(connectionSource, c);
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		Log.i(LOG_TAG, "-------------------------------------------------------------------");
+		Log.i(LOG_TAG, "--- Database is empty now. Processing Database Population ---");
+		Log.i(LOG_TAG, "-------------------------------------------------------------------");
+
+		// populate empty database
+		DatabasePopulation.populateEventDAO(databaseHelper.getEventDataDao());
+		DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDataDao());
+		DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
+		DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
+
+		Log.i(LOG_TAG, "-------------------------------------------------------------------");
+		Log.i(LOG_TAG, "--- Database is new populated ---");
+		Log.i(LOG_TAG, "-------------------------------------------------------------------");
+
+		// try {
+		// Thread.sleep(5);
+		// } catch (InterruptedException e) {
+		// // ignore
+		// }
+
+		// load events from database
+		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
+		model.setEvents(eventDao.queryForAll());
+		
+		createSpinner();
+		createListView();
+		createExpandableListView();
+	}
 
 	void menuAbout() {
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -326,7 +323,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		String title = null;
 		if (task == ADD_GROUP)
 			title = getString(R.string.add_group);
-		
+
 		if (task == EDIT_GROUP) {
 			title = getString(R.string.edit_group);
 			final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
@@ -657,7 +654,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 		// TODO: BEFORE RELEASE DELETE FOLlOWING LINE AND METHOD
 		// if(model.events.size() < 2)
-//		 doDatabaseStuff();
+		// doDatabaseStuff();
 
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
@@ -738,6 +735,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.om_nfc:
 			menuNfcCheck();
+			return true;
+		case R.id.om_repop:
+			doDatabaseStuff();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

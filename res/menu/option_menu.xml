@@ -10,6 +10,11 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/menu_is_nfc_supported"/>
+	<item
+        android:id="@+id/om_repop"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/menu_repop"/>
     <item
         android:id="@+id/om_add_person"
         android:icon="@drawable/ic_menu_add_person"
