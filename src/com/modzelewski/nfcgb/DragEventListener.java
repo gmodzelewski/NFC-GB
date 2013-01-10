@@ -128,6 +128,7 @@ public class DragEventListener extends ListView implements OnDragListener {
 				for (int opened : openedGroups) {
 					expLv.expandGroup(opened);
 				}
+				openedGroups.clear();
 			}
 			return true;
 		}
