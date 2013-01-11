@@ -573,27 +573,36 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				EventData currentEvent = model.getCurrentEvent();
 				RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
 				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
-				// RuntimeExceptionDao<PersonData, Integer> personDao =
-				// databaseHelper.getPersonDataDao();
+				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
 				List<GroupData> gd = null;
 				List<EventMembershipData> emd = null;
-				// List<PersonData> pd = null;
+				List<GroupMembershipData> gmd = null;
+				
 				try {
-					// pd =
-					// personDao.query(personDao.queryBuilder().where().eq("event_id",
-					// currentEvent.id).prepare());
 					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				// personDao.delete(pd);
+				
+				for (GroupData groupData : gd) {
+					try {
+						gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", groupData.id).prepare());
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
 				groupDao.delete(gd);
 				eventMembershipDao.delete(emd);
+				groupMembershipDao.delete(gmd);
 
 				model.persons.clear();
 				model.groups.clear();
 				model.events.remove(currentEvent);
+				if(model.events.contains(currentEvent))
+					Toast.makeText(getBaseContext(), "ist noch drin", Toast.LENGTH_LONG).show();
 
 				ea.notifyDataSetChanged();
 				refreshListViews();

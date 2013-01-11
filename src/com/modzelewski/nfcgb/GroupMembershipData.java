@@ -25,10 +25,7 @@ public class GroupMembershipData implements Serializable {
 	// TODO: make it to foreign key
 	@DatabaseField
 	int person_id;
-
-//	@DatabaseField
-//	int group_id;
-
+	
 	// needed by ormlite
 	GroupMembershipData() {
 	}
