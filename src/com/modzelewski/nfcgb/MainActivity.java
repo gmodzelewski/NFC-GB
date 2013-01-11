@@ -571,14 +571,17 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				EventData currentEvent = model.getCurrentEvent();
+				RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
 				RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
 				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
 				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
+				List<EventData> ed = null;
 				List<GroupData> gd = null;
 				List<EventMembershipData> emd = null;
 				List<GroupMembershipData> gmd = null;
 				
 				try {
+					ed = eventDao.query(eventDao.queryBuilder().where().eq("id", model.getCurrentEvent().id).prepare());
 					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
 				} catch (SQLException e) {
@@ -593,7 +596,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					}
 				}
 				
-				
+				eventDao.delete(ed);
 				groupDao.delete(gd);
 				eventMembershipDao.delete(emd);
 				groupMembershipDao.delete(gmd);
