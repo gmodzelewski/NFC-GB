@@ -678,10 +678,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
 
-		// TODO: BEFORE RELEASE DELETE FOLlOWING LINE AND METHOD
-		// if(model.events.size() < 2)
-		// doDatabaseStuff();
-
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
 		model.setEvents(eventDao.queryForAll());
@@ -751,6 +747,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			menuAbout();
 			return true;
 		case R.id.om_add_event:
+//			DialogBuilder dialogBuilder = new DialogBuilder(model);
+//			dialogBuilder.menuAddEvent();
 			menuAddEvent();
 			return true;
 		case R.id.om_add_group:
@@ -801,7 +799,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		ga.notifyDataSetChanged();
 	}
 
-	private void setCurrentEvent(EventData ed) {
+	protected void setCurrentEvent(EventData ed) {
 		EventData current_event = model.getCurrentEvent();
 		if (current_event == null || ed.id != current_event.id) {
 			model.setCurrentEvent(ed);

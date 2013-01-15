@@ -104,10 +104,6 @@ public class DragEventListener extends ListView implements OnDragListener {
 			return true; // if drop accepted
 
 		case DragEvent.ACTION_DRAG_ENDED:
-
-			// if
-			// (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))
-			// {
 			Log.i(getClass().getSimpleName(), "ACTION DRAG ENDED called");
 			
 			if (v.getTag() == EXPLISTVIEW_TAG) {
