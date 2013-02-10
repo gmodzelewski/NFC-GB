@@ -33,6 +33,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -86,7 +87,41 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private void createExpandableListView() {
 		ga = new GroupAdapter(this, model.getGroups());
 		eventExpLV.setAdapter(ga);
+		// Menu on long Click
 		registerForContextMenu(eventExpLV);
+
+		// Removing of Child Items Menu on short Click
+		eventExpLV.setOnChildClickListener(new OnChildClickListener() {
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+				final GroupData group = (GroupData) ga.getGroup(groupPosition);
+				final PersonData person = (PersonData) ga.getChild(groupPosition, childPosition);
+				AlertDialog.Builder builder = new AlertDialog.Builder(eventExpLV.getContext());
+				builder.setMessage(R.string.remove_person_from_group);
+				builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+						List<GroupMembershipData> gmd = null;
+						RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
+						try {
+							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.id).and().eq("group_id", group.id).prepare());
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						groupMembershipDao.delete(gmd);
+						model.getGroupById(group.id).person.remove(model.getPersonById(person.id));
+						ga.notifyDataSetChanged();
+					}
+				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int whichButton) {
+					}
+				}).show();
+				
+				return true;
+			}
+		});
 	}
 
 	/**
@@ -496,7 +531,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				
+
 				for (GroupMembershipData groupMembershipData : gmd) {
 					model.getGroupById(groupMembershipData.group_id).person.remove(model.getPersonById(pd.id));
 				}
@@ -579,7 +614,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				List<GroupData> gd = null;
 				List<EventMembershipData> emd = null;
 				List<GroupMembershipData> gmd = null;
-				
+
 				try {
 					ed = eventDao.query(eventDao.queryBuilder().where().eq("id", model.getCurrentEvent().id).prepare());
 					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
@@ -587,7 +622,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				
+
 				for (GroupData groupData : gd) {
 					try {
 						gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", groupData.id).prepare());
@@ -595,7 +630,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 						e.printStackTrace();
 					}
 				}
-				
+
 				eventDao.delete(ed);
 				groupDao.delete(gd);
 				eventMembershipDao.delete(emd);
@@ -604,7 +639,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				model.persons.clear();
 				model.groups.clear();
 				model.events.remove(currentEvent);
-				if(model.events.contains(currentEvent))
+				if (model.events.contains(currentEvent))
 					Toast.makeText(getBaseContext(), "ist noch drin", Toast.LENGTH_LONG).show();
 
 				ea.notifyDataSetChanged();
@@ -654,6 +689,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.cm_event_remove:
 			menuEventRemove(item);
+
 		default:
 			return super.onContextItemSelected(item);
 		}
@@ -747,8 +783,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			menuAbout();
 			return true;
 		case R.id.om_add_event:
-//			DialogBuilder dialogBuilder = new DialogBuilder(model);
-//			dialogBuilder.menuAddEvent();
+			// DialogBuilder dialogBuilder = new DialogBuilder(model);
+			// dialogBuilder.menuAddEvent();
 			menuAddEvent();
 			return true;
 		case R.id.om_add_group:

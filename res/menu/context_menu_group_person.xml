@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/cm_group_email"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/email_group"/>
+    <item
+        android:id="@+id/cm_group_add"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/add_group"/>
+    <item
+        android:id="@+id/cm_group_edit"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/edit_group"/>
+    <item
+        android:id="@+id/cm_group_remove"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/remove_group"/>
+     <item
+        android:id="@+id/cm_group_person_remove"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/remove_person_from_group"/>
+
+</menu>
