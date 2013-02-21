@@ -1,4 +1,4 @@
-package com.modzelewski.nfcgb;
+package com.modzelewski.nfcgb.controller;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -17,6 +17,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.R.string;
+import com.modzelewski.nfcgb.model.BackgroundModel;
+import com.modzelewski.nfcgb.model.GroupData;
+import com.modzelewski.nfcgb.model.GroupMembershipData;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public class DragEventListener extends ListView implements OnDragListener {
@@ -96,7 +101,7 @@ public class DragEventListener extends ListView implements OnDragListener {
 
 				if (groupResult.isEmpty()) {
 					groupMembershipDao.create(new GroupMembershipData(group.id, personId));
-					model.getGroupById(group.id).person.add(model.getPersonById(personId));
+					model.getGroupById(group.id).getPerson().add(model.getPersonById(personId));
 				} else {
 					Toast.makeText(getContext(), getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
 				}

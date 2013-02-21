@@ -1,6 +1,8 @@
-package com.modzelewski.nfcgb;
+package com.modzelewski.nfcgb.controller;
 
 import java.util.List;
+
+import com.modzelewski.nfcgb.model.PersonData;
 
 import android.content.Context;
 import android.view.View;
@@ -32,6 +34,6 @@ public class PersonAdapter extends ArrayAdapter<PersonData> {
 	 * @return prepared String
 	 */
 	private String preparePersonData(PersonData pd) {
-		return String.format("%s\n%s", pd.name, pd.email);
+		return String.format("%s\n%s", pd.getName(), pd.getEmail());
 	}
 }

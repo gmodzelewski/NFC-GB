@@ -1,6 +1,8 @@
-package com.modzelewski.nfcgb;
+package com.modzelewski.nfcgb.controller;
 
 import java.util.List;
+
+import com.modzelewski.nfcgb.model.EventData;
 
 import android.content.Context;
 import android.view.View;
@@ -41,9 +43,9 @@ public class EventAdapter extends ArrayAdapter<EventData> {
 	 * @return prepared String
 	 */
 	private String prepareEventData(EventData ed) {
-		if(ed.year != 0)
-			return String.format("%s (%s %d)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe", ed.year);
+		if(ed.getYear() != 0)
+			return String.format("%s (%s %d)", ed.getEventname(), ed.isWintersemester() ? "WiSe" : "SoSe", ed.getYear());
 		else
-			return String.format("%s (%s)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe");			
+			return String.format("%s (%s)", ed.getEventname(), ed.isWintersemester() ? "WiSe" : "SoSe");			
 	}
 }

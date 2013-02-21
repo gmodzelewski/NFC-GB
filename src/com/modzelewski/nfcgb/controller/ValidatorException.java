@@ -1,4 +1,4 @@
-package com.modzelewski.nfcgb;
+package com.modzelewski.nfcgb.controller;
 
 @SuppressWarnings("serial")
 public class ValidatorException extends RuntimeException {

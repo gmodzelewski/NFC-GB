@@ -44,6 +44,16 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.modzelewski.nfcgb.controller.DragEventListener;
+import com.modzelewski.nfcgb.controller.EventAdapter;
+import com.modzelewski.nfcgb.controller.GroupAdapter;
+import com.modzelewski.nfcgb.controller.PersonAdapter;
+import com.modzelewski.nfcgb.model.BackgroundModel;
+import com.modzelewski.nfcgb.model.EventData;
+import com.modzelewski.nfcgb.model.EventMembershipData;
+import com.modzelewski.nfcgb.model.GroupData;
+import com.modzelewski.nfcgb.model.GroupMembershipData;
+import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.persistence.DatabaseConfigUtil;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulation;
@@ -104,13 +114,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 						List<GroupMembershipData> gmd = null;
 						RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
 						try {
-							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.id).and().eq("group_id", group.id).prepare());
+							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.getId()).and().eq("group_id", group.id).prepare());
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						groupMembershipDao.delete(gmd);
-						model.getGroupById(group.id).person.remove(model.getPersonById(person.id));
+						model.getGroupById(group.id).getPerson().remove(model.getPersonById(person.getId()));
 						ga.notifyDataSetChanged();
 					}
 				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
@@ -137,7 +147,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			@Override
 			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
 				PersonData person = model.persons.get(position);
-				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), String.valueOf(person.id));
+				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), String.valueOf(person.getId()));
 				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
 				l.startDrag(dragData, // the data to be dragged
 						shadowBuilder, // the drag shadow builder
@@ -175,7 +185,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// System.currentTimeMillis());
 		PersonData person1 = new PersonData("Hans", "hans@email.de");
 		// PersonData person2 = new PersonData("Peter", "peter@email.de");
-		String person1Name = person1.name;
+		String person1Name = person1.getName();
 		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", person1Name.getBytes())
 		/**
 		 * The Android Application Record (AAR) is commented out. When a device
@@ -324,10 +334,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 				EventData ed = new EventData();
 
-				ed.eventname = eventname.getText().toString();
-				ed.wintersemester = wintersemester.isChecked();
-				ed.year = year.getValue();
-				ed.info = info.getText().toString();
+				ed.setEventname(eventname.getText().toString());
+				ed.setWintersemester(wintersemester.isChecked());
+				ed.setYear(year.getValue());
+				ed.setInfo(info.getText().toString());
 
 				RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
 				eventDao.create(ed);
@@ -363,7 +373,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			title = getString(R.string.edit_group);
 			final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
 			final GroupData gd = model.groups.get((int) pInfo.id);
-			groupNameET.setText(gd.groupName);
+			groupNameET.setText(gd.getGroupName());
 		}
 
 		adb.setTitle(title);
@@ -373,7 +383,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 				String groupName = groupNameET.getText().toString().trim();
-				GroupData group = new GroupData(groupName, currentEvent.id);
+				GroupData group = new GroupData(groupName, currentEvent.getId());
 
 				// create Object
 				RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
@@ -384,7 +394,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				if (task == EDIT_GROUP) {
 					final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
 					final GroupData gd = model.groups.get((int) pInfo.id);
-					gd.groupName = groupName;
+					gd.setGroupName(groupName);
 					groupDao.update(gd);
 					groupDao.refresh(gd);
 				}
@@ -400,13 +410,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private void menuGroupEmail(MenuItem item) {
 		ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
 		GroupData gd = model.groups.get((int) pInfo.id);
-		List<PersonData> persons = gd.person;
+		List<PersonData> persons = gd.getPerson();
 		String emailAddresses = "";
 		for (PersonData person : persons) {
-			if (person.email.contains("@")) {
-				emailAddresses += ", " + person.email;
+			if (person.getEmail().contains("@")) {
+				emailAddresses += ", " + person.getEmail();
 			} else {
-				Toast.makeText(getApplicationContext(), getString(R.string.incorrect_mail) + person.name, Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), getString(R.string.incorrect_mail) + person.getName(), Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -446,8 +456,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		final View personView = inflater.inflate(R.layout.person_dialog, null);
 
 		String title = null;
-		String addPerson = getString(R.string.add_person_in) + " " + currentEvent.eventname;
-		String editPerson = getString(R.string.edit_person_in) + " " + currentEvent.eventname;
+		String addPerson = getString(R.string.add_person_in) + " " + currentEvent.getEventname();
+		String editPerson = getString(R.string.edit_person_in) + " " + currentEvent.getEventname();
 		if (task == ADD_PERSON)
 			title = addPerson;
 		if (task == EDIT_PERSON) {
@@ -459,8 +469,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 			final AdapterView.AdapterContextMenuInfo pInfo = info;
 			final PersonData pd = model.persons.get(pInfo.position);
-			nameET.setText(pd.name);
-			emailET.setText(pd.email);
+			nameET.setText(pd.getName());
+			emailET.setText(pd.getEmail());
 		}
 
 		AlertDialog.Builder adb = new AlertDialog.Builder(this);
@@ -483,7 +493,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					// databaseHelper.getGroupMembershipDataDao();
 
 					personDao.create(person);
-					EventMembershipData emd = new EventMembershipData(currentEvent.id, person.id);
+					EventMembershipData emd = new EventMembershipData(currentEvent.getId(), person.getId());
 					eventMembershipDao.create(emd);
 					model.persons.add(person);
 				}
@@ -493,8 +503,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					final AdapterView.AdapterContextMenuInfo pInfo = info;
 					final PersonData pd = model.persons.get(pInfo.position);
 
-					pd.name = name;
-					pd.email = email;
+					pd.setName(name);
+					pd.setEmail(email);
 
 					personDao.update(pd);
 					personDao.refresh(pd);
@@ -526,14 +536,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 				PersonData pd = model.persons.get(pInfo.position);
 				try {
-					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.id).and().eq("event_id", model.getCurrentEvent().id).prepare());
-					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.id).prepare());
+					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).and().eq("event_id", model.getCurrentEvent().getId()).prepare());
+					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).prepare());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 
 				for (GroupMembershipData groupMembershipData : gmd) {
-					model.getGroupById(groupMembershipData.group_id).person.remove(model.getPersonById(pd.id));
+					model.getGroupById(groupMembershipData.getGroup_id()).getPerson().remove(model.getPersonById(pd.getId()));
 				}
 				model.persons.remove(pd);
 				eventMembershipDao.delete(emd);
@@ -555,12 +565,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
 		NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
 		EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-		eventname.setText(currentEvent.eventname);
-		wintersemester.setChecked(currentEvent.wintersemester);
+		eventname.setText(currentEvent.getEventname());
+		wintersemester.setChecked(currentEvent.isWintersemester());
 		year.setMinValue(1940);
 		year.setMaxValue(2300);
-		year.setValue(currentEvent.year);
-		info.setText(currentEvent.info);
+		year.setValue(currentEvent.getYear());
+		info.setText(currentEvent.getInfo());
 
 		AlertDialog.Builder adb = new AlertDialog.Builder(spinner.getContext());
 		String title = getString(R.string.edit_event);
@@ -576,12 +586,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
 
 				if (eventname.toString().trim().isEmpty())
-					currentEvent.eventname = getString(R.string.unknown_eventname);
+					currentEvent.setEventname(getString(R.string.unknown_eventname));
 				else
-					currentEvent.eventname = eventname.getText().toString().trim();
-				currentEvent.wintersemester = wintersemester.isChecked();
-				currentEvent.year = year.getValue();
-				currentEvent.info = info.getText().toString();
+					currentEvent.setEventname(eventname.getText().toString().trim());
+				currentEvent.setWintersemester(wintersemester.isChecked());
+				currentEvent.setYear(year.getValue());
+				currentEvent.setInfo(info.getText().toString());
 
 				eventDao.update(currentEvent);
 				eventDao.refresh(currentEvent);
@@ -616,9 +626,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 				List<GroupMembershipData> gmd = null;
 
 				try {
-					ed = eventDao.query(eventDao.queryBuilder().where().eq("id", model.getCurrentEvent().id).prepare());
-					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
-					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().id).prepare());
+					ed = eventDao.query(eventDao.queryBuilder().where().eq("id", model.getCurrentEvent().getId()).prepare());
+					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().getId()).prepare());
+					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().getId()).prepare());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -700,11 +710,16 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		super.onCreate(savedInstanceState);
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		databaseHelper = model.getHelper();
-		// Check to see that the Activity started due to an Android Beam
-		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-			processIntent(getIntent());
+		
+		if(nfcAdapter != null){
+				// Check to see that the Activity started due to an Android Beam
+				if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+					processIntent(getIntent());
+	
+				// Register callback
+				nfcAdapter.setNdefPushMessageCallback(this, this);
+			}
 		}
-
 		// set content and cache some important objects
 		setContentView(R.layout.activity_main);
 		spinner = (Spinner) findViewById(R.id.events_spinner);
@@ -716,7 +731,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
-		model.setEvents(eventDao.queryForAll());
+		//model.setEvents(eventDao.queryForAll());
 
 		createSpinner();
 		createListView();
@@ -730,8 +745,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		personsLV.setTag(LISTVIEW_TAG);
 		eventExpLV.setTag(EXPLISTVIEW_TAG);
 
-		// Register callback
-		nfcAdapter.setNdefPushMessageCallback(this, this);
 	}
 
 	@Override
@@ -837,7 +850,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 	protected void setCurrentEvent(EventData ed) {
 		EventData current_event = model.getCurrentEvent();
-		if (current_event == null || ed.id != current_event.id) {
+		if (current_event == null || ed.getId() != current_event.getId()) {
 			model.setCurrentEvent(ed);
 			refreshListViews();
 		}

@@ -2,7 +2,7 @@
 # generated on 2013/01/09 11:55:28
 #
 # --table-start--
-dataClass=com.modzelewski.nfcgb.EventData
+dataClass=com.modzelewski.nfcgb.model.EventData
 tableName=eventdata
 # --table-fields-start--
 # --field-start--
@@ -32,7 +32,7 @@ fieldName=info
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.PersonData
+dataClass=com.modzelewski.nfcgb.model.PersonData
 tableName=persondata
 # --table-fields-start--
 # --field-start--
@@ -50,7 +50,7 @@ fieldName=email
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.EventMembershipData
+dataClass=com.modzelewski.nfcgb.model.EventMembershipData
 tableName=eventmembershipdata
 # --table-fields-start--
 # --field-start--
@@ -67,7 +67,7 @@ fieldName=person_id
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.GroupData
+dataClass=com.modzelewski.nfcgb.model.GroupData
 tableName=groupdata
 # --table-fields-start--
 # --field-start--
@@ -85,7 +85,7 @@ fieldName=event_id
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.GroupMembershipData
+dataClass=com.modzelewski.nfcgb.model.GroupMembershipData
 tableName=groupmembershipdata
 # --table-fields-start--
 # --field-start--

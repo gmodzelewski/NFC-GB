@@ -1,6 +1,11 @@
-package com.modzelewski.nfcgb;
+package com.modzelewski.nfcgb.controller;
 
 import java.util.List;
+
+import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.R.color;
+import com.modzelewski.nfcgb.model.GroupData;
+import com.modzelewski.nfcgb.model.PersonData;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -52,13 +57,13 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView text = (TextView) getView(position, convertView, parent);
-		text.setText(groups.get(position).groupName);
+		text.setText(groups.get(position).getGroupName());
 		return text;
 	}
 	
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
-		return groups.get(groupPosition).person.get(childPosition);
+		return groups.get(groupPosition).getPerson().get(childPosition);
 	}
 
 	@Override
@@ -70,13 +75,13 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		TextView text = new TextView(context);
 		text.setPadding(20, 0, 0, 0); // indent the child element a bit
-		text.setText(groups.get(groupPosition).person.get(childPosition).name);
+		text.setText(groups.get(groupPosition).getPerson().get(childPosition).getName());
 		return text;
 	}
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return groups.get(groupPosition).person.size();
+		return groups.get(groupPosition).getPerson().size();
 	}
 
 	@Override
@@ -118,7 +123,7 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 		} else
 			text.setTypeface(Typeface.create("serif", Typeface.NORMAL));
 
-		text.setText(groups.get(groupPosition).groupName.toString());
+		text.setText(groups.get(groupPosition).getGroupName().toString());
 		return text;
 	}
 

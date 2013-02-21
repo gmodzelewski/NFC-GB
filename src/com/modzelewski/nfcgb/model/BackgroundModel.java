@@ -1,4 +1,4 @@
-package com.modzelewski.nfcgb;
+package com.modzelewski.nfcgb.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public class BackgroundModel {
@@ -50,7 +51,7 @@ public class BackgroundModel {
 		RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
 		List<EventMembershipData> eventMemberships = null;
 		try {
-			eventMemberships = eventMembershipDao.queryBuilder().where().eq("event_id", currentEvent.id).query();
+			eventMemberships = eventMembershipDao.queryBuilder().where().eq("event_id", currentEvent.getId()).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +61,7 @@ public class BackgroundModel {
 
 
 		for (EventMembershipData emd : eventMemberships) {
-			PersonData pd = personDao.queryForId(emd.person_id);
+			PersonData pd = personDao.queryForId(emd.getPerson_id());
 			persons.add(pd);
 			// personsFullNames.add(String.format("%s\n%s", pd.name, pd.email));
 		}
@@ -76,7 +77,7 @@ public class BackgroundModel {
 		RuntimeExceptionDao<GroupData, Integer> groupDao = getHelper().getGroupDataDao();
 		List<GroupData> groupResult = null;
 		try {
-			groupResult = groupDao.queryBuilder().where().eq("event_id", currentEvent.id).query();
+			groupResult = groupDao.queryBuilder().where().eq("event_id", currentEvent.getId()).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -93,7 +94,7 @@ public class BackgroundModel {
 			}
 			
 			for (GroupMembershipData groupMembershipData : groupMemberships) {
-				gd.person.add(personDao.queryForId(groupMembershipData.person_id));
+				gd.getPerson().add(personDao.queryForId(groupMembershipData.person_id));
 			}
 			
 			groups.add(gd);
@@ -107,7 +108,7 @@ public class BackgroundModel {
 	public ArrayList<String> getEventList() {
 		ArrayList<String> eventNames = new ArrayList<String>();
 		for (EventData ed : events) {
-			eventNames.add(String.format("%s (%s %d)", ed.eventname, ed.wintersemester ? "WiSe" : "SoSe", ed.year));
+			eventNames.add(String.format("%s (%s %d)", ed.getEventname(), ed.isWintersemester() ? "WiSe" : "SoSe", ed.getYear()));
 		}
 		return eventNames;
 	}
@@ -125,7 +126,7 @@ public class BackgroundModel {
 	public PersonData getPersonById(int id) {
 		PersonData person = null;
 		for(PersonData p : persons)
-			if(p.id == id)
+			if(p.getId() == id)
 				person = p;
 		return person;
 	}

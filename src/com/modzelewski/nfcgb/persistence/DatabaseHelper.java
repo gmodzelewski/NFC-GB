@@ -11,12 +11,12 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.modzelewski.nfcgb.EventData;
-import com.modzelewski.nfcgb.EventMembershipData;
-import com.modzelewski.nfcgb.GroupData;
-import com.modzelewski.nfcgb.GroupMembershipData;
-import com.modzelewski.nfcgb.PersonData;
 import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.model.EventData;
+import com.modzelewski.nfcgb.model.EventMembershipData;
+import com.modzelewski.nfcgb.model.GroupData;
+import com.modzelewski.nfcgb.model.GroupMembershipData;
+import com.modzelewski.nfcgb.model.PersonData;
 
 /**
  * Database helper class used to manage the creation and upgrading of your
@@ -30,7 +30,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "nfcgb.db";
 	// any time you make changes to your database objects, you may have to
 	// increase the database version
-	private static final int DATABASE_VERSION = 18;
+	private static final int DATABASE_VERSION = 20;
 
 	// the DAO object we use to access the eventData table
 	private Dao<EventData, Integer> eventDao = null;
@@ -59,11 +59,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		try {
 //			Log.i(DatabaseHelper.class.getName(), "onCreate");
 			// create tables
-			TableUtils.createTable(connectionSource, EventData.class);
-			TableUtils.createTable(connectionSource, GroupData.class);
-			TableUtils.createTable(connectionSource, PersonData.class);
-			TableUtils.createTable(connectionSource, EventMembershipData.class);
-			TableUtils.createTable(connectionSource, GroupMembershipData.class);
+			TableUtils.createTable(connectionSource, com.modzelewski.nfcgb.model.EventData.class);
+			TableUtils.createTable(connectionSource, com.modzelewski.nfcgb.model.GroupData.class);
+			TableUtils.createTable(connectionSource, com.modzelewski.nfcgb.model.PersonData.class);
+			TableUtils.createTable(connectionSource, com.modzelewski.nfcgb.model.EventMembershipData.class);
+			TableUtils.createTable(connectionSource, com.modzelewski.nfcgb.model.GroupMembershipData.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);

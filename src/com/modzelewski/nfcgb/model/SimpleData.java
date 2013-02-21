@@ -1,4 +1,4 @@
-package com.modzelewski.nfcgb;
+package com.modzelewski.nfcgb.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

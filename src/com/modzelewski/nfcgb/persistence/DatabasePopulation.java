@@ -1,10 +1,10 @@
 package com.modzelewski.nfcgb.persistence;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.modzelewski.nfcgb.EventData;
-import com.modzelewski.nfcgb.EventMembershipData;
-import com.modzelewski.nfcgb.GroupData;
-import com.modzelewski.nfcgb.PersonData;
+import com.modzelewski.nfcgb.model.EventData;
+import com.modzelewski.nfcgb.model.EventMembershipData;
+import com.modzelewski.nfcgb.model.GroupData;
+import com.modzelewski.nfcgb.model.PersonData;
 
 public class DatabasePopulation {
 	
