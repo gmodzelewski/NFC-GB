@@ -58,6 +58,7 @@ import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.persistence.DatabaseConfigUtil;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulation;
+import com.modzelewski.nfcgb.persistence.DatabasePopulator;
 import com.modzelewski.nfcgb.view.OptionsMenuFactory;
 
 /**
@@ -77,7 +78,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	final String EXPLISTVIEW_TAG = "ELV";
 	final String TARGETLAYOUT_TAG = "targetLayout";
 
-	private DatabaseHelper databaseHelper = null;
+	public DatabaseHelper databaseHelper = null;
 	private NfcAdapter nfcAdapter;
 
 	private static final int request_Code = 1;
@@ -93,6 +94,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	EventAdapter ea;
 	PersonAdapter pa;
 	GroupAdapter ga;
+	private OptionsMenuFactory omf;
 
 	/**
 	 * Create expandable list referencing at groups in background model.
@@ -239,125 +241,52 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		});
 	}
 
-	private void doDatabaseStuff() {
-		// delete all Data daos
-		// Reset here database every time; remove at release
-		ConnectionSource connectionSource = databaseHelper.getConnectionSource();
-		Log.i(LOG_TAG, "-------------------------------------------------------------------");
-		Log.i(LOG_TAG, "--- Processing Database drop ---");
-		Log.i(LOG_TAG, "-------------------------------------------------------------------");
-		try {
-			for (Class<?> c : DatabaseConfigUtil.classes) {
-				TableUtils.dropTable(connectionSource, c, true);
-				TableUtils.createTable(connectionSource, c);
-			}
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
-		Log.i(LOG_TAG, "-------------------------------------------------------------------");
-		Log.i(LOG_TAG, "--- Database is empty now. Processing Database Population ---");
-		Log.i(LOG_TAG, "-------------------------------------------------------------------");
 
-		// populate empty database
-		DatabasePopulation.populateEventDAO(databaseHelper.getEventDataDao());
-		DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDataDao());
-		DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
-		DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
-
-		Log.i(LOG_TAG, "-------------------------------------------------------------------");
-		Log.i(LOG_TAG, "--- Database is new populated ---");
-		Toast.makeText(getBaseContext(), "--- Database is new populated ---", Toast.LENGTH_SHORT).show();
-		Log.i(LOG_TAG, "-------------------------------------------------------------------");
-
-		// try {
-		// Thread.sleep(5);
-		// } catch (InterruptedException e) {
-		// // ignore
-		// }
-
-		// load events from database
-		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
-		model.setEvents(eventDao.queryForAll());
-
-		createSpinner();
-		createListView();
-		createExpandableListView();
-	}
-
-//	void menuAbout() {
-//		AlertDialog.Builder adb = new AlertDialog.Builder(context);
-//		String title = getString(R.string.about_tv);
-//		adb.setMessage(R.string.about).setTitle(title);
-//		adb.setNeutralButton(R.string.about_goto_github, new DialogInterface.OnClickListener() {
+//	private void menuAddEvent() {
+//
+//		LayoutInflater inflater = LayoutInflater.from(this);
+//		final View eventView = inflater.inflate(R.layout.event_dialog, null);
+//
+//		AlertDialog.Builder adb = new AlertDialog.Builder(this);
+//		adb.setTitle(getString(R.string.add_event));
+//		adb.setView(eventView);
+//		NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
+//		year.setMinValue(1940);
+//		year.setMaxValue(2300);
+//		Calendar c = Calendar.getInstance();
+//		year.setValue(c.get(Calendar.YEAR));
+//		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 //			@Override
 //			public void onClick(DialogInterface dialog, int whichButton) {
-//				Uri uri = Uri.parse("https://github.com/melitta/NFC-GB");
-//				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//				startActivity(intent);
+//				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
+//				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
+//				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
+//				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
+//
+//				EventData ed = new EventData();
+//
+//				ed.setEventname(eventname.getText().toString());
+//				ed.setWintersemester(wintersemester.isChecked());
+//				ed.setYear(year.getValue());
+//				ed.setInfo(info.getText().toString());
+//
+//				RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
+//				eventDao.create(ed);
+//				model.events.add(ed);
+//				model.setCurrentEvent(ed);
+//				setCurrentEvent(ed);
+//				spinner.setSelection(ea.getPosition(ed));
+//				ea.notifyDataSetChanged();
 //			}
-//		}).setPositiveButton(R.string.about_send_mail, new DialogInterface.OnClickListener() {
+//		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 //			@Override
 //			public void onClick(DialogInterface dialog, int whichButton) {
-//				Intent i = new Intent(Intent.ACTION_SEND);
-//				i.setType("message/rfc822");
-//				i.putExtra(Intent.EXTRA_EMAIL, new String[] { "melitta@tzi.de" });
-//				i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.about_email_subject));
-//				i.putExtra(Intent.EXTRA_TEXT, getString(R.string.about_email_body));
-//				try {
-//					startActivity(Intent.createChooser(i, getString(R.string.about_email_chooser)));
-//				} catch (android.content.ActivityNotFoundException ex) {
-//					Toast.makeText(getBaseContext(), getString(R.string.about_no_email_apps), Toast.LENGTH_SHORT).show();
-//				}
+//				// ignore, just dismiss
 //			}
 //		}).show();
+//
 //	}
-
-	private void menuAddEvent() {
-
-		LayoutInflater inflater = LayoutInflater.from(this);
-		final View eventView = inflater.inflate(R.layout.event_dialog, null);
-
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(getString(R.string.add_event));
-		adb.setView(eventView);
-		NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
-		year.setMinValue(1940);
-		year.setMaxValue(2300);
-		Calendar c = Calendar.getInstance();
-		year.setValue(c.get(Calendar.YEAR));
-		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
-				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
-				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-
-				EventData ed = new EventData();
-
-				ed.setEventname(eventname.getText().toString());
-				ed.setWintersemester(wintersemester.isChecked());
-				ed.setYear(year.getValue());
-				ed.setInfo(info.getText().toString());
-
-				RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
-				eventDao.create(ed);
-				model.events.add(ed);
-				model.setCurrentEvent(ed);
-				setCurrentEvent(ed);
-				spinner.setSelection(ea.getPosition(ed));
-				ea.notifyDataSetChanged();
-			}
-		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// ignore, just dismiss
-			}
-		}).show();
-
-	}
 
 	private void menuGroup(final String task, final MenuItem item) {
 		final EventData currentEvent = model.getCurrentEvent();
@@ -713,6 +642,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		super.onCreate(savedInstanceState);
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		databaseHelper = model.getHelper();
+		omf = new OptionsMenuFactory();
 		
 		if(nfcAdapter != null){
 				// Check to see that the Activity started due to an Android Beam
@@ -734,7 +664,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 		// load events from database
 		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
-		//model.setEvents(eventDao.queryForAll());
+		model.setEvents(eventDao.queryForAll());
 
 		createSpinner();
 		createListView();
@@ -796,14 +726,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.om_about:
-			OptionsMenuFactory omf = new OptionsMenuFactory();
 			omf.menuAbout(context);
-//			menuAbout();
 			return true;
 		case R.id.om_add_event:
-			// DialogBuilder dialogBuilder = new DialogBuilder(model);
-			// dialogBuilder.menuAddEvent();
-			menuAddEvent();
+			omf.menuAddEvent(context, databaseHelper, model, spinner, ea);
 			return true;
 		case R.id.om_add_group:
 			menuGroup(ADD_GROUP, item);
@@ -815,7 +741,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			menuNfcCheck();
 			return true;
 		case R.id.om_repop:
-			doDatabaseStuff();
+			DatabasePopulator dp = new DatabasePopulator();
+			dp.doDatabaseStuff(databaseHelper, context, model);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
