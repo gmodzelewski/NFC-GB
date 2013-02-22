@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -57,6 +58,7 @@ import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.persistence.DatabaseConfigUtil;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulation;
+import com.modzelewski.nfcgb.view.OptionsMenuFactory;
 
 /**
  * MainActivity
@@ -79,6 +81,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private NfcAdapter nfcAdapter;
 
 	private static final int request_Code = 1;
+	private final Context context = this;
 
 	BackgroundModel model = new BackgroundModel(this);
 
@@ -283,33 +286,33 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		createExpandableListView();
 	}
 
-	void menuAbout() {
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		String title = getString(R.string.about_tv);
-		adb.setMessage(R.string.about).setTitle(title);
-		adb.setNeutralButton(R.string.about_goto_github, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				Uri uri = Uri.parse("https://github.com/melitta/NFC-GB");
-				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-				startActivity(intent);
-			}
-		}).setPositiveButton(R.string.about_send_mail, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				Intent i = new Intent(Intent.ACTION_SEND);
-				i.setType("message/rfc822");
-				i.putExtra(Intent.EXTRA_EMAIL, new String[] { "melitta@tzi.de" });
-				i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.about_email_subject));
-				i.putExtra(Intent.EXTRA_TEXT, getString(R.string.about_email_body));
-				try {
-					startActivity(Intent.createChooser(i, getString(R.string.about_email_chooser)));
-				} catch (android.content.ActivityNotFoundException ex) {
-					Toast.makeText(getBaseContext(), getString(R.string.about_no_email_apps), Toast.LENGTH_SHORT).show();
-				}
-			}
-		}).show();
-	}
+//	void menuAbout() {
+//		AlertDialog.Builder adb = new AlertDialog.Builder(context);
+//		String title = getString(R.string.about_tv);
+//		adb.setMessage(R.string.about).setTitle(title);
+//		adb.setNeutralButton(R.string.about_goto_github, new DialogInterface.OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int whichButton) {
+//				Uri uri = Uri.parse("https://github.com/melitta/NFC-GB");
+//				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//				startActivity(intent);
+//			}
+//		}).setPositiveButton(R.string.about_send_mail, new DialogInterface.OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int whichButton) {
+//				Intent i = new Intent(Intent.ACTION_SEND);
+//				i.setType("message/rfc822");
+//				i.putExtra(Intent.EXTRA_EMAIL, new String[] { "melitta@tzi.de" });
+//				i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.about_email_subject));
+//				i.putExtra(Intent.EXTRA_TEXT, getString(R.string.about_email_body));
+//				try {
+//					startActivity(Intent.createChooser(i, getString(R.string.about_email_chooser)));
+//				} catch (android.content.ActivityNotFoundException ex) {
+//					Toast.makeText(getBaseContext(), getString(R.string.about_no_email_apps), Toast.LENGTH_SHORT).show();
+//				}
+//			}
+//		}).show();
+//	}
 
 	private void menuAddEvent() {
 
@@ -793,7 +796,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.om_about:
-			menuAbout();
+			OptionsMenuFactory omf = new OptionsMenuFactory();
+			omf.menuAbout(context);
+//			menuAbout();
 			return true;
 		case R.id.om_add_event:
 			// DialogBuilder dialogBuilder = new DialogBuilder(model);
