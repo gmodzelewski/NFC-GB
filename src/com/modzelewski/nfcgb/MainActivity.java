@@ -2,7 +2,6 @@ package com.modzelewski.nfcgb;
 
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,7 +10,6 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -33,18 +31,13 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import com.modzelewski.nfcgb.controller.DragEventListener;
 import com.modzelewski.nfcgb.controller.EventAdapter;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
@@ -55,11 +48,11 @@ import com.modzelewski.nfcgb.model.EventMembershipData;
 import com.modzelewski.nfcgb.model.GroupData;
 import com.modzelewski.nfcgb.model.GroupMembershipData;
 import com.modzelewski.nfcgb.model.PersonData;
-import com.modzelewski.nfcgb.persistence.DatabaseConfigUtil;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
-import com.modzelewski.nfcgb.persistence.DatabasePopulation;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
-import com.modzelewski.nfcgb.view.OptionsMenuFactory;
+import com.modzelewski.nfcgb.view.AboutDialog;
+import com.modzelewski.nfcgb.view.EventDialog;
+import com.modzelewski.nfcgb.view.GroupDialog;
 
 /**
  * MainActivity
@@ -94,8 +87,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	EventAdapter ea;
 	PersonAdapter pa;
 	GroupAdapter ga;
-	private OptionsMenuFactory omf;
-
+	private AboutDialog aboutDialog;
+	private EventDialog eventDialog;
+	private GroupDialog groupDialog;
+	
 	/**
 	 * Create expandable list referencing at groups in background model.
 	 */
@@ -242,145 +237,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	}
 
 
-
-//	private void menuAddEvent() {
-//
-//		LayoutInflater inflater = LayoutInflater.from(this);
-//		final View eventView = inflater.inflate(R.layout.event_dialog, null);
-//
-//		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-//		adb.setTitle(getString(R.string.add_event));
-//		adb.setView(eventView);
-//		NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
-//		year.setMinValue(1940);
-//		year.setMaxValue(2300);
-//		Calendar c = Calendar.getInstance();
-//		year.setValue(c.get(Calendar.YEAR));
-//		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-//			@Override
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
-//				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-//				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
-//				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-//
-//				EventData ed = new EventData();
-//
-//				ed.setEventname(eventname.getText().toString());
-//				ed.setWintersemester(wintersemester.isChecked());
-//				ed.setYear(year.getValue());
-//				ed.setInfo(info.getText().toString());
-//
-//				RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
-//				eventDao.create(ed);
-//				model.events.add(ed);
-//				model.setCurrentEvent(ed);
-//				setCurrentEvent(ed);
-//				spinner.setSelection(ea.getPosition(ed));
-//				ea.notifyDataSetChanged();
-//			}
-//		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-//			@Override
-//			public void onClick(DialogInterface dialog, int whichButton) {
-//				// ignore, just dismiss
-//			}
-//		}).show();
-//
-//	}
-
-	private void menuGroup(final String task, final MenuItem item) {
-		final EventData currentEvent = model.getCurrentEvent();
-		LayoutInflater inflater = LayoutInflater.from(this);
-		final View groupView = inflater.inflate(R.layout.group_dialog, null);
-
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
-		groupNameET.requestFocus();
-
-		String title = null;
-		if (task == ADD_GROUP)
-			title = getString(R.string.add_group);
-
-		if (task == EDIT_GROUP) {
-			title = getString(R.string.edit_group);
-			final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-			final GroupData gd = model.groups.get((int) pInfo.id);
-			groupNameET.setText(gd.getGroupName());
-		}
-
-		adb.setTitle(title);
-		adb.setView(groupView);
-		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
-				String groupName = groupNameET.getText().toString().trim();
-				GroupData group = new GroupData(groupName, currentEvent.getId());
-
-				// create Object
-				RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
-				if (task == ADD_GROUP) {
-					groupDao.create(group);
-					model.groups.add(group);
-				}
-				if (task == EDIT_GROUP) {
-					final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-					final GroupData gd = model.groups.get((int) pInfo.id);
-					gd.setGroupName(groupName);
-					groupDao.update(gd);
-					groupDao.refresh(gd);
-				}
-				refreshListViews();
-			}
-		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-			}
-		}).show();
-	}
-
-	private void menuGroupEmail(MenuItem item) {
-		ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-		GroupData gd = model.groups.get((int) pInfo.id);
-		List<PersonData> persons = gd.getPerson();
-		String emailAddresses = "";
-		for (PersonData person : persons) {
-			if (person.getEmail().contains("@")) {
-				emailAddresses += ", " + person.getEmail();
-			} else {
-				Toast.makeText(getApplicationContext(), getString(R.string.incorrect_mail) + person.getName(), Toast.LENGTH_LONG).show();
-			}
-		}
-
-		final Intent i = new Intent(android.content.Intent.ACTION_SEND);
-		i.setType("message/rfc822");
-		i.putExtra(Intent.EXTRA_EMAIL, new String[] { emailAddresses });
-		try {
-			startActivity(Intent.createChooser(i, getString(R.string.about_email_chooser)));
-		} catch (android.content.ActivityNotFoundException ex) {
-			Toast.makeText(getBaseContext(), getString(R.string.about_no_email_apps), Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	private void menuGroupRemove(MenuItem item) {
-		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(R.string.remove_group);
-		adb.setMessage(R.string.remove_group_message);
-		adb.setNegativeButton(R.string.cancel_button, null);
-		final ExpandableListView.ExpandableListContextMenuInfo pInfo = info;
-		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				GroupData gd = model.groups.get((int) pInfo.id);
-				RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
-				groupDao.delete(gd);
-				model.groups.remove(gd);
-				refreshListViews();
-			}
-		});
-		adb.show();
-	}
+	
 
 	private void menuPerson(final String task, final MenuItem item) {
 		final EventData currentEvent = model.getCurrentEvent();
@@ -487,112 +344,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		adb.show();
 	}
 
-	private void menuEvent(final MenuItem item) {
-		// TODO menuAddEvent hier rein
-		final EventData currentEvent = model.getCurrentEvent();
-		LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
-		final RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
-		final View eventView = inflater.inflate(R.layout.event_dialog, null);
-		EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
-		Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-		NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
-		EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-		eventname.setText(currentEvent.getEventname());
-		wintersemester.setChecked(currentEvent.isWintersemester());
-		year.setMinValue(1940);
-		year.setMaxValue(2300);
-		year.setValue(currentEvent.getYear());
-		info.setText(currentEvent.getInfo());
-
-		AlertDialog.Builder adb = new AlertDialog.Builder(spinner.getContext());
-		String title = getString(R.string.edit_event);
-		adb.setTitle(title);
-		adb.setView(eventView);
-		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
-				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
-				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-
-				if (eventname.toString().trim().isEmpty())
-					currentEvent.setEventname(getString(R.string.unknown_eventname));
-				else
-					currentEvent.setEventname(eventname.getText().toString().trim());
-				currentEvent.setWintersemester(wintersemester.isChecked());
-				currentEvent.setYear(year.getValue());
-				currentEvent.setInfo(info.getText().toString());
-
-				eventDao.update(currentEvent);
-				eventDao.refresh(currentEvent);
-
-				ea.notifyDataSetChanged();
-			}
-		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// ignore, just dismiss
-			}
-		}).show();
-
-	}
-
-	private void menuEventRemove(final MenuItem item) {
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(R.string.context_menu_remove_title);
-		adb.setMessage(R.string.context_menu_remove_message);
-		adb.setNegativeButton(R.string.cancel_button, null);
-		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				EventData currentEvent = model.getCurrentEvent();
-				RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
-				RuntimeExceptionDao<GroupData, Integer> groupDao = databaseHelper.getGroupDataDao();
-				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
-				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
-				List<EventData> ed = null;
-				List<GroupData> gd = null;
-				List<EventMembershipData> emd = null;
-				List<GroupMembershipData> gmd = null;
-
-				try {
-					ed = eventDao.query(eventDao.queryBuilder().where().eq("id", model.getCurrentEvent().getId()).prepare());
-					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().getId()).prepare());
-					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().getId()).prepare());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-				for (GroupData groupData : gd) {
-					try {
-						gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", groupData.id).prepare());
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-
-				eventDao.delete(ed);
-				groupDao.delete(gd);
-				eventMembershipDao.delete(emd);
-				groupMembershipDao.delete(gmd);
-
-				model.persons.clear();
-				model.groups.clear();
-				model.events.remove(currentEvent);
-				if (model.events.contains(currentEvent))
-					Toast.makeText(getBaseContext(), "ist noch drin", Toast.LENGTH_LONG).show();
-
-				ea.notifyDataSetChanged();
-				refreshListViews();
-
-				if (!model.getEvents().isEmpty())
-					setCurrentEvent(model.getEvents().get(0));
-			}
-		});
-		adb.show();
-	}
+	
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -608,16 +360,16 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.cm_group_add:
-			menuGroup(ADD_GROUP, item);
+			groupDialog.addGroup(databaseHelper, model, spinner, ga);
 			return true;
 		case R.id.cm_group_edit:
-			menuGroup(EDIT_GROUP, item);
+			groupDialog.editGroup(databaseHelper, model, spinner, ga, item);
 			return true;
 		case R.id.cm_group_remove:
-			menuGroupRemove(item);
+			groupDialog.removeGroup(databaseHelper, model, spinner, ga, item);
 			return true;
 		case R.id.cm_group_email:
-			menuGroupEmail(item);
+			groupDialog.emailGroup(databaseHelper, model, spinner, ga, item);
 			return true;
 		case R.id.cm_person_edit:
 			menuPerson(EDIT_PERSON, item);
@@ -627,10 +379,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			// Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
 		case R.id.cm_event_edit:
-			menuEvent(item);
+			eventDialog.editEvent(databaseHelper, model, spinner, ea, item);
 			return true;
 		case R.id.cm_event_remove:
-			menuEventRemove(item);
+			eventDialog.removeEvent(databaseHelper, model, spinner, ea, item);
 
 		default:
 			return super.onContextItemSelected(item);
@@ -642,7 +394,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		super.onCreate(savedInstanceState);
 		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		databaseHelper = model.getHelper();
-		omf = new OptionsMenuFactory();
+		aboutDialog = new AboutDialog();
+		eventDialog = new EventDialog(context);
+		groupDialog = new GroupDialog(context);
 		
 		if(nfcAdapter != null){
 				// Check to see that the Activity started due to an Android Beam
@@ -726,13 +480,14 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.om_about:
-			omf.menuAbout(context);
+			aboutDialog.menuAbout(context);
 			return true;
 		case R.id.om_add_event:
-			omf.menuAddEvent(context, databaseHelper, model, spinner, ea);
+			EventDialog eventDialog = new EventDialog(context);
+			eventDialog.addEvent(databaseHelper, model, spinner, ea);
 			return true;
 		case R.id.om_add_group:
-			menuGroup(ADD_GROUP, item);
+			groupDialog.addGroup(databaseHelper, model, spinner, ga);
 			return true;
 		case R.id.om_add_person:
 			menuPerson(ADD_PERSON, item);
