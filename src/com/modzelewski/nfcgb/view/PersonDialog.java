@@ -21,7 +21,7 @@ import com.modzelewski.nfcgb.model.GroupMembershipData;
 import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
-public class PersonDialog {
+public class PersonDialog implements PersonDialogInterface {
 	private Context context;
 
 	public PersonDialog(Context c) {
@@ -29,6 +29,10 @@ public class PersonDialog {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.PersonDialogInterface#addPerson(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, com.modzelewski.nfcgb.controller.PersonAdapter)
+	 */
+	@Override
 	public void addPerson(final DatabaseHelper dbh, final BackgroundModel model, final PersonAdapter pa) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View personView = inflater.inflate(R.layout.person_dialog, null);
@@ -60,6 +64,10 @@ public class PersonDialog {
 		}).show();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.PersonDialogInterface#editPerson(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.view.MenuItem, com.modzelewski.nfcgb.controller.PersonAdapter)
+	 */
+	@Override
 	public void editPerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View personView = inflater.inflate(R.layout.person_dialog, null);
@@ -102,6 +110,10 @@ public class PersonDialog {
 		}).show();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.PersonDialogInterface#removePerson(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.view.MenuItem, com.modzelewski.nfcgb.controller.PersonAdapter)
+	 */
+	@Override
 	public void removePerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);

@@ -7,10 +7,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.R;
 
-public class AboutDialog extends MainActivity {
+public class AboutDialog {
 	private Context context;
 //	private DatabaseHelper databasehelper;
 	
@@ -45,7 +44,7 @@ public class AboutDialog extends MainActivity {
 				try {
 					context.startActivity(Intent.createChooser(i, emailAppChooseMessage));
 				} catch (android.content.ActivityNotFoundException ex) {
-					Toast.makeText(getBaseContext(), emailAppFailedMessage, Toast.LENGTH_SHORT).show();
+					Toast.makeText(context, emailAppFailedMessage, Toast.LENGTH_SHORT).show();
 				}
 			}
 		}).show();

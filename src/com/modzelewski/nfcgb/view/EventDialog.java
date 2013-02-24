@@ -26,7 +26,7 @@ import com.modzelewski.nfcgb.model.GroupData;
 import com.modzelewski.nfcgb.model.GroupMembershipData;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
-public class EventDialog {
+public class EventDialog implements EventDialogInterface {
 	private Context context;
 	
 	public EventDialog(Context c) {
@@ -34,6 +34,10 @@ public class EventDialog {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#addEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter)
+	 */
+	@Override
 	public void addEvent(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final EventAdapter ea) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View eventView = inflater.inflate(R.layout.event_dialog, null);
@@ -78,6 +82,10 @@ public class EventDialog {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#editEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter, android.view.MenuItem)
+	 */
+	@Override
 	public void editEvent(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final EventAdapter ea, final MenuItem item) {
 		final EventData currentEvent = model.getCurrentEvent();
 		LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
@@ -129,6 +137,10 @@ public class EventDialog {
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#removeEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter, android.view.MenuItem)
+	 */
+	@Override
 	public void removeEvent(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final EventAdapter ea, final MenuItem item) {
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(R.string.context_menu_remove_title);

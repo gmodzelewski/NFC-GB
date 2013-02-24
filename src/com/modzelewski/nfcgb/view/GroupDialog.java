@@ -23,7 +23,7 @@ import com.modzelewski.nfcgb.model.GroupData;
 import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
-public class GroupDialog {
+public class GroupDialog implements GroupDialogInterface {
 	private Context context;
 
 	public GroupDialog(Context c) {
@@ -31,6 +31,10 @@ public class GroupDialog {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.GroupDialogInterface#addGroup(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.GroupAdapter)
+	 */
+	@Override
 	public void addGroup(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final GroupAdapter ga) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View groupView = inflater.inflate(R.layout.group_dialog, null);
@@ -63,6 +67,10 @@ public class GroupDialog {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.GroupDialogInterface#editGroup(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.GroupAdapter, android.view.MenuItem)
+	 */
+	@Override
 	public void editGroup(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final GroupAdapter ga, final MenuItem item) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View groupView = inflater.inflate(R.layout.group_dialog, null);
@@ -100,6 +108,10 @@ public class GroupDialog {
 		}).show();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.GroupDialogInterface#emailGroup(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.GroupAdapter, android.view.MenuItem)
+	 */
+	@Override
 	public void emailGroup(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final GroupAdapter ga, final MenuItem item) {
 		ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
 		GroupData gd = model.groups.get((int) pInfo.id);
@@ -123,6 +135,10 @@ public class GroupDialog {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.modzelewski.nfcgb.view.GroupDialogInterface#removeGroup(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.GroupAdapter, android.view.MenuItem)
+	 */
+	@Override
 	public void removeGroup(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final GroupAdapter ga, final MenuItem item) {
 		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
