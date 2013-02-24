@@ -19,7 +19,6 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.model.BackgroundModel;
-import com.modzelewski.nfcgb.model.EventData;
 import com.modzelewski.nfcgb.model.GroupData;
 import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
@@ -41,7 +40,7 @@ public class GroupDialog {
 		groupNameET.requestFocus();
 
 		String title = null;
-			title = context.getResources().getString(R.string.add_group);
+		title = context.getResources().getString(R.string.add_group);
 
 		adb.setTitle(title);
 		adb.setView(groupView);
@@ -52,20 +51,19 @@ public class GroupDialog {
 				String groupName = groupNameET.getText().toString().trim();
 				GroupData group = new GroupData(groupName, model.getCurrentEvent().getId());
 				RuntimeExceptionDao<GroupData, Integer> groupDao = dbh.getGroupDataDao();
-					groupDao.create(group);
-					model.groups.add(group);
-					ga.notifyDataSetChanged();
+				groupDao.create(group);
+				model.groups.add(group);
+				ga.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
 			}
 		}).show();
-	
+
 	}
 
 	public void editGroup(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final GroupAdapter ga, final MenuItem item) {
-		final EventData currentEvent = model.getCurrentEvent();
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View groupView = inflater.inflate(R.layout.group_dialog, null);
 
@@ -73,9 +71,9 @@ public class GroupDialog {
 		EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 		groupNameET.requestFocus();
 
-			final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-			final GroupData gd = model.groups.get((int) pInfo.id);
-			groupNameET.setText(gd.getGroupName());
+		final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
+		final GroupData gd = model.groups.get((int) pInfo.id);
+		groupNameET.setText(gd.getGroupName());
 
 		adb.setTitle(context.getResources().getString(R.string.edit_group));
 		adb.setView(groupView);
@@ -84,16 +82,15 @@ public class GroupDialog {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 				String groupName = groupNameET.getText().toString().trim();
-				GroupData group = new GroupData(groupName, currentEvent.getId());
 
 				// create Object
 				RuntimeExceptionDao<GroupData, Integer> groupDao = dbh.getGroupDataDao();
 
-					final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-					final GroupData gd = model.groups.get((int) pInfo.id);
-					gd.setGroupName(groupName);
-					groupDao.update(gd);
-					groupDao.refresh(gd);
+				final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
+				final GroupData gd = model.groups.get((int) pInfo.id);
+				gd.setGroupName(groupName);
+				groupDao.update(gd);
+				groupDao.refresh(gd);
 				ga.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {

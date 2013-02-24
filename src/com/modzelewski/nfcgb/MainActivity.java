@@ -20,7 +20,6 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +28,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
@@ -44,7 +42,6 @@ import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.BackgroundModel;
 import com.modzelewski.nfcgb.model.EventData;
-import com.modzelewski.nfcgb.model.EventMembershipData;
 import com.modzelewski.nfcgb.model.GroupData;
 import com.modzelewski.nfcgb.model.GroupMembershipData;
 import com.modzelewski.nfcgb.model.PersonData;
@@ -53,6 +50,7 @@ import com.modzelewski.nfcgb.persistence.DatabasePopulator;
 import com.modzelewski.nfcgb.view.AboutDialog;
 import com.modzelewski.nfcgb.view.EventDialog;
 import com.modzelewski.nfcgb.view.GroupDialog;
+import com.modzelewski.nfcgb.view.PersonDialog;
 
 /**
  * MainActivity
@@ -61,11 +59,6 @@ import com.modzelewski.nfcgb.view.GroupDialog;
  */
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements CreateNdefMessageCallback {
 	private final String LOG_TAG = getClass().getSimpleName();
-	private final String ADD_PERSON = "ADD PERSON";
-	private final String EDIT_PERSON = "EDIT PERSON";
-	private final String ADD_GROUP = "ADD GROUP";
-	private final String EDIT_GROUP = "EDIT GROUP";
-
 	// Create and set the tags for the Buttons
 	final String LISTVIEW_TAG = "ListView";
 	final String EXPLISTVIEW_TAG = "ELV";
@@ -90,7 +83,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private AboutDialog aboutDialog;
 	private EventDialog eventDialog;
 	private GroupDialog groupDialog;
-	
+	private PersonDialog personDialog;
+
 	/**
 	 * Create expandable list referencing at groups in background model.
 	 */
@@ -128,7 +122,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 					public void onClick(DialogInterface dialog, int whichButton) {
 					}
 				}).show();
-				
+
 				return true;
 			}
 		});
@@ -236,116 +230,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		});
 	}
 
-
-	
-
-	private void menuPerson(final String task, final MenuItem item) {
-		final EventData currentEvent = model.getCurrentEvent();
-		LayoutInflater inflater = LayoutInflater.from(this);
-		final View personView = inflater.inflate(R.layout.person_dialog, null);
-
-		String title = null;
-		String addPerson = getString(R.string.add_person_in) + " " + currentEvent.getEventname();
-		String editPerson = getString(R.string.edit_person_in) + " " + currentEvent.getEventname();
-		if (task == ADD_PERSON)
-			title = addPerson;
-		if (task == EDIT_PERSON) {
-			title = editPerson;
-
-			EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
-			EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
-
-			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-			final AdapterView.AdapterContextMenuInfo pInfo = info;
-			final PersonData pd = model.persons.get(pInfo.position);
-			nameET.setText(pd.getName());
-			emailET.setText(pd.getEmail());
-		}
-
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(title);
-		adb.setView(personView);
-		adb.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
-				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
-				String name = nameET.getText().toString().trim();
-				String email = emailET.getText().toString().trim();
-				RuntimeExceptionDao<PersonData, Integer> personDao = databaseHelper.getPersonDataDao();
-
-				if (task == ADD_PERSON) {
-					PersonData person = new PersonData(name, email);
-					RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
-					// RuntimeExceptionDao<GroupMembershipData, Integer>
-					// groupMembershipDao =
-					// databaseHelper.getGroupMembershipDataDao();
-
-					personDao.create(person);
-					EventMembershipData emd = new EventMembershipData(currentEvent.getId(), person.getId());
-					eventMembershipDao.create(emd);
-					model.persons.add(person);
-				}
-
-				if (task == EDIT_PERSON) {
-					AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-					final AdapterView.AdapterContextMenuInfo pInfo = info;
-					final PersonData pd = model.persons.get(pInfo.position);
-
-					pd.setName(name);
-					pd.setEmail(email);
-
-					personDao.update(pd);
-					personDao.refresh(pd);
-				}
-				refreshListViews();
-			}
-		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// ignore, just dismiss
-			}
-		}).show();
-	}
-
-	private void menuPersonRemove(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		AlertDialog.Builder adb = new AlertDialog.Builder(this);
-		adb.setTitle(R.string.context_menu_remove_title);
-		adb.setMessage(R.string.context_menu_remove_message);
-		adb.setNegativeButton(R.string.cancel_button, null);
-		final AdapterView.AdapterContextMenuInfo pInfo = info;
-		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = databaseHelper.getEventMembershipDataDao();
-				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
-				List<EventMembershipData> emd = null;
-				List<GroupMembershipData> gmd = null;
-
-				PersonData pd = model.persons.get(pInfo.position);
-				try {
-					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).and().eq("event_id", model.getCurrentEvent().getId()).prepare());
-					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).prepare());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-				for (GroupMembershipData groupMembershipData : gmd) {
-					model.getGroupById(groupMembershipData.getGroup_id()).getPerson().remove(model.getPersonById(pd.getId()));
-				}
-				model.persons.remove(pd);
-				eventMembershipDao.delete(emd);
-				groupMembershipDao.delete(gmd);
-
-				refreshListViews();
-			}
-		});
-		adb.show();
-	}
-
-	
-
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == request_Code) {
@@ -372,10 +256,12 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			groupDialog.emailGroup(databaseHelper, model, spinner, ga, item);
 			return true;
 		case R.id.cm_person_edit:
-			menuPerson(EDIT_PERSON, item);
+			personDialog.editPerson(databaseHelper, model, item, pa);
+			refreshListViews();
 			return true;
 		case R.id.cm_person_remove:
-			menuPersonRemove(item);
+			personDialog.removePerson(databaseHelper, model, item, pa);
+			refreshListViews();
 			// Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
 		case R.id.cm_event_edit:
@@ -397,12 +283,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		aboutDialog = new AboutDialog();
 		eventDialog = new EventDialog(context);
 		groupDialog = new GroupDialog(context);
-		
-		if(nfcAdapter != null){
-				// Check to see that the Activity started due to an Android Beam
-				if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-					processIntent(getIntent());
-	
+		personDialog = new PersonDialog(context);
+
+		if (nfcAdapter != null) {
+			// Check to see that the Activity started due to an Android Beam
+			if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+				processIntent(getIntent());
+
 				// Register callback
 				nfcAdapter.setNdefPushMessageCallback(this, this);
 			}
@@ -490,7 +377,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			groupDialog.addGroup(databaseHelper, model, spinner, ga);
 			return true;
 		case R.id.om_add_person:
-			menuPerson(ADD_PERSON, item);
+			personDialog.addPerson(databaseHelper, model, pa);
+			refreshListViews();
 			return true;
 		case R.id.om_nfc:
 			menuNfcCheck();
