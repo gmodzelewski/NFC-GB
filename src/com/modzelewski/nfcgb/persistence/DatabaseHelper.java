@@ -1,22 +1,17 @@
 package com.modzelewski.nfcgb.persistence;
 
-import java.sql.SQLException;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.modzelewski.nfcgb.R;
-import com.modzelewski.nfcgb.model.EventData;
-import com.modzelewski.nfcgb.model.EventMembershipData;
-import com.modzelewski.nfcgb.model.GroupData;
-import com.modzelewski.nfcgb.model.GroupMembershipData;
-import com.modzelewski.nfcgb.model.PersonData;
+import com.modzelewski.nfcgb.model.*;
+
+import java.sql.SQLException;
 
 /**
  * Database helper class used to manage the creation and upgrading of your

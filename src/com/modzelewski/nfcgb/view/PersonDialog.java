@@ -1,8 +1,5 @@
 package com.modzelewski.nfcgb.view;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
@@ -22,8 +18,11 @@ import com.modzelewski.nfcgb.model.GroupMembershipData;
 import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
+import java.sql.SQLException;
+import java.util.List;
+
 public class PersonDialog implements PersonDialogInterface {
-	private Context context;
+	private final Context context;
 
 	public PersonDialog(Context c) {
 		this.context = c;

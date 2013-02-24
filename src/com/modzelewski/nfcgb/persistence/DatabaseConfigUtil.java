@@ -1,9 +1,9 @@
 package com.modzelewski.nfcgb.persistence;
 
+import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
+
 import java.io.IOException;
 import java.sql.SQLException;
-
-import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 
 /**
  * Database helper class used to manage the creation and upgrading of your

@@ -1,14 +1,13 @@
 package com.modzelewski.nfcgb.controller;
 
-import java.util.List;
-
-import com.modzelewski.nfcgb.model.PersonData;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import com.modzelewski.nfcgb.model.PersonData;
+
+import java.util.List;
 
 /**
  * ListView adapter for showing persons.
@@ -16,8 +15,8 @@ import android.widget.TextView;
  */
 public class PersonAdapter extends ArrayAdapter<PersonData> {
 
-	public PersonAdapter(Context context, int textViewResourceId, List<PersonData> items) {
-		super(context, textViewResourceId, items);
+	public PersonAdapter(Context context, List<PersonData> items) {
+		super(context, android.R.layout.simple_list_item_1, items);
 	}
 
 	@Override
@@ -30,7 +29,6 @@ public class PersonAdapter extends ArrayAdapter<PersonData> {
 	
 	/**
 	 * Prepares String to display: "NAME\nMAIL"
-	 * @param ed PersonData to display
 	 * @return prepared String
 	 */
 	private String preparePersonData(PersonData pd) {

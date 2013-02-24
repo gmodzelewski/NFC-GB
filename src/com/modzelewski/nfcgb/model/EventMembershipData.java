@@ -1,8 +1,8 @@
 package com.modzelewski.nfcgb.model;
 
-import java.io.Serializable;
-
 import com.j256.ormlite.field.DatabaseField;
+
+import java.io.Serializable;
 
 /**
  * A simple demonstration object we are creating and persisting to the database.

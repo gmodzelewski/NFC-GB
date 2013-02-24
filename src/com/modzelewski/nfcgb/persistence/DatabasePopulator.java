@@ -1,23 +1,21 @@
 package com.modzelewski.nfcgb.persistence;
 
-import java.sql.SQLException;
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.modzelewski.nfcgb.model.BackgroundModel;
 import com.modzelewski.nfcgb.model.EventData;
 
+import java.sql.SQLException;
+
 public class DatabasePopulator {
-	private DatabaseHelper databaseHelper;
-	private final String LOG_TAG = getClass().getSimpleName();
+    private final String LOG_TAG = getClass().getSimpleName();
 
 	public void doDatabaseStuff(DatabaseHelper dbh, Context context, BackgroundModel model) {
-		databaseHelper = dbh;
+        DatabaseHelper databaseHelper = dbh;
 		// delete all Data daos
 		// Reset here database every time; remove at release
 		ConnectionSource connectionSource = databaseHelper.getConnectionSource();

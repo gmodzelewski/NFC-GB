@@ -1,8 +1,5 @@
 package com.modzelewski.nfcgb.nearfieldcommunication;
 
-import java.nio.charset.Charset;
-import java.util.Locale;
-
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -11,10 +8,12 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Parcelable;
 import android.widget.Toast;
-
 import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.model.PersonData;
+
+import java.nio.charset.Charset;
+import java.util.Locale;
 
 
 public class Nfc extends MainActivity {
@@ -69,8 +68,7 @@ public class Nfc extends MainActivity {
 		if (nfcAdapter == null) {
 			Toast.makeText(context, context.getResources().getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
 			finish();
-			return;
-		} else {
+        } else {
 			Toast.makeText(context, context.getResources().getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
 		}
 	}

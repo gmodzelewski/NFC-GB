@@ -1,14 +1,13 @@
 package com.modzelewski.nfcgb.controller;
 
-import java.util.List;
-
-import com.modzelewski.nfcgb.model.EventData;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import com.modzelewski.nfcgb.model.EventData;
+
+import java.util.List;
 
 /**
  * Spinner adapter for showing events.
@@ -16,8 +15,8 @@ import android.widget.TextView;
  */
 public class EventAdapter extends ArrayAdapter<EventData> {
 
-	public EventAdapter(Context context, int textViewResourceId, List<EventData> items) {
-		super(context, textViewResourceId, items);
+	public EventAdapter(Context context, List<EventData> items) {
+		super(context, android.R.layout.simple_spinner_item, items);
 		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	}
 

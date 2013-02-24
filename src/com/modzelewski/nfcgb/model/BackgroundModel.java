@@ -1,25 +1,25 @@
 package com.modzelewski.nfcgb.model;
 
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.modzelewski.nfcgb.MainActivity;
+import com.modzelewski.nfcgb.persistence.DatabaseHelper;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.modzelewski.nfcgb.MainActivity;
-import com.modzelewski.nfcgb.persistence.DatabaseHelper;
-
 public class BackgroundModel {
-	private MainActivity mainActivity;
+	private final MainActivity mainActivity;
 	// selected event
 	private EventData currentEvent = null;
 	// event list for spinner
-	public List<EventData> events = new LinkedList<EventData>();
+	public final List<EventData> events = new LinkedList<EventData>();
 	// person list for left list
 	public List<PersonData> persons = new LinkedList<PersonData>();
 	// group list for right list
-	public List<GroupData> groups = new LinkedList<GroupData>();
+	public final List<GroupData> groups = new LinkedList<GroupData>();
 
 	public BackgroundModel(MainActivity mainActivity) {
 		this.mainActivity = mainActivity;

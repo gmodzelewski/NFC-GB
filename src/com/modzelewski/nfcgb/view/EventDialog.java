@@ -1,37 +1,27 @@
 package com.modzelewski.nfcgb.view;
 
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.Spinner;
-import android.widget.Switch;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.EventAdapter;
-import com.modzelewski.nfcgb.model.BackgroundModel;
-import com.modzelewski.nfcgb.model.EventData;
-import com.modzelewski.nfcgb.model.EventMembershipData;
-import com.modzelewski.nfcgb.model.GroupData;
-import com.modzelewski.nfcgb.model.GroupMembershipData;
+import com.modzelewski.nfcgb.model.*;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.List;
+
 public class EventDialog implements EventDialogInterface {
-	private Context context;
+	private final Context context;
 	
 	public EventDialog(Context c) {
-		this.context = c;
-		
+        super();
+        this.context = c;
 	}
 	
 	/* (non-Javadoc)
@@ -86,9 +76,9 @@ public class EventDialog implements EventDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#editEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter, android.view.MenuItem)
 	 */
 	@Override
-	public void editEvent(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final EventAdapter ea, final MenuItem item) {
+	public void editEvent(final DatabaseHelper dbh, final BackgroundModel model, final EventAdapter ea) {
 		final EventData currentEvent = model.getCurrentEvent();
-		LayoutInflater inflater = LayoutInflater.from(spinner.getContext());
+		LayoutInflater inflater = LayoutInflater.from(context);
 		final RuntimeExceptionDao<EventData, Integer> eventDao = dbh.getEventDataDao();
 		final View eventView = inflater.inflate(R.layout.event_dialog, null);
 		EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
@@ -102,7 +92,7 @@ public class EventDialog implements EventDialogInterface {
 		year.setValue(currentEvent.getYear());
 		info.setText(currentEvent.getInfo());
 
-		AlertDialog.Builder adb = new AlertDialog.Builder(spinner.getContext());
+		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		String title = context.getResources().getString(R.string.edit_event);
 		adb.setTitle(title);
 		adb.setView(eventView);
@@ -141,7 +131,7 @@ public class EventDialog implements EventDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#removeEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter, android.view.MenuItem)
 	 */
 	@Override
-	public void removeEvent(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final EventAdapter ea, final MenuItem item) {
+	public void removeEvent(final DatabaseHelper dbh, final BackgroundModel model, final EventAdapter ea) {
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(R.string.context_menu_remove_title);
 		adb.setMessage(R.string.context_menu_remove_message);
@@ -167,7 +157,8 @@ public class EventDialog implements EventDialogInterface {
 					e.printStackTrace();
 				}
 
-				for (GroupData groupData : gd) {
+                assert gd != null;
+                for (GroupData groupData : gd) {
 					try {
 						gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", groupData.id).prepare());
 					} catch (SQLException e) {

@@ -1,10 +1,10 @@
 package com.modzelewski.nfcgb.model;
 
+import com.j256.ormlite.field.DatabaseField;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.j256.ormlite.field.DatabaseField;
 
 /**
  * A simple demonstration object we are creating and persisting to the database.

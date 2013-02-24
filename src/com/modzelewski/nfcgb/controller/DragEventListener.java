@@ -1,9 +1,5 @@
 package com.modzelewski.nfcgb.controller;
 
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -15,23 +11,22 @@ import android.view.View.OnDragListener;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
-import com.modzelewski.nfcgb.R.string;
 import com.modzelewski.nfcgb.model.BackgroundModel;
 import com.modzelewski.nfcgb.model.GroupData;
 import com.modzelewski.nfcgb.model.GroupMembershipData;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+
 public class DragEventListener extends ListView implements OnDragListener {
 
-	BackgroundModel model;
-	private DatabaseHelper databaseHelper = null;
-	final String LISTVIEW_TAG = "ListView";
-	final String EXPLISTVIEW_TAG = "ELV";
-	final String TARGETLAYOUT_TAG = "targetLayout";
-	private List<Integer> openedGroups = new LinkedList<Integer>();
+	private BackgroundModel model;
+    final String EXPLISTVIEW_TAG = "ELV";
+    private final List<Integer> openedGroups = new LinkedList<Integer>();
 	private int droppedInGroupPos;
 
 	public DragEventListener(Context context) {
@@ -77,7 +72,7 @@ public class DragEventListener extends ListView implements OnDragListener {
 
 		case DragEvent.ACTION_DROP:
 			if (v.getTag() == EXPLISTVIEW_TAG) {
-				databaseHelper = model.getHelper();
+                DatabaseHelper databaseHelper = model.getHelper();
 				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
 				ClipData.Item i = event.getClipData().getItemAt(0);
 				Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
@@ -93,13 +88,15 @@ public class DragEventListener extends ListView implements OnDragListener {
 
 				List<GroupMembershipData> groupResult = null;
 				try {
-					groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and().eq("person_id", personId).query();
+                    assert group != null;
+                    groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and().eq("person_id", personId).query();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
-				if (groupResult.isEmpty()) {
+                assert groupResult != null;
+                if (groupResult.isEmpty()) {
 					groupMembershipDao.create(new GroupMembershipData(group.id, personId));
 					model.getGroupById(group.id).getPerson().add(model.getPersonById(personId));
 				} else {
