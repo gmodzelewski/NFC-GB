@@ -211,11 +211,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			groupDialog.emailGroup(databaseHelper, model, spinner, ga, item);
 			return true;
 		case R.id.cm_person_edit:
-			personDialog.editPerson(databaseHelper, model, item, pa);
+			personDialog.editPerson(databaseHelper, model, item, pa, ga);
 			refreshListViews();
 			return true;
 		case R.id.cm_person_remove:
-			personDialog.removePerson(databaseHelper, model, item, pa);
+			personDialog.removePerson(databaseHelper, model, item, pa, ga);
 			refreshListViews();
 			// Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;

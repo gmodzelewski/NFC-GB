@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.BackgroundModel;
 import com.modzelewski.nfcgb.model.EventMembershipData;
@@ -29,8 +30,14 @@ public class PersonDialog implements PersonDialogInterface {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.modzelewski.nfcgb.view.PersonDialogInterface#addPerson(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, com.modzelewski.nfcgb.controller.PersonAdapter)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.modzelewski.nfcgb.view.PersonDialogInterface#addPerson(com.modzelewski
+	 * .nfcgb.persistence.DatabaseHelper,
+	 * com.modzelewski.nfcgb.model.BackgroundModel,
+	 * com.modzelewski.nfcgb.controller.PersonAdapter)
 	 */
 	@Override
 	public void addPerson(final DatabaseHelper dbh, final BackgroundModel model, final PersonAdapter pa) {
@@ -64,11 +71,17 @@ public class PersonDialog implements PersonDialogInterface {
 		}).show();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.modzelewski.nfcgb.view.PersonDialogInterface#editPerson(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.view.MenuItem, com.modzelewski.nfcgb.controller.PersonAdapter)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.modzelewski.nfcgb.view.PersonDialogInterface#editPerson(com.modzelewski
+	 * .nfcgb.persistence.DatabaseHelper,
+	 * com.modzelewski.nfcgb.model.BackgroundModel, android.view.MenuItem,
+	 * com.modzelewski.nfcgb.controller.PersonAdapter)
 	 */
 	@Override
-	public void editPerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa) {
+	public void editPerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa, final GroupAdapter ga) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View personView = inflater.inflate(R.layout.person_dialog, null);
 		EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
@@ -98,9 +111,9 @@ public class PersonDialog implements PersonDialogInterface {
 
 				personDao.update(pd);
 				personDao.refresh(pd);
-				
-				pa.notifyDataSetChanged();
 
+				pa.notifyDataSetChanged();
+				ga.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -110,11 +123,17 @@ public class PersonDialog implements PersonDialogInterface {
 		}).show();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.modzelewski.nfcgb.view.PersonDialogInterface#removePerson(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.view.MenuItem, com.modzelewski.nfcgb.controller.PersonAdapter)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.modzelewski.nfcgb.view.PersonDialogInterface#removePerson(com.modzelewski
+	 * .nfcgb.persistence.DatabaseHelper,
+	 * com.modzelewski.nfcgb.model.BackgroundModel, android.view.MenuItem,
+	 * com.modzelewski.nfcgb.controller.PersonAdapter)
 	 */
 	@Override
-	public void removePerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa) {
+	public void removePerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa, final GroupAdapter ga) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(R.string.context_menu_remove_title);
@@ -143,8 +162,9 @@ public class PersonDialog implements PersonDialogInterface {
 				model.persons.remove(pd);
 				eventMembershipDao.delete(emd);
 				groupMembershipDao.delete(gmd);
-				
+
 				pa.notifyDataSetChanged();
+				ga.notifyDataSetChanged();
 			}
 		});
 		adb.show();
