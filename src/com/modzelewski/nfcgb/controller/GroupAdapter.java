@@ -1,12 +1,5 @@
 package com.modzelewski.nfcgb.controller;
 
-import java.util.List;
-
-import com.modzelewski.nfcgb.R;
-import com.modzelewski.nfcgb.R.color;
-import com.modzelewski.nfcgb.model.GroupData;
-import com.modzelewski.nfcgb.model.PersonData;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -16,6 +9,11 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.TextView;
+import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.model.GroupData;
+import com.modzelewski.nfcgb.model.PersonData;
+
+import java.util.List;
 
 /**
  * 
@@ -24,8 +22,8 @@ import android.widget.TextView;
  */
 public class GroupAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
 //public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
-	Context context;
-	List<GroupData> groups;
+private final Context context;
+	private final List<GroupData> groups;
 	List<List<PersonData>> persons;
 //	private final LayoutInflater inflater;
 
@@ -55,11 +53,11 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 		return position;
 	}
 
-	public View getView(int position, View convertView, ViewGroup parent) {
-		TextView text = (TextView) getView(position, convertView, parent);
-		text.setText(groups.get(position).getGroupName());
-		return text;
-	}
+//	public View getView(int position, View convertView, ViewGroup parent) {
+//		TextView text = (TextView) getView()
+//		text.setText(groups.get(position).getGroupName());
+//		return text;
+//	}
 	
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
@@ -151,7 +149,7 @@ public class GroupAdapter extends BaseExpandableListAdapter implements Expandabl
 		return false;
 	}
 	
-	public void remove(List<List<PersonData>> person) {
+	public void remove() {
 		//TODO
 	}
 
