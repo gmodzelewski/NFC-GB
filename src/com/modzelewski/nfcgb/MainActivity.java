@@ -1,15 +1,22 @@
 package com.modzelewski.nfcgb;
 
+import java.nio.charset.Charset;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -17,25 +24,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.controller.DragEventListener;
 import com.modzelewski.nfcgb.controller.EventAdapter;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
-import com.modzelewski.nfcgb.model.*;
+import com.modzelewski.nfcgb.model.BackgroundModel;
+import com.modzelewski.nfcgb.model.EventData;
+import com.modzelewski.nfcgb.model.GroupData;
+import com.modzelewski.nfcgb.model.GroupMembershipData;
+import com.modzelewski.nfcgb.model.PersonData;
 import com.modzelewski.nfcgb.nearfieldcommunication.Nfc;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
-import com.modzelewski.nfcgb.view.*;
-
-import java.sql.SQLException;
-import java.util.List;
+import com.modzelewski.nfcgb.view.AboutDialog;
+import com.modzelewski.nfcgb.view.EventDialog;
+import com.modzelewski.nfcgb.view.EventDialogInterface;
+import com.modzelewski.nfcgb.view.GroupDialog;
+import com.modzelewski.nfcgb.view.GroupDialogInterface;
+import com.modzelewski.nfcgb.view.PersonDialog;
+import com.modzelewski.nfcgb.view.PersonDialogInterface;
 
 /**
  * MainActivity
@@ -45,7 +64,7 @@ import java.util.List;
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements CreateNdefMessageCallback {
 	private final String LOG_TAG = getClass().getSimpleName();
 
-    private DatabaseHelper databaseHelper = null;
+	private DatabaseHelper databaseHelper = null;
 	protected NfcAdapter nfcAdapter;
 
 	private static final int request_Code = 1;
@@ -54,11 +73,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private final BackgroundModel model = new BackgroundModel(this);
 
 	// some gui elements
-    private Spinner spinner;
+	private Spinner spinner;
 	private ListView personsLV;
 	private ExpandableListView eventExpLV;
 	// gui adapter
-    private EventAdapter ea;
+	private EventAdapter ea;
 	private PersonAdapter pa;
 	private GroupAdapter ga;
 	private AboutDialog aboutDialog;
@@ -91,7 +110,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 						try {
 							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.getId()).and().eq("group_id", group.id).prepare());
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						groupMembershipDao.delete(gmd);
@@ -161,7 +179,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parentView) {
-            }
+			}
 		});
 	}
 
@@ -223,9 +241,9 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		if (nfcAdapter != null) {
 			// Check to see that the Activity started due to an Android Beam
 			if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-				Nfc nfc = new Nfc();
-				nfc.processIntent(context, getIntent());
-
+//				Nfc nfc = new Nfc();
+				// nfc.processIntent(context, getIntent());
+				processIntent(context, getIntent());
 				// Register callback
 				nfcAdapter.setNdefPushMessageCallback(this, this);
 			}
@@ -235,8 +253,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		spinner = (Spinner) findViewById(R.id.events_spinner);
 		personsLV = (ListView) findViewById(R.id.personsLV);
 		eventExpLV = (ExpandableListView) findViewById(R.id.groupsExpLV);
-		// TODO?: check, if all elements are available?
-
 		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
 
 		// load events from database
@@ -252,11 +268,23 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		eventExpLV.setOnDragListener(dragEL);
 		personsLV.setOnDragListener(dragEL);
 
-        String LISTVIEW_TAG = "ListView";
-        personsLV.setTag(LISTVIEW_TAG);
-        String EXPLISTVIEW_TAG = "ELV";
-        eventExpLV.setTag(EXPLISTVIEW_TAG);
+		String LISTVIEW_TAG = "ListView";
+		personsLV.setTag(LISTVIEW_TAG);
+		String EXPLISTVIEW_TAG = "ELV";
+		eventExpLV.setTag(EXPLISTVIEW_TAG);
 
+	}
+
+	/**
+	 * Parses the NDEF Message from the intent and prints to a Toast
+	 */
+	public void processIntent(Context context, Intent intent) {
+		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+		// only one message sent during the beam
+		NdefMessage msg = (NdefMessage) rawMsgs[0];
+		// record 0 contains the MIME type, record 1 is the AAR, if present
+		Toast.makeText(context, "Got it", Toast.LENGTH_LONG).show();
+		Toast.makeText(context, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -320,7 +348,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.om_nfc:
 			Nfc nfc = new Nfc();
-			nfc.menuNfcCheck(context);
+			nfc.menuNfcCheck(context, nfcAdapter);
 			return true;
 		case R.id.om_repop:
 			DatabasePopulator dp = new DatabasePopulator();
@@ -348,10 +376,49 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			refreshListViews();
 		}
 	}
+	
+	/**
+	 * Creates a custom MIME type encapsulated in an NDEF record
+	 */
+	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
+
+		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
+		return mimeRecord;
+	}
 
 	@Override
 	public NdefMessage createNdefMessage(NfcEvent event) {
-		// TODO Auto-generated method stub
-		return null;
+		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
+		// System.currentTimeMillis());
+		PersonData person1 = new PersonData("Hans", "hans@email.de");
+		// PersonData person2 = new PersonData("Peter", "peter@email.de");
+		String person1Name = person1.getName();
+		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", person1Name.getBytes())
+		/**
+		 * The Android Application Record (AAR) is commented out. When a device
+		 * receives a push with an AAR in it, the application specified in the
+		 * AAR is guaranteed to run. The AAR overrides the tag dispatch system.
+		 * You can add it back in to guarantee that this activity starts when
+		 * receiving a beamed message. For now, this code uses the tag dispatch
+		 * system.
+		 */
+		// ,NdefRecord.createApplicationRecord("com.modzelewski.nfcgb")
+				});
+		return msg;
+	}
+
+	public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
+		byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
+		Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
+		byte[] textBytes = payload.getBytes(utfEncoding);
+		int utfBit = encodeInUtf8 ? 0 : (1 << 7);
+		char status = (char) (utfBit + langBytes.length);
+		byte[] data = new byte[1 + langBytes.length + textBytes.length];
+		data[0] = (byte) status;
+		System.arraycopy(langBytes, 0, data, 1, langBytes.length);
+		System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
+		NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
+		return record;
 	}
 }

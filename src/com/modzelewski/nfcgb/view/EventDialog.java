@@ -20,7 +20,6 @@ public class EventDialog implements EventDialogInterface {
 	private final Context context;
 	
 	public EventDialog(Context c) {
-        super();
         this.context = c;
 	}
 	

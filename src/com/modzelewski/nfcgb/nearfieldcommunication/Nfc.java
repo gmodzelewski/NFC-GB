@@ -6,6 +6,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.os.Parcelable;
 import android.widget.Toast;
 import com.modzelewski.nfcgb.MainActivity;
@@ -16,7 +17,7 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 
-public class Nfc extends MainActivity {
+public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	/**
 	 * Creates a custom MIME type encapsulated in an NDEF record
 	 */
@@ -64,26 +65,25 @@ public class Nfc extends MainActivity {
 	
 
 	
-	public void menuNfcCheck(Context context) {
+	public void menuNfcCheck(Context context, NfcAdapter nfcAdapter) {
 		if (nfcAdapter == null) {
 			Toast.makeText(context, context.getResources().getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
-			finish();
         } else {
 			Toast.makeText(context, context.getResources().getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
 		}
 	}
 	
 	
-	/**
-	 * Parses the NDEF Message from the intent and prints to a Toast
-	 */
-	public void processIntent(Context context, Intent intent) {
-		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-		// only one message sent during the beam
-		NdefMessage msg = (NdefMessage) rawMsgs[0];
-		// record 0 contains the MIME type, record 1 is the AAR, if present
-		Toast.makeText(context, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
-	}
+//	/**
+//	 * Parses the NDEF Message from the intent and prints to a Toast
+//	 */
+//	public void processIntent(Context context, Intent intent) {
+//		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+//		// only one message sent during the beam
+//		NdefMessage msg = (NdefMessage) rawMsgs[0];
+//		// record 0 contains the MIME type, record 1 is the AAR, if present
+//		Toast.makeText(context, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
+//	}
 	
 	
 }
