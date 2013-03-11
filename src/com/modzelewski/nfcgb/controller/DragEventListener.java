@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
-import com.modzelewski.nfcgb.model.BackgroundModel;
 import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.model.GroupMembership;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;

@@ -1,7 +1,12 @@
-package com.modzelewski.nfcgb.model;
+package com.modzelewski.nfcgb.controller;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.MainActivity;
+import com.modzelewski.nfcgb.model.Event;
+import com.modzelewski.nfcgb.model.EventMembership;
+import com.modzelewski.nfcgb.model.Group;
+import com.modzelewski.nfcgb.model.GroupMembership;
+import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 import java.sql.SQLException;
@@ -94,7 +99,7 @@ public class BackgroundModel {
 			}
 			
 			for (GroupMembership groupMembership : groupMemberships) {
-				gd.getPerson().add(personDao.queryForId(groupMembership.person_id));
+				gd.getPerson().add(personDao.queryForId(groupMembership.getPersonId()));
 			}
 			
 			groups.add(gd);

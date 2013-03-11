@@ -25,6 +25,7 @@ public class GroupMembership implements Serializable {
 	 */
 	// TODO: make it to foreign key
 	@DatabaseField
+	private
 	int person_id;
 	
 	// needed by ormlite
@@ -33,7 +34,7 @@ public class GroupMembership implements Serializable {
 
 	public GroupMembership(int group_id, int person_id) {
 		this.setGroup_id(group_id);
-		this.person_id = person_id;
+		this.setPersonId(person_id);
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class GroupMembership implements Serializable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("id=").append(id);
 		sb.append(", ").append("group_id=").append(getGroup_id());
-		sb.append(", ").append("person_id=").append(person_id);
+		sb.append(", ").append("person_id=").append(getPersonId());
 		return sb.toString();
 	}
 
@@ -51,5 +52,13 @@ public class GroupMembership implements Serializable {
 
 	public void setGroup_id(int group_id) {
 		this.group_id = group_id;
+	}
+
+	public int getPersonId() {
+		return person_id;
+	}
+
+	public void setPersonId(int person_id) {
+		this.person_id = person_id;
 	}
 }

@@ -1,9 +1,10 @@
 package com.modzelewski.nfcgb.view;
 
 import android.view.MenuItem;
+
+import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
-import com.modzelewski.nfcgb.model.BackgroundModel;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public interface PersonDialogInterface {

@@ -1,14 +1,9 @@
 package com.modzelewski.nfcgb;
 
 import java.nio.charset.Charset;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Locale;
 
-import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -23,27 +18,20 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.DragShadowBuilder;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.controller.DragEventListener;
 import com.modzelewski.nfcgb.controller.EventAdapter;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
-import com.modzelewski.nfcgb.model.BackgroundModel;
 import com.modzelewski.nfcgb.model.Event;
-import com.modzelewski.nfcgb.model.Group;
-import com.modzelewski.nfcgb.model.GroupMembership;
 import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.nfc.Nfc;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
@@ -51,10 +39,13 @@ import com.modzelewski.nfcgb.persistence.DatabasePopulator;
 import com.modzelewski.nfcgb.view.AboutDialog;
 import com.modzelewski.nfcgb.view.EventDialog;
 import com.modzelewski.nfcgb.view.EventDialogInterface;
+import com.modzelewski.nfcgb.view.EventSpinner;
 import com.modzelewski.nfcgb.view.GroupDialog;
 import com.modzelewski.nfcgb.view.GroupDialogInterface;
+import com.modzelewski.nfcgb.view.GroupExpandableListView;
 import com.modzelewski.nfcgb.view.PersonDialog;
 import com.modzelewski.nfcgb.view.PersonDialogInterface;
+import com.modzelewski.nfcgb.view.PersonListView;
 
 /**
  * MainActivity
@@ -73,115 +64,20 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	private final BackgroundModel model = new BackgroundModel(this);
 
 	// some gui elements
-	private Spinner spinner;
+	private Spinner eventSpinner;
 	private ListView personsLV;
-	private ExpandableListView eventExpLV;
+	private ExpandableListView groupsExpLV;
 	// gui adapter
-	private EventAdapter ea;
-	private PersonAdapter pa;
-	private GroupAdapter ga;
+
 	private AboutDialog aboutDialog;
 	private EventDialogInterface eventDialog;
 	private GroupDialogInterface groupDialog;
 	private PersonDialogInterface personDialog;
 
-	/**
-	 * Create expandable list referencing at groups in background model.
-	 */
-	private void createExpandableListView() {
-		ga = new GroupAdapter(this, model.getGroups());
-		eventExpLV.setAdapter(ga);
-		// Menu on long Click
-		registerForContextMenu(eventExpLV);
+	private GroupAdapter groupAdapter;
+	private PersonAdapter personAdapter;
+	private EventAdapter eventAdapter;
 
-		// Removing of Child Items Menu on short Click
-		eventExpLV.setOnChildClickListener(new OnChildClickListener() {
-			@Override
-			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-				final Group group = (Group) ga.getGroup(groupPosition);
-				final Person person = (Person) ga.getChild(groupPosition, childPosition);
-				AlertDialog.Builder builder = new AlertDialog.Builder(eventExpLV.getContext());
-				builder.setMessage(R.string.remove_person_from_group);
-				builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-						List<GroupMembership> gmd = null;
-						RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
-						try {
-							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.getId()).and().eq("group_id", group.id).prepare());
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						groupMembershipDao.delete(gmd);
-						model.getGroupById(group.id).getPerson().remove(model.getPersonById(person.getId()));
-						ga.notifyDataSetChanged();
-					}
-				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-					}
-				}).show();
-
-				return true;
-			}
-		});
-	}
-
-	/**
-	 * Create list referencing at persons in background model.
-	 */
-	private void createListView() {
-
-		pa = new PersonAdapter(this, model.getPersons());
-		personsLV.setAdapter(pa);
-
-		// On long Click: Initiate Drag
-		personsLV.setOnItemLongClickListener(new OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
-				Person person = model.persons.get(position);
-				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), String.valueOf(person.getId()));
-				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-				l.startDrag(dragData, // the data to be dragged
-						shadowBuilder, // the drag shadow builder
-						null, // no need to use local data
-						0 // flags (not currently used, set to 0)
-				);
-				return false;
-			}
-		});
-
-		// On normal Click: Context Menu
-		personsLV.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> l, View v, int position, long id) {
-				registerForContextMenu(l);
-				openContextMenu(v);
-				unregisterForContextMenu(l);
-			}
-		});
-	}
-
-	/**
-	 * Create spinner referencing at events in background model.
-	 */
-	private void createSpinner() {
-		// assign Data as single items
-		ea = new EventAdapter(this, model.getEvents());
-		spinner.setAdapter(ea);
-		registerForContextMenu(spinner);
-
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-				setCurrentEvent(model.getEvents().get(position));
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parentView) {
-			}
-		});
-	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -197,31 +93,31 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.cm_group_add:
-			groupDialog.addGroup(databaseHelper, model, ga);
+			groupDialog.addGroup(databaseHelper, model, groupAdapter);
 			return true;
 		case R.id.cm_group_edit:
-			groupDialog.editGroup(databaseHelper, model, ga, item);
+			groupDialog.editGroup(databaseHelper, model, groupAdapter, item);
 			return true;
 		case R.id.cm_group_remove:
-			groupDialog.removeGroup(databaseHelper, model, ga, item);
+			groupDialog.removeGroup(databaseHelper, model, groupAdapter, item);
 			return true;
 		case R.id.cm_group_email:
 			groupDialog.emailGroup(model, item);
 			return true;
 		case R.id.cm_person_edit:
-			personDialog.editPerson(databaseHelper, model, item, pa, ga);
+			personDialog.editPerson(databaseHelper, model, item, personAdapter, groupAdapter);
 			refreshListViews();
 			return true;
 		case R.id.cm_person_remove:
-			personDialog.removePerson(databaseHelper, model, item, pa, ga);
+			personDialog.removePerson(databaseHelper, model, item, personAdapter, groupAdapter);
 			refreshListViews();
 			// Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
 		case R.id.cm_event_edit:
-			eventDialog.editEvent(databaseHelper, model, ea);
+			eventDialog.editEvent(databaseHelper, model, eventAdapter);
 			return true;
 		case R.id.cm_event_remove:
-			eventDialog.removeEvent(databaseHelper, model, ea);
+			eventDialog.removeEvent(databaseHelper, model, eventAdapter);
 
 		default:
 			return super.onContextItemSelected(item);
@@ -231,47 +127,74 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-		databaseHelper = model.getHelper();
+		// set content and cache some important objects
+        setContentView(R.layout.activity_main);
+        
+        // get DatabaseHelper
+        databaseHelper = model.getHelper();
+        // load events from database
+        RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
+        model.setEvents(eventDao.queryForAll());
+        
+		// Dialog Constructors
 		aboutDialog = new AboutDialog();
 		eventDialog = new EventDialog(context);
 		groupDialog = new GroupDialog(context);
 		personDialog = new PersonDialog(context);
 
-		if (nfcAdapter != null) {
-			// Check to see that the Activity started due to an Android Beam
-			if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+        // get Adapters
+        groupAdapter = new GroupAdapter(context, model.getGroups());
+        personAdapter = new PersonAdapter(context, model.getPersons());
+        eventAdapter = new EventAdapter(context, model.getEvents());
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        
+        EventSpinner es = new EventSpinner((Spinner) findViewById(R.id.events_spinner));
+        PersonListView plv = new PersonListView((ListView) findViewById(R.id.personsLV));
+        GroupExpandableListView glv = new GroupExpandableListView((ExpandableListView) findViewById(R.id.groupsExpLV));
+		
+        eventSpinner = es.create(model, context, databaseHelper, eventAdapter, groupAdapter, personAdapter);
+        personsLV = plv.create(model, context, databaseHelper, personAdapter);
+        groupsExpLV = glv.create(model, context, databaseHelper, groupAdapter);
+
+        registerForContextMenu(eventSpinner);
+        registerForContextMenu(groupsExpLV);
+        // Workaround for short click function: Context Menu
+        personsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        	@Override
+        	public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+        		registerForContextMenu(l);
+        		openContextMenu(v);
+        		unregisterForContextMenu(l);
+        	}
+        });
+        
+        
+        
+        if (nfcAdapter != null) {
+            // Check to see that the Activity started due to an Android Beam
+            if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
 //				Nfc nfc = new Nfc();
-				// nfc.processIntent(context, getIntent());
-				processIntent(context, getIntent());
-				// Register callback
-				nfcAdapter.setNdefPushMessageCallback(this, this);
-			}
-		}
-		// set content and cache some important objects
-		setContentView(R.layout.activity_main);
-		spinner = (Spinner) findViewById(R.id.events_spinner);
-		personsLV = (ListView) findViewById(R.id.personsLV);
-		eventExpLV = (ExpandableListView) findViewById(R.id.groupsExpLV);
+                // nfc.processIntent(context, getIntent());
+                processIntent(context, getIntent());
+                // Register callback
+                nfcAdapter.setNdefPushMessageCallback(this, this);
+            }
+        }
+
+
+
 		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
 
-		// load events from database
-		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
-		model.setEvents(eventDao.queryForAll());
-
-		createSpinner();
-		createListView();
-		createExpandableListView();
 
 		// --- Drag and Drop init
 		DragEventListener dragEL = new DragEventListener(getBaseContext(), model);
-		eventExpLV.setOnDragListener(dragEL);
+		groupsExpLV.setOnDragListener(dragEL);
 		personsLV.setOnDragListener(dragEL);
 
 		String LISTVIEW_TAG = "ListView";
 		personsLV.setTag(LISTVIEW_TAG);
 		String EXPLISTVIEW_TAG = "ELV";
-		eventExpLV.setTag(EXPLISTVIEW_TAG);
+		groupsExpLV.setTag(EXPLISTVIEW_TAG);
 
 	}
 
@@ -337,13 +260,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.om_add_event:
 			EventDialogInterface eventDialog = new EventDialog(context);
-			eventDialog.addEvent(databaseHelper, model, spinner, ea);
+			eventDialog.addEvent(databaseHelper, model, eventSpinner, eventAdapter);
 			return true;
 		case R.id.om_add_group:
-			groupDialog.addGroup(databaseHelper, model, ga);
+			groupDialog.addGroup(databaseHelper, model, groupAdapter);
 			return true;
 		case R.id.om_add_person:
-			personDialog.addPerson(databaseHelper, model, pa);
+			personDialog.addPerson(databaseHelper, model, personAdapter);
 			refreshListViews();
 			return true;
 		case R.id.om_nfc:
@@ -365,18 +288,18 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	}
 
 	void refreshListViews() {
-		pa.notifyDataSetChanged();
-		ga.notifyDataSetChanged();
+		personAdapter.notifyDataSetChanged();
+		groupAdapter.notifyDataSetChanged();
 	}
 
-	void setCurrentEvent(Event ed) {
-		Event current_event = model.getCurrentEvent();
-		if (current_event == null || ed.getId() != current_event.getId()) {
-			model.setCurrentEvent(ed);
-			refreshListViews();
-		}
-	}
-	
+//	void setCurrentEvent(Event ed) {
+//		Event current_event = model.getCurrentEvent();
+//		if (current_event == null || ed.getId() != current_event.getId()) {
+//			model.setCurrentEvent(ed);
+//			refreshListViews();
+//		}
+//	}
+//	
 	/**
 	 * Creates a custom MIME type encapsulated in an NDEF record
 	 */

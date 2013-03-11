@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.*;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.controller.EventAdapter;
 import com.modzelewski.nfcgb.model.*;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
@@ -27,7 +28,7 @@ public class EventDialog implements EventDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#addEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter)
 	 */
 	@Override
-	public void addEvent(final DatabaseHelper dbh, final BackgroundModel model, final Spinner spinner, final EventAdapter ea) {
+	public void addEvent(final DatabaseHelper dbh, final BackgroundModel model, final Spinner eventSpinner, final EventAdapter eventAdapter) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View eventView = inflater.inflate(R.layout.event_dialog, null);
 
@@ -58,9 +59,10 @@ public class EventDialog implements EventDialogInterface {
 				eventDao.create(ed);
 				model.events.add(ed);
 				model.setCurrentEvent(ed);
+//				eventSpinner.notify();
 //				setCurrentEvent(ed);
-				spinner.setSelection(ea.getPosition(ed));
-				ea.notifyDataSetChanged();
+				eventSpinner.setSelection(eventAdapter.getPosition(ed));
+				eventAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -75,7 +77,7 @@ public class EventDialog implements EventDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#editEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter, android.view.MenuItem)
 	 */
 	@Override
-	public void editEvent(final DatabaseHelper dbh, final BackgroundModel model, final EventAdapter ea) {
+	public void editEvent(final DatabaseHelper dbh, final BackgroundModel model, final EventAdapter eventAdapter) {
 		final Event currentEvent = model.getCurrentEvent();
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final RuntimeExceptionDao<Event, Integer> eventDao = dbh.getEventDataDao();
@@ -115,7 +117,7 @@ public class EventDialog implements EventDialogInterface {
 				eventDao.update(currentEvent);
 				eventDao.refresh(currentEvent);
 
-				ea.notifyDataSetChanged();
+				eventAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -130,7 +132,7 @@ public class EventDialog implements EventDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#removeEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter, android.view.MenuItem)
 	 */
 	@Override
-	public void removeEvent(final DatabaseHelper dbh, final BackgroundModel model, final EventAdapter ea) {
+	public void removeEvent(final DatabaseHelper dbh, final BackgroundModel model, final EventAdapter eventAdapter) {
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(R.string.context_menu_remove_title);
 		adb.setMessage(R.string.context_menu_remove_message);
@@ -176,7 +178,7 @@ public class EventDialog implements EventDialogInterface {
 				if (model.events.contains(currentEvent))
 					Toast.makeText(context, "ist noch drin", Toast.LENGTH_LONG).show();
 
-				ea.notifyDataSetChanged();
+				eventAdapter.notifyDataSetChanged();
 				
 				if (!model.getEvents().isEmpty())
 					model.setCurrentEvent(model.getEvents().get(0));

@@ -6,7 +6,7 @@ import android.widget.Toast;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.modzelewski.nfcgb.model.BackgroundModel;
+import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.model.Event;
 
 import java.sql.SQLException;
@@ -59,6 +59,6 @@ public class DatabasePopulator {
 
 //		createSpinner();
 //		createListView();
-//		createExpandableListView();
+//		create();
 	}
 }
