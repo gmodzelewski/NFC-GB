@@ -59,8 +59,6 @@ public class EventDialog implements EventDialogInterface {
 				eventDao.create(ed);
 				model.events.add(ed);
 				model.setCurrentEvent(ed);
-//				eventSpinner.notify();
-//				setCurrentEvent(ed);
 				eventSpinner.setSelection(eventAdapter.getPosition(ed));
 				eventAdapter.notifyDataSetChanged();
 			}

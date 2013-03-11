@@ -4,19 +4,28 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 import android.content.Context;
+import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
+import android.os.Parcelable;
 import android.widget.Toast;
 
 import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.model.Person;
 
-
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
+	NfcAdapter nfcAdapter;
+	private Context context;
+
+	public Nfc(NfcAdapter nfcAdapter, Context context) {
+		this.nfcAdapter = nfcAdapter;
+		this.context = context;
+	}
+
 	/**
 	 * Creates a custom MIME type encapsulated in an NDEF record
 	 */
@@ -61,28 +70,38 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 		NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
 		return record;
 	}
-	
 
-	
-	public void menuNfcCheck(Context context, NfcAdapter nfcAdapter) {
+	public void menuNfcCheck() {
 		if (nfcAdapter == null) {
 			Toast.makeText(context, context.getResources().getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
-        } else {
+		} else {
 			Toast.makeText(context, context.getResources().getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
 		}
 	}
-	
-	
-//	/**
-//	 * Parses the NDEF Message from the intent and prints to a Toast
-//	 */
-//	public void processIntent(Context context, Intent intent) {
-//		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-//		// only one message sent during the beam
-//		NdefMessage msg = (NdefMessage) rawMsgs[0];
-//		// record 0 contains the MIME type, record 1 is the AAR, if present
-//		Toast.makeText(context, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
-//	}
-	
-	
+
+	// /**
+	// * Parses the NDEF Message from the intent and prints to a Toast
+	// */
+	// public void processIntent(Context context, Intent intent) {
+	// Parcelable[] rawMsgs =
+	// intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+	// // only one message sent during the beam
+	// NdefMessage msg = (NdefMessage) rawMsgs[0];
+	// // record 0 contains the MIME type, record 1 is the AAR, if present
+	// Toast.makeText(context, new String(msg.getRecords()[0].getPayload()),
+	// Toast.LENGTH_LONG).show();
+	// }
+
+	/**
+	 * Parses the NDEF Message from the intent and prints to a Toast
+	 */
+	public void processIntent(Intent intent) {
+		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+		// only one message sent during the beam
+		NdefMessage msg = (NdefMessage) rawMsgs[0];
+		// record 0 contains the MIME type, record 1 is the AAR, if present
+		Toast.makeText(context, "Got it", Toast.LENGTH_LONG).show();
+		Toast.makeText(context, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
+	}
+
 }
