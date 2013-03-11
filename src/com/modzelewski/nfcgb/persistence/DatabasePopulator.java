@@ -7,14 +7,14 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.modzelewski.nfcgb.model.BackgroundModel;
-import com.modzelewski.nfcgb.model.EventData;
+import com.modzelewski.nfcgb.model.Event;
 
 import java.sql.SQLException;
 
 public class DatabasePopulator {
     private final String LOG_TAG = getClass().getSimpleName();
 
-	public void doDatabaseStuff(DatabaseHelper dbh, Context context, BackgroundModel model) {
+	public void fillDatabase(DatabaseHelper dbh, Context context, BackgroundModel model) {
         DatabaseHelper databaseHelper = dbh;
 		// delete all Data daos
 		// Reset here database every time; remove at release
@@ -41,7 +41,7 @@ public class DatabasePopulator {
 		DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDataDao());
 		DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
 		DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
-
+        DatabasePopulation.populateGroupMembershipDao(databaseHelper.getGroupMembershipDataDao());
 		Log.i(LOG_TAG, "-------------------------------------------------------------------");
 		Log.i(LOG_TAG, "--- Database is new populated ---");
 		Toast.makeText(context, "--- Database is new populated ---", Toast.LENGTH_SHORT).show();
@@ -54,7 +54,7 @@ public class DatabasePopulator {
 		// }
 
 		// load events from database
-		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
+		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
 		model.setEvents(eventDao.queryForAll());
 
 //		createSpinner();

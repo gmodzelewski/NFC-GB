@@ -12,11 +12,11 @@ import java.sql.SQLException;
  */
 public class DatabaseConfigUtil extends OrmLiteConfigUtil {
 	public static final Class<?>[] classes = new Class[] { 
-		com.modzelewski.nfcgb.model.EventData.class, 
-		com.modzelewski.nfcgb.model.PersonData.class, 
-		com.modzelewski.nfcgb.model.EventMembershipData.class, 
-		com.modzelewski.nfcgb.model.GroupData.class, 
-		com.modzelewski.nfcgb.model.GroupMembershipData.class};
+		com.modzelewski.nfcgb.model.Event.class, 
+		com.modzelewski.nfcgb.model.Person.class, 
+		com.modzelewski.nfcgb.model.EventMembership.class, 
+		com.modzelewski.nfcgb.model.Group.class, 
+		com.modzelewski.nfcgb.model.GroupMembership.class};
 
 	public static void main(String[] args) throws SQLException, IOException {
 		writeConfigFile("ormlite_config.txt", classes);

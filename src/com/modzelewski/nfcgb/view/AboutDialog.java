@@ -13,7 +13,7 @@ public class AboutDialog {
 //	private DatabaseHelper databasehelper;
 	
 	
-	public void menuAbout(Context c) {
+	public void about(Context c) {
 		context = c;
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);

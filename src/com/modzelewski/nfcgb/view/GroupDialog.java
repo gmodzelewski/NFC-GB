@@ -15,8 +15,8 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.model.BackgroundModel;
-import com.modzelewski.nfcgb.model.GroupData;
-import com.modzelewski.nfcgb.model.PersonData;
+import com.modzelewski.nfcgb.model.Group;
+import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 import java.util.List;
@@ -48,8 +48,8 @@ public class GroupDialog implements GroupDialogInterface {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 				String groupName = groupNameET.getText().toString().trim();
-				GroupData group = new GroupData(groupName, model.getCurrentEvent().getId());
-				RuntimeExceptionDao<GroupData, Integer> groupDao = dbh.getGroupDataDao();
+				Group group = new Group(groupName, model.getCurrentEvent().getId());
+				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
 				groupDao.create(group);
 				model.groups.add(group);
 				ga.notifyDataSetChanged();
@@ -75,7 +75,7 @@ public class GroupDialog implements GroupDialogInterface {
 		groupNameET.requestFocus();
 
 		final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-		final GroupData gd = model.groups.get((int) pInfo.id);
+		final Group gd = model.groups.get((int) pInfo.id);
 		groupNameET.setText(gd.getGroupName());
 
 		adb.setTitle(context.getResources().getString(R.string.edit_group));
@@ -87,10 +87,10 @@ public class GroupDialog implements GroupDialogInterface {
 				String groupName = groupNameET.getText().toString().trim();
 
 				// create Object
-				RuntimeExceptionDao<GroupData, Integer> groupDao = dbh.getGroupDataDao();
+				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
 
 				final ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-				final GroupData gd = model.groups.get((int) pInfo.id);
+				final Group gd = model.groups.get((int) pInfo.id);
 				gd.setGroupName(groupName);
 				groupDao.update(gd);
 				groupDao.refresh(gd);
@@ -109,10 +109,10 @@ public class GroupDialog implements GroupDialogInterface {
 	@Override
 	public void emailGroup(final BackgroundModel model, final MenuItem item) {
 		ExpandableListContextMenuInfo pInfo = (ExpandableListContextMenuInfo) item.getMenuInfo();
-		GroupData gd = model.groups.get((int) pInfo.id);
-		List<PersonData> persons = gd.getPerson();
+		Group gd = model.groups.get((int) pInfo.id);
+		List<Person> persons = gd.getPerson();
 		String emailAddresses = "";
-		for (PersonData person : persons) {
+		for (Person person : persons) {
 			if (person.getEmail().contains("@")) {
 				emailAddresses += ", " + person.getEmail();
 			} else {
@@ -144,8 +144,8 @@ public class GroupDialog implements GroupDialogInterface {
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				GroupData gd = model.groups.get((int) pInfo.id);
-				RuntimeExceptionDao<GroupData, Integer> groupDao = dbh.getGroupDataDao();
+				Group gd = model.groups.get((int) pInfo.id);
+				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
 				groupDao.delete(gd);
 				model.groups.remove(gd);
 				ga.notifyDataSetChanged();

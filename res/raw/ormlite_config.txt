@@ -1,9 +1,9 @@
 #
-# generated on 2013/02/24 06:08:15
+# generated on 2013/03/10 03:19:21
 #
 # --table-start--
-dataClass=com.modzelewski.nfcgb.model.EventData
-tableName=eventdata
+dataClass=com.modzelewski.nfcgb.model.Event
+tableName=event
 # --table-fields-start--
 # --field-start--
 fieldName=id
@@ -32,8 +32,8 @@ fieldName=info
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.model.PersonData
-tableName=persondata
+dataClass=com.modzelewski.nfcgb.model.Person
+tableName=person
 # --table-fields-start--
 # --field-start--
 fieldName=id
@@ -41,7 +41,7 @@ generatedId=true
 # --field-end--
 # --field-start--
 fieldName=name
-indexName=persondata_name_idx
+indexName=person_name_idx
 # --field-end--
 # --field-start--
 fieldName=email
@@ -50,8 +50,8 @@ fieldName=email
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.model.EventMembershipData
-tableName=eventmembershipdata
+dataClass=com.modzelewski.nfcgb.model.EventMembership
+tableName=eventmembership
 # --table-fields-start--
 # --field-start--
 fieldName=id
@@ -67,8 +67,8 @@ fieldName=person_id
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.model.GroupData
-tableName=groupdata
+dataClass=com.modzelewski.nfcgb.model.Group
+tableName=group
 # --table-fields-start--
 # --field-start--
 fieldName=id
@@ -76,7 +76,7 @@ generatedId=true
 # --field-end--
 # --field-start--
 fieldName=groupName
-indexName=groupdata_groupName_idx
+indexName=group_groupName_idx
 # --field-end--
 # --field-start--
 fieldName=event_id
@@ -85,8 +85,8 @@ fieldName=event_id
 # --table-end--
 #################################
 # --table-start--
-dataClass=com.modzelewski.nfcgb.model.GroupMembershipData
-tableName=groupmembershipdata
+dataClass=com.modzelewski.nfcgb.model.GroupMembership
+tableName=groupmembership
 # --table-fields-start--
 # --field-start--
 fieldName=id

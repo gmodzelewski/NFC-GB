@@ -47,14 +47,14 @@ public class EventDialog implements EventDialogInterface {
 				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
 				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
 
-				EventData ed = new EventData();
+				Event ed = new Event();
 
 				ed.setEventname(eventname.getText().toString());
 				ed.setWintersemester(wintersemester.isChecked());
 				ed.setYear(year.getValue());
 				ed.setInfo(info.getText().toString());
 				
-				RuntimeExceptionDao<EventData, Integer> eventDao = dbh.getEventDataDao();
+				RuntimeExceptionDao<Event, Integer> eventDao = dbh.getEventDataDao();
 				eventDao.create(ed);
 				model.events.add(ed);
 				model.setCurrentEvent(ed);
@@ -76,9 +76,9 @@ public class EventDialog implements EventDialogInterface {
 	 */
 	@Override
 	public void editEvent(final DatabaseHelper dbh, final BackgroundModel model, final EventAdapter ea) {
-		final EventData currentEvent = model.getCurrentEvent();
+		final Event currentEvent = model.getCurrentEvent();
 		LayoutInflater inflater = LayoutInflater.from(context);
-		final RuntimeExceptionDao<EventData, Integer> eventDao = dbh.getEventDataDao();
+		final RuntimeExceptionDao<Event, Integer> eventDao = dbh.getEventDataDao();
 		final View eventView = inflater.inflate(R.layout.event_dialog, null);
 		EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
 		Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
@@ -138,15 +138,15 @@ public class EventDialog implements EventDialogInterface {
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				EventData currentEvent = model.getCurrentEvent();
-				RuntimeExceptionDao<EventData, Integer> eventDao = dbh.getEventDataDao();
-				RuntimeExceptionDao<GroupData, Integer> groupDao = dbh.getGroupDataDao();
-				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
-				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
-				List<EventData> ed = null;
-				List<GroupData> gd = null;
-				List<EventMembershipData> emd = null;
-				List<GroupMembershipData> gmd = null;
+				Event currentEvent = model.getCurrentEvent();
+				RuntimeExceptionDao<Event, Integer> eventDao = dbh.getEventDataDao();
+				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
+				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
+				RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
+				List<Event> ed = null;
+				List<Group> gd = null;
+				List<EventMembership> emd = null;
+				List<GroupMembership> gmd = null;
 
 				try {
 					ed = eventDao.query(eventDao.queryBuilder().where().eq("id", model.getCurrentEvent().getId()).prepare());
@@ -157,9 +157,9 @@ public class EventDialog implements EventDialogInterface {
 				}
 
                 assert gd != null;
-                for (GroupData groupData : gd) {
+                for (Group group : gd) {
 					try {
-						gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", groupData.id).prepare());
+						gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", group.id).prepare());
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}

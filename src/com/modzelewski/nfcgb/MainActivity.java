@@ -41,11 +41,11 @@ import com.modzelewski.nfcgb.controller.EventAdapter;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.BackgroundModel;
-import com.modzelewski.nfcgb.model.EventData;
-import com.modzelewski.nfcgb.model.GroupData;
-import com.modzelewski.nfcgb.model.GroupMembershipData;
-import com.modzelewski.nfcgb.model.PersonData;
-import com.modzelewski.nfcgb.nearfieldcommunication.Nfc;
+import com.modzelewski.nfcgb.model.Event;
+import com.modzelewski.nfcgb.model.Group;
+import com.modzelewski.nfcgb.model.GroupMembership;
+import com.modzelewski.nfcgb.model.Person;
+import com.modzelewski.nfcgb.nfc.Nfc;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
 import com.modzelewski.nfcgb.view.AboutDialog;
@@ -98,15 +98,15 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		eventExpLV.setOnChildClickListener(new OnChildClickListener() {
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-				final GroupData group = (GroupData) ga.getGroup(groupPosition);
-				final PersonData person = (PersonData) ga.getChild(groupPosition, childPosition);
+				final Group group = (Group) ga.getGroup(groupPosition);
+				final Person person = (Person) ga.getChild(groupPosition, childPosition);
 				AlertDialog.Builder builder = new AlertDialog.Builder(eventExpLV.getContext());
 				builder.setMessage(R.string.remove_person_from_group);
 				builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
-						List<GroupMembershipData> gmd = null;
-						RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
+						List<GroupMembership> gmd = null;
+						RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
 						try {
 							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.getId()).and().eq("group_id", group.id).prepare());
 						} catch (SQLException e) {
@@ -139,7 +139,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		personsLV.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> l, View v, int position, long id) {
-				PersonData person = model.persons.get(position);
+				Person person = model.persons.get(position);
 				ClipData dragData = ClipData.newPlainText(person.getClass().getSimpleName(), String.valueOf(person.getId()));
 				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
 				l.startDrag(dragData, // the data to be dragged
@@ -256,7 +256,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		Log.i(LOG_TAG, "creating " + getClass() + " at " + System.currentTimeMillis());
 
 		// load events from database
-		RuntimeExceptionDao<EventData, Integer> eventDao = databaseHelper.getEventDataDao();
+		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
 		model.setEvents(eventDao.queryForAll());
 
 		createSpinner();
@@ -333,7 +333,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.om_about:
-			aboutDialog.menuAbout(context);
+			aboutDialog.about(context);
 			return true;
 		case R.id.om_add_event:
 			EventDialogInterface eventDialog = new EventDialog(context);
@@ -352,7 +352,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 			return true;
 		case R.id.om_repop:
 			DatabasePopulator dp = new DatabasePopulator();
-			dp.doDatabaseStuff(databaseHelper, context, model);
+			dp.fillDatabase(databaseHelper, context, model);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -369,8 +369,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 		ga.notifyDataSetChanged();
 	}
 
-	void setCurrentEvent(EventData ed) {
-		EventData current_event = model.getCurrentEvent();
+	void setCurrentEvent(Event ed) {
+		Event current_event = model.getCurrentEvent();
 		if (current_event == null || ed.getId() != current_event.getId()) {
 			model.setCurrentEvent(ed);
 			refreshListViews();
@@ -391,7 +391,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 	public NdefMessage createNdefMessage(NfcEvent event) {
 		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
 		// System.currentTimeMillis());
-		PersonData person1 = new PersonData("Hans", "hans@email.de");
+		Person person1 = new Person("Hans", "hans@email.de");
 		// PersonData person2 = new PersonData("Peter", "peter@email.de");
 		String person1Name = person1.getName();
 		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", person1Name.getBytes())

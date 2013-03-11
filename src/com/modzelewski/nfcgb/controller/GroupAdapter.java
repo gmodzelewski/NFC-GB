@@ -10,8 +10,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.TextView;
 import com.modzelewski.nfcgb.R;
-import com.modzelewski.nfcgb.model.GroupData;
-import com.modzelewski.nfcgb.model.PersonData;
+import com.modzelewski.nfcgb.model.Group;
+import com.modzelewski.nfcgb.model.Person;
 
 import java.util.List;
 
@@ -23,11 +23,11 @@ import java.util.List;
 public class GroupAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
 //public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
 private final Context context;
-	private final List<GroupData> groups;
-	List<List<PersonData>> persons;
+	private final List<Group> groups;
+	List<List<Person>> persons;
 //	private final LayoutInflater inflater;
 
-	public GroupAdapter(Context context, List<GroupData> groups) {
+	public GroupAdapter(Context context, List<Group> groups) {
 		super();
 		this.context = context;
 		this.groups = groups;

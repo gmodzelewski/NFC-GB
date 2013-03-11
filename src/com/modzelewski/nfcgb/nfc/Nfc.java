@@ -1,20 +1,19 @@
-package com.modzelewski.nfcgb.nearfieldcommunication;
-
-import android.content.Context;
-import android.content.Intent;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
-import android.nfc.NfcEvent;
-import android.nfc.NfcAdapter.CreateNdefMessageCallback;
-import android.os.Parcelable;
-import android.widget.Toast;
-import com.modzelewski.nfcgb.MainActivity;
-import com.modzelewski.nfcgb.R;
-import com.modzelewski.nfcgb.model.PersonData;
+package com.modzelewski.nfcgb.nfc;
 
 import java.nio.charset.Charset;
 import java.util.Locale;
+
+import android.content.Context;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcAdapter.CreateNdefMessageCallback;
+import android.nfc.NfcEvent;
+import android.widget.Toast;
+
+import com.modzelewski.nfcgb.MainActivity;
+import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.model.Person;
 
 
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
@@ -32,7 +31,7 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	public NdefMessage createNdefMessage(NfcEvent event) {
 		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
 		// System.currentTimeMillis());
-		PersonData person1 = new PersonData("Hans", "hans@email.de");
+		Person person1 = new Person("Hans", "hans@email.de");
 		// PersonData person2 = new PersonData("Peter", "peter@email.de");
 		String person1Name = person1.getName();
 		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", person1Name.getBytes())

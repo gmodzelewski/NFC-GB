@@ -13,9 +13,9 @@ import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.BackgroundModel;
-import com.modzelewski.nfcgb.model.EventMembershipData;
-import com.modzelewski.nfcgb.model.GroupMembershipData;
-import com.modzelewski.nfcgb.model.PersonData;
+import com.modzelewski.nfcgb.model.EventMembership;
+import com.modzelewski.nfcgb.model.GroupMembership;
+import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 import java.sql.SQLException;
@@ -53,11 +53,11 @@ public class PersonDialog implements PersonDialogInterface {
 				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
 				String name = nameET.getText().toString().trim();
 				String email = emailET.getText().toString().trim();
-				RuntimeExceptionDao<PersonData, Integer> personDao = dbh.getPersonDataDao();
-				PersonData person = new PersonData(name, email);
-				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
+				RuntimeExceptionDao<Person, Integer> personDao = dbh.getPersonDataDao();
+				Person person = new Person(name, email);
+				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
 				personDao.create(person);
-				EventMembershipData emd = new EventMembershipData(model.getCurrentEvent().getId(), person.getId());
+				EventMembership emd = new EventMembership(model.getCurrentEvent().getId(), person.getId());
 				eventMembershipDao.create(emd);
 				model.persons.add(person);
 				pa.notifyDataSetChanged();
@@ -87,7 +87,7 @@ public class PersonDialog implements PersonDialogInterface {
 		EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		final AdapterView.AdapterContextMenuInfo pInfo = info;
-		final PersonData pd = model.persons.get(pInfo.position);
+		final Person pd = model.persons.get(pInfo.position);
 		nameET.setText(pd.getName());
 		emailET.setText(pd.getEmail());
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
@@ -100,10 +100,10 @@ public class PersonDialog implements PersonDialogInterface {
 				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
 				String name = nameET.getText().toString().trim();
 				String email = emailET.getText().toString().trim();
-				RuntimeExceptionDao<PersonData, Integer> personDao = dbh.getPersonDataDao();
+				RuntimeExceptionDao<Person, Integer> personDao = dbh.getPersonDataDao();
 				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 				final AdapterView.AdapterContextMenuInfo pInfo = info;
-				final PersonData pd = model.persons.get(pInfo.position);
+				final Person pd = model.persons.get(pInfo.position);
 
 				pd.setName(name);
 				pd.setEmail(email);
@@ -142,12 +142,12 @@ public class PersonDialog implements PersonDialogInterface {
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				RuntimeExceptionDao<EventMembershipData, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
-				RuntimeExceptionDao<GroupMembershipData, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
-				List<EventMembershipData> emd = null;
-				List<GroupMembershipData> gmd = null;
+				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
+				RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
+				List<EventMembership> emd = null;
+				List<GroupMembership> gmd = null;
 
-				PersonData pd = model.persons.get(pInfo.position);
+				Person pd = model.persons.get(pInfo.position);
 				try {
 					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).and().eq("event_id", model.getCurrentEvent().getId()).prepare());
 					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).prepare());
@@ -155,8 +155,8 @@ public class PersonDialog implements PersonDialogInterface {
 					e.printStackTrace();
 				}
 
-				for (GroupMembershipData groupMembershipData : gmd) {
-					model.getGroupById(groupMembershipData.getGroup_id()).getPerson().remove(model.getPersonById(pd.getId()));
+				for (GroupMembership groupMembership : gmd) {
+					model.getGroupById(groupMembership.getGroup_id()).getPerson().remove(model.getPersonById(pd.getId()));
 				}
 				model.persons.remove(pd);
 				eventMembershipDao.delete(emd);
