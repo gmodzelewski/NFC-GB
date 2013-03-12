@@ -42,6 +42,7 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
 		// System.currentTimeMillis());
 		Event currentEvent = model.getCurrentEvent();
+		DatabaseHelper databaseHelper = model.getHelper();
 		List<GroupMembership> groupMemberships = model.getGroupMemberships(currentEvent);
 		List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
 		List<Group> groups = model.getGroups(currentEvent);

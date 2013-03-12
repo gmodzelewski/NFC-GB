@@ -28,7 +28,7 @@ public class EventSpinner {
 	 * @param model 
 	 * @return 
 	 */
-	public Spinner create(final BackgroundModel model, Context context, DatabaseHelper databaseHelper, final EventAdapter eventAdapter, final GroupAdapter groupAdapter, final PersonAdapter personAdapter) {
+	public Spinner create(final BackgroundModel model, Context context, final EventAdapter eventAdapter, final GroupAdapter groupAdapter, final PersonAdapter personAdapter) {
 		eventSpinner.setAdapter(eventAdapter);
 		eventSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override

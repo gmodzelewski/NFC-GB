@@ -147,7 +147,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		PersonListView plv = new PersonListView((ListView) findViewById(R.id.personsLV));
 		GroupExpandableListView glv = new GroupExpandableListView((ExpandableListView) findViewById(R.id.groupsExpLV));
 
-		eventSpinner = es.create(model, context, databaseHelper, eventAdapter, groupAdapter, personAdapter);
+		eventSpinner = es.create(model, context, eventAdapter, groupAdapter, personAdapter);
 		personsLV = plv.create(model, context, databaseHelper, personAdapter);
 		groupsExpLV = glv.create(model, context, databaseHelper, groupAdapter);
 

@@ -59,8 +59,8 @@ public class EventDialog implements EventDialogInterface {
 				eventDao.create(ed);
 				model.events.add(ed);
 				model.setCurrentEvent(ed);
-				eventSpinner.setSelection(eventAdapter.getPosition(ed));
 				eventAdapter.notifyDataSetChanged();
+				eventSpinner.setSelection(eventAdapter.getPosition(ed));
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override

@@ -1,5 +1,11 @@
 package com.modzelewski.nfcgb.controller;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.model.Event;
@@ -8,12 +14,6 @@ import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.model.GroupMembership;
 import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class BackgroundModel {
 	private final MainActivity mainActivity;
@@ -25,13 +25,15 @@ public class BackgroundModel {
 	public List<Person> persons = new LinkedList<Person>();
 	// group list for right list
 	public final List<Group> groups = new LinkedList<Group>();
+	private DatabaseHelper databaseHelper;
 
 	public BackgroundModel(MainActivity mainActivity) {
 		this.mainActivity = mainActivity;
 	}
 
 	public DatabaseHelper getHelper() {
-		return mainActivity.getHelper();
+		databaseHelper = mainActivity.getHelper();
+		return databaseHelper;
 	}
 
 	public Event getCurrentEvent() {
@@ -48,8 +50,8 @@ public class BackgroundModel {
 
 	private void reloadPersons() {
 		persons.clear();
-		if(currentEvent == null)
-			return;
+		// if(currentEvent == null)
+		// return;
 		List<EventMembership> eventMemberships = getEventMemberships(currentEvent);
 		getPersons(eventMemberships);
 	}
@@ -65,37 +67,40 @@ public class BackgroundModel {
 		}
 		return persons;
 	}
-	
+
 	private void reloadGroups() {
 		groups.clear();
 
-		if(currentEvent == null) {
+		if (currentEvent == null) {
 			return;
 		}
-		
+
 		List<Group> groupsWithCurrentEvent = getGroups(currentEvent);
 
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
-		
+
 		for (Group group : groupsWithCurrentEvent) {
 			List<GroupMembership> groupMemberships = getGroupMemberships(group);
-			
+
 			for (GroupMembership groupMembership : groupMemberships) {
-//				group.getPerson().add(getPersonById(groupMembership.getPersonId()));
+				// group.getPerson().add(getPersonById(groupMembership.getPersonId()));
 				group.getPerson().add(personDao.queryForId(groupMembership.getPersonId()));
 			}
 			groups.add(group);
 		}
 	}
-	
+
 	private List<GroupMembership> getGroupMemberships(Group group) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
 		List<GroupMembership> groupMemberships = null;
+
 		try {
 			groupMemberships = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).query();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return groupMemberships;
 	}
 
@@ -105,8 +110,10 @@ public class BackgroundModel {
 		try {
 			groupResult = groupDao.queryBuilder().where().eq("event_id", currentEvent.getId()).query();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return groupResult;
 	}
 
@@ -115,6 +122,7 @@ public class BackgroundModel {
 	}
 
 	public List<EventMembership> getEventMemberships(Event currentEvent) {
+		this.currentEvent = currentEvent;
 		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
 		List<EventMembership> eventMemberships = null;
 		try {
@@ -124,7 +132,7 @@ public class BackgroundModel {
 		}
 		return eventMemberships;
 	}
-	
+
 	public List<GroupMembership> getGroupMemberships(Event currentEvent) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
 		List<GroupMembership> groupMemberships = null;
@@ -135,14 +143,7 @@ public class BackgroundModel {
 		}
 		return groupMemberships;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public ArrayList<String> getEventList() {
 		ArrayList<String> eventNames = new ArrayList<String>();
 		for (Event ed : events) {
@@ -154,25 +155,33 @@ public class BackgroundModel {
 	public void setEvents(List<Event> events) {
 		this.events.clear();
 		this.events.addAll(events);
+		setCurrentEvent(events.get(0));
 		Collections.sort(this.events);
 	}
 
 	public List<Person> getPersons() {
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
+		List<EventMembership> eventMemberships = getEventMemberships(getCurrentEvent());
+		for (EventMembership eventMembership : eventMemberships) {
+			persons.add(personDao.queryForId(eventMembership.getPerson_id()));
+		}
 		return persons;
 	}
-	
+
 	public Person getPersonById(int id) {
-		Person person = null;
-		for(Person p : persons)
-			if(p.getId() == id)
-				person = p;
-		return person;
+		// Person person = null;
+		// for(Person p : persons)
+		// if(p.getId() == id)
+		// person = p;
+		// return person;
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
+		return personDao.queryForId(id);
 	}
 
 	public Group getGroupById(int id) {
 		Group group = null;
-		for(Group g : groups)
-			if(g.id == id)
+		for (Group g : groups)
+			if (g.id == id)
 				group = g;
 		return group;
 	}
@@ -189,5 +198,4 @@ public class BackgroundModel {
 		this.groups.clear();
 		this.groups.addAll(groups);
 	}
-
 }
