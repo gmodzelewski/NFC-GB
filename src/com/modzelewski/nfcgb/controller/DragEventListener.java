@@ -82,7 +82,8 @@ public class DragEventListener extends ListView implements OnDragListener {
 
 				Group group = null;
 				if (droppedInGroupPos >= 0) {
-					group = model.groups.get(droppedInGroupPos);
+//					group = model.groups.get(droppedInGroupPos);
+					group = model.getGroup(droppedInGroupPos);
 				}
 
 				List<GroupMembership> groupResult = null;

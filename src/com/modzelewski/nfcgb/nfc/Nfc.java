@@ -21,7 +21,6 @@ import com.modzelewski.nfcgb.model.EventMembership;
 import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.model.GroupMembership;
 import com.modzelewski.nfcgb.model.Person;
-import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	NfcAdapter nfcAdapter;
@@ -41,13 +40,12 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	public NdefMessage createNdefMessage(NfcEvent event) {
 		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
 		// System.currentTimeMillis());
+		
 		Event currentEvent = model.getCurrentEvent();
 		List<GroupMembership> groupMemberships = model.getGroupMemberships(currentEvent);
 		List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
 		List<Group> groups = model.getGroups(currentEvent);
 		List<Person> persons = model.getPersons(eventMemberships);
-		
-		
 		
 		
 //		Person person1 = new Person("Hans", "hans@email.de");

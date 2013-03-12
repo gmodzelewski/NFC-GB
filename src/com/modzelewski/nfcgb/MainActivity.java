@@ -28,6 +28,7 @@ import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.Event;
 import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.nfc.Nfc;
+import com.modzelewski.nfcgb.nfc.NfcCheck;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
 import com.modzelewski.nfcgb.view.AboutDialog;
@@ -125,10 +126,13 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		setContentView(R.layout.activity_main);
 
 		// get DatabaseHelper
-		databaseHelper = model.getHelper();
+//		databaseHelper = model.getHelper();
+		model.createHelper();
 		// load events from database
-		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
-		model.setEvents(eventDao.queryForAll());
+//		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
+//		model.setEvents(eventDao.queryForAll());
+//		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
+		model.initiateEvents();
 
 		// Dialog Constructors
 		aboutDialog = new AboutDialog();
@@ -217,10 +221,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (databaseHelper != null) {
-			databaseHelper.close();
-			databaseHelper = null;
-		}
+		model.closeDatabaseHelper();
+//		if (databaseHelper != null) {
+//			databaseHelper.close();
+//			databaseHelper = null;
+//		}
 	}
 
 	@Override
