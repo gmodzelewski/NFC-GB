@@ -25,6 +25,7 @@ import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.Event;
 import com.modzelewski.nfcgb.nfc.Nfc;
+import com.modzelewski.nfcgb.nfc.NfcCheck;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
 import com.modzelewski.nfcgb.view.AboutDialog;
@@ -173,7 +174,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		if (nfcAdapter != null) {
 			// Check to see that the Activity started due to an Android Beam
 			if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-				Nfc nfc = new Nfc(nfcAdapter, context);
+				Nfc nfc = new Nfc(nfcAdapter, context, model);
 				nfc.processIntent(getIntent());
 				// Register callback
 				nfcAdapter.setNdefPushMessageCallback(nfc, this);
@@ -232,6 +233,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		case R.id.om_add_event:
 			EventDialogInterface eventDialog = new EventDialog(context);
 			eventDialog.addEvent(databaseHelper, model, eventSpinner, eventAdapter);
+			refreshListViews();
 			return true;
 		case R.id.om_add_group:
 			groupDialog.addGroup(databaseHelper, model, groupAdapter);
@@ -241,8 +243,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			refreshListViews();
 			return true;
 		case R.id.om_nfc:
-			Nfc nfc = new Nfc(nfcAdapter, context);
-			nfc.menuNfcCheck();
+			NfcCheck nfcCheck = new NfcCheck(nfcAdapter, context);
+			nfcCheck.check();
 			return true;
 		case R.id.om_repop:
 			DatabasePopulator dp = new DatabasePopulator();

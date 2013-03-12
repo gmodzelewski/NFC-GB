@@ -15,15 +15,19 @@ import android.widget.Toast;
 
 import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.R;
+import com.modzelewski.nfcgb.controller.BackgroundModel;
+import com.modzelewski.nfcgb.model.Event;
 import com.modzelewski.nfcgb.model.Person;
 
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	NfcAdapter nfcAdapter;
 	private Context context;
-
-	public Nfc(NfcAdapter nfcAdapter, Context context) {
+	private BackgroundModel model;
+	
+	public Nfc(NfcAdapter nfcAdapter, Context context, BackgroundModel model) {
 		this.nfcAdapter = nfcAdapter;
 		this.context = context;
+		this.model = model;
 	}
 
 	/**
@@ -40,6 +44,9 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	public NdefMessage createNdefMessage(NfcEvent event) {
 		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
 		// System.currentTimeMillis());
+		Event currentEvent = model.getCurrentEvent();
+	
+		
 		Person person1 = new Person("Hans", "hans@email.de");
 		// PersonData person2 = new PersonData("Peter", "peter@email.de");
 		String person1Name = person1.getName();
@@ -69,14 +76,6 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 		System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
 		NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
 		return record;
-	}
-
-	public void menuNfcCheck() {
-		if (nfcAdapter == null) {
-			Toast.makeText(context, context.getResources().getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
-		} else {
-			Toast.makeText(context, context.getResources().getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
-		}
 	}
 
 	// /**
