@@ -46,24 +46,17 @@ public class BackgroundModel {
 		}
 	}
 
-	// TODO: OPTIMIZE! OPTIMIZE! OPTIMIZE!
 	private void reloadPersons() {
 		persons.clear();
-
 		if(currentEvent == null)
 			return;
-		
-		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
-		List<EventMembership> eventMemberships = null;
-		try {
-			eventMemberships = eventMembershipDao.queryBuilder().where().eq("event_id", currentEvent.getId()).query();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		List<EventMembership> eventMemberships = getEventMemberships(currentEvent);
+		getPersons(eventMemberships);
+	}
 
+	private void getPersons(List<EventMembership> eventMemberships) {
 		// ArrayList<String> personsFullNames = new ArrayList<String>();
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
-
 
 		for (EventMembership emd : eventMemberships) {
 			Person pd = personDao.queryForId(emd.getPerson_id());
@@ -71,6 +64,8 @@ public class BackgroundModel {
 			// personsFullNames.add(String.format("%s\n%s", pd.name, pd.email));
 		}
 	}
+
+	
 	
 	private void reloadGroups() {
 		groups.clear();
@@ -79,6 +74,33 @@ public class BackgroundModel {
 			return;
 		}
 		
+		List<Group> groupsWithCurrentEvent = getGroups(currentEvent);
+
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
+		
+		for (Group group : groupsWithCurrentEvent) {
+			List<GroupMembership> groupMemberships = getGroupMemberships(group);
+			
+			for (GroupMembership groupMembership : groupMemberships) {
+//				group.getPerson().add(getPersonById(groupMembership.getPersonId()));
+				group.getPerson().add(personDao.queryForId(groupMembership.getPersonId()));
+			}
+			groups.add(group);
+		}
+	}
+
+	private List<GroupMembership> getGroupMemberships(Group group) {
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+		List<GroupMembership> groupMemberships = null;
+		try {
+			groupMemberships = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return groupMemberships;
+	}
+
+	private List<Group> getGroups(Event currentEvent) {
 		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDataDao();
 		List<Group> groupResult = null;
 		try {
@@ -86,30 +108,42 @@ public class BackgroundModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
-		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
-		
-		for (Group gd : groupResult) {
-			List<GroupMembership> groupMemberships = null;
-			try {
-				groupMemberships = groupMembershipDao.queryBuilder().where().eq("group_id", gd.id).query();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			
-			for (GroupMembership groupMembership : groupMemberships) {
-				gd.getPerson().add(personDao.queryForId(groupMembership.getPersonId()));
-			}
-			
-			groups.add(gd);
-		}
+		return groupResult;
 	}
 
 	public List<Event> getEvents() {
 		return events;
 	}
 
+	public List<EventMembership> getEventMemberships(Event currentEvent) {
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+		List<EventMembership> eventMemberships = null;
+		try {
+			eventMemberships = eventMembershipDao.queryBuilder().where().eq("event_id", currentEvent.getId()).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return eventMemberships;
+	}
+	
+	public List<GroupMembership> getGroupMemberships(Event currentEvent) {
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+		List<GroupMembership> groupMemberships = null;
+		try {
+			groupMemberships = groupMembershipDao.queryBuilder().where().eq("event_id", currentEvent.getId()).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return groupMemberships;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	public ArrayList<String> getEventList() {
 		ArrayList<String> eventNames = new ArrayList<String>();
 		for (Event ed : events) {
@@ -156,4 +190,5 @@ public class BackgroundModel {
 		this.groups.clear();
 		this.groups.addAll(groups);
 	}
+
 }

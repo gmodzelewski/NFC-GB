@@ -1,5 +1,7 @@
 package com.modzelewski.nfcgb;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -24,6 +26,7 @@ import com.modzelewski.nfcgb.controller.EventAdapter;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.Event;
+import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.nfc.Nfc;
 import com.modzelewski.nfcgb.nfc.NfcCheck;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
@@ -180,6 +183,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 				nfcAdapter.setNdefPushMessageCallback(nfc, this);
 			}
 		}
+		
+		List<Group> groups = model.getGroups();
+		if(!groups.isEmpty())
+			Toast.makeText(context, "Groups ist nicht leer", Toast.LENGTH_LONG).show();
 	}
 
 	@Override

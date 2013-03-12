@@ -1,6 +1,7 @@
 package com.modzelewski.nfcgb.nfc;
 
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Locale;
 
 import android.content.Context;
@@ -14,20 +15,24 @@ import android.os.Parcelable;
 import android.widget.Toast;
 
 import com.modzelewski.nfcgb.MainActivity;
-import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.model.Event;
-import com.modzelewski.nfcgb.model.Person;
+import com.modzelewski.nfcgb.model.EventMembership;
+import com.modzelewski.nfcgb.model.Group;
+import com.modzelewski.nfcgb.model.GroupMembership;
+import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	NfcAdapter nfcAdapter;
 	private Context context;
 	private BackgroundModel model;
-	
+	private DatabaseHelper databaseHelper;
+
 	public Nfc(NfcAdapter nfcAdapter, Context context, BackgroundModel model) {
 		this.nfcAdapter = nfcAdapter;
 		this.context = context;
 		this.model = model;
+		this.databaseHelper = databaseHelper;
 	}
 
 	/**
@@ -45,23 +50,30 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
 		// System.currentTimeMillis());
 		Event currentEvent = model.getCurrentEvent();
-	
+		List<GroupMembership> groupMemberships = model.getGroupMemberships(currentEvent);
+		List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
+		List<Group> groups = model.getGroups();
 		
-		Person person1 = new Person("Hans", "hans@email.de");
-		// PersonData person2 = new PersonData("Peter", "peter@email.de");
-		String person1Name = person1.getName();
-		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", person1Name.getBytes())
-		/**
-		 * The Android Application Record (AAR) is commented out. When a device
-		 * receives a push with an AAR in it, the application specified in the
-		 * AAR is guaranteed to run. The AAR overrides the tag dispatch system.
-		 * You can add it back in to guarantee that this activity starts when
-		 * receiving a beamed message. For now, this code uses the tag dispatch
-		 * system.
-		 */
-		// ,NdefRecord.createApplicationRecord("com.modzelewski.nfcgb")
-				});
-		return msg;
+		
+		
+		
+		
+//		Person person1 = new Person("Hans", "hans@email.de");
+//		// PersonData person2 = new PersonData("Peter", "peter@email.de");
+//		String person1Name = person1.getName();
+//		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord("application/com.modzelewski.nfcgb", person1Name.getBytes())
+//		/**
+//		 * The Android Application Record (AAR) is commented out. When a device
+//		 * receives a push with an AAR in it, the application specified in the
+//		 * AAR is guaranteed to run. The AAR overrides the tag dispatch system.
+//		 * You can add it back in to guarantee that this activity starts when
+//		 * receiving a beamed message. For now, this code uses the tag dispatch
+//		 * system.
+//		 */
+//		// ,NdefRecord.createApplicationRecord("com.modzelewski.nfcgb")
+//				});
+//		return msg;
+		return null;
 	}
 
 	public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
