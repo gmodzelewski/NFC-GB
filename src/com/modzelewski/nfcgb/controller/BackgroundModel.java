@@ -194,10 +194,15 @@ public class BackgroundModel {
 		setEvents(eventDao.queryForAll());
 	}
 
-	public void addPerson(Person pd) {
-		persons.add(pd);
+	public void addPerson(Person p) {		
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
-		personDao.create(pd);
+		personDao.create(p);
+		
+		EventMembership emd = new EventMembership(getCurrentEvent().getId(), p.getId());
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+		eventMembershipDao.create(emd);
+		personDao.create(p);
+		persons.add(p);
 	}
 
 	public void removePerson(Person p) {
