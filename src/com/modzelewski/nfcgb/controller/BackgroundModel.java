@@ -46,9 +46,9 @@ public class BackgroundModel {
 		}
 	}
 
-	private void reloadPersons() {
+	public void reloadPersons() {
 		persons.clear();
-		if(currentEvent == null)
+		if (currentEvent == null)
 			return;
 		List<EventMembership> eventMemberships = getEventMemberships(currentEvent);
 		getPersons(eventMemberships);
@@ -65,29 +65,29 @@ public class BackgroundModel {
 		}
 		return persons;
 	}
-	
+
 	private void reloadGroups() {
 		groups.clear();
 
-		if(currentEvent == null) {
+		if (currentEvent == null) {
 			return;
 		}
-		
+
 		List<Group> groupsWithCurrentEvent = getGroups(currentEvent);
 
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
-		
+
 		for (Group group : groupsWithCurrentEvent) {
 			List<GroupMembership> groupMemberships = getGroupMemberships(group);
-			
+
 			for (GroupMembership groupMembership : groupMemberships) {
-//				group.getPerson().add(getPersonById(groupMembership.getPersonId()));
+				// group.getPerson().add(getPersonById(groupMembership.getPersonId()));
 				group.getPerson().add(personDao.queryForId(groupMembership.getPersonId()));
 			}
 			groups.add(group);
 		}
 	}
-	
+
 	private List<GroupMembership> getGroupMemberships(Group group) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
 		List<GroupMembership> groupMemberships = null;
@@ -124,7 +124,7 @@ public class BackgroundModel {
 		}
 		return eventMemberships;
 	}
-	
+
 	public List<GroupMembership> getGroupMemberships(Event currentEvent) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
 		List<GroupMembership> groupMemberships = null;
@@ -135,14 +135,7 @@ public class BackgroundModel {
 		}
 		return groupMemberships;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public ArrayList<String> getEventList() {
 		ArrayList<String> eventNames = new ArrayList<String>();
 		for (Event ed : events) {
@@ -160,21 +153,27 @@ public class BackgroundModel {
 	public List<Person> getPersons() {
 		return persons;
 	}
-	
+
 	public Person getPersonById(int id) {
-		Person person = null;
-		for(Person p : persons)
-			if(p.getId() == id)
-				person = p;
-		return person;
+		// Person person = null;
+		// for(Person p : persons)
+		// if(p.getId() == id)
+		// person = p;
+		// return person;
+
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
+		return personDao.queryForId(id);
 	}
 
 	public Group getGroupById(int id) {
-		Group group = null;
-		for(Group g : groups)
-			if(g.id == id)
-				group = g;
-		return group;
+		// Group group = null;
+		// for(Group g : groups)
+		// if(g.id == id)
+		// group = g;
+		// return group;
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDataDao();
+		return groupDao.queryForId(id);
+
 	}
 
 	public void setPersons(List<Person> persons) {
@@ -188,6 +187,39 @@ public class BackgroundModel {
 	public void setGroups(List<Group> groups) {
 		this.groups.clear();
 		this.groups.addAll(groups);
+	}
+
+	public void reloadEvents() {
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		setEvents(eventDao.queryForAll());
+	}
+
+	public void addPerson(Person pd) {
+		persons.add(pd);
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
+		personDao.create(pd);
+	}
+
+	public void removePerson(Person p) {
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+		List<EventMembership> emd = null;
+		List<GroupMembership> gmd = null;
+		try {
+			emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", p.getId()).and().eq("event_id", getCurrentEvent().getId()).prepare());
+			gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", p.getId()).prepare());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		for (GroupMembership groupMembership : gmd) {
+			getGroupById(groupMembership.getGroup_id()).getPerson().remove(getPersonById(p.getId()));
+		}
+		eventMembershipDao.delete(emd);
+		groupMembershipDao.delete(gmd);
+
+		persons.remove(p);
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
+		personDao.delete(p);
 	}
 
 }

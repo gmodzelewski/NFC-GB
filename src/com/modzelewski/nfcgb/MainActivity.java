@@ -128,8 +128,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		// get DatabaseHelper
 		databaseHelper = model.getHelper();
 		// load events from database
-		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
-		model.setEvents(eventDao.queryForAll());
+		model.reloadEvents();
 
 		// Dialog Constructors
 		aboutDialog = new AboutDialog();

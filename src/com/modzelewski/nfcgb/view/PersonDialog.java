@@ -142,25 +142,23 @@ public class PersonDialog implements PersonDialogInterface {
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
-				RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
-				List<EventMembership> emd = null;
-				List<GroupMembership> gmd = null;
+//				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
+//				RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
+//				List<EventMembership> emd = null;
+//				List<GroupMembership> gmd = null;
 
 				Person pd = model.persons.get(pInfo.position);
-				try {
-					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).and().eq("event_id", model.getCurrentEvent().getId()).prepare());
-					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).prepare());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-				for (GroupMembership groupMembership : gmd) {
-					model.getGroupById(groupMembership.getGroup_id()).getPerson().remove(model.getPersonById(pd.getId()));
-				}
-				model.persons.remove(pd);
-				eventMembershipDao.delete(emd);
-				groupMembershipDao.delete(gmd);
+//				try {
+//					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).and().eq("event_id", model.getCurrentEvent().getId()).prepare());
+//					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).prepare());
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//				}
+//
+//				for (GroupMembership groupMembership : gmd) {
+//					model.getGroupById(groupMembership.getGroup_id()).getPerson().remove(model.getPersonById(pd.getId()));
+//				}
+				model.removePerson(pd);
 
 				pa.notifyDataSetChanged();
 				ga.notifyDataSetChanged();
