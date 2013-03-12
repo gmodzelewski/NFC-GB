@@ -54,7 +54,7 @@ public class BackgroundModel {
 		getPersons(eventMemberships);
 	}
 
-	private void getPersons(List<EventMembership> eventMemberships) {
+	public List<Person> getPersons(List<EventMembership> eventMemberships) {
 		// ArrayList<String> personsFullNames = new ArrayList<String>();
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
 
@@ -63,9 +63,8 @@ public class BackgroundModel {
 			persons.add(pd);
 			// personsFullNames.add(String.format("%s\n%s", pd.name, pd.email));
 		}
+		return persons;
 	}
-
-	
 	
 	private void reloadGroups() {
 		groups.clear();
@@ -88,7 +87,7 @@ public class BackgroundModel {
 			groups.add(group);
 		}
 	}
-
+	
 	private List<GroupMembership> getGroupMemberships(Group group) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
 		List<GroupMembership> groupMemberships = null;
@@ -100,7 +99,7 @@ public class BackgroundModel {
 		return groupMemberships;
 	}
 
-	private List<Group> getGroups(Event currentEvent) {
+	public List<Group> getGroups(Event currentEvent) {
 		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDataDao();
 		List<Group> groupResult = null;
 		try {

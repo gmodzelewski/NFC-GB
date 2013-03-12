@@ -20,19 +20,18 @@ import com.modzelewski.nfcgb.model.Event;
 import com.modzelewski.nfcgb.model.EventMembership;
 import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.model.GroupMembership;
+import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	NfcAdapter nfcAdapter;
 	private Context context;
 	private BackgroundModel model;
-	private DatabaseHelper databaseHelper;
 
 	public Nfc(NfcAdapter nfcAdapter, Context context, BackgroundModel model) {
 		this.nfcAdapter = nfcAdapter;
 		this.context = context;
 		this.model = model;
-		this.databaseHelper = databaseHelper;
 	}
 
 	/**
@@ -52,8 +51,8 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 		Event currentEvent = model.getCurrentEvent();
 		List<GroupMembership> groupMemberships = model.getGroupMemberships(currentEvent);
 		List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
-		List<Group> groups = model.getGroups();
-		
+		List<Group> groups = model.getGroups(currentEvent);
+		List<Person> persons = model.getPersons(eventMemberships);
 		
 		
 		
