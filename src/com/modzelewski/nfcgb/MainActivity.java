@@ -1,5 +1,7 @@
 package com.modzelewski.nfcgb;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -24,6 +26,7 @@ import com.modzelewski.nfcgb.controller.EventAdapter;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.Event;
+import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.nfc.Nfc;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
@@ -173,12 +176,16 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		if (nfcAdapter != null) {
 			// Check to see that the Activity started due to an Android Beam
 			if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-				Nfc nfc = new Nfc(nfcAdapter, context);
+				Nfc nfc = new Nfc(nfcAdapter, context, model);
 				nfc.processIntent(getIntent());
 				// Register callback
 				nfcAdapter.setNdefPushMessageCallback(nfc, this);
 			}
 		}
+		
+		List<Group> groups = model.getGroups();
+		if(!groups.isEmpty())
+			Toast.makeText(context, "Groups ist nicht leer", Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -241,7 +248,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			refreshListViews();
 			return true;
 		case R.id.om_nfc:
-			Nfc nfc = new Nfc(nfcAdapter, context);
+			Nfc nfc = new Nfc(nfcAdapter, context, model);
 			nfc.menuNfcCheck();
 			return true;
 		case R.id.om_repop:
