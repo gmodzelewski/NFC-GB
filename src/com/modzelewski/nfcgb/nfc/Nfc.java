@@ -34,16 +34,9 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 		this.model = model;
 	}
 
-	/**
-	 * Creates a custom MIME type encapsulated in an NDEF record
-	 */
-	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
 
-		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
-		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
-		return mimeRecord;
-	}
-
+	
+	// CREATE!!!
 	@Override
 	public NdefMessage createNdefMessage(NfcEvent event) {
 		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
@@ -89,6 +82,17 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 		return record;
 	}
 
+	
+	/**
+	 * Creates a custom MIME type encapsulated in an NDEF record
+	 */
+	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
+		
+		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
+		return mimeRecord;
+	}
+
 	// /**
 	// * Parses the NDEF Message from the intent and prints to a Toast
 	// */
@@ -102,6 +106,7 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	// Toast.LENGTH_LONG).show();
 	// }
 
+	//
 	/**
 	 * Parses the NDEF Message from the intent and prints to a Toast
 	 */

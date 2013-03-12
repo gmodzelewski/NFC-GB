@@ -28,7 +28,6 @@ import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.Event;
 import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.nfc.Nfc;
-import com.modzelewski.nfcgb.nfc.NfcCheck;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
 import com.modzelewski.nfcgb.view.AboutDialog;
