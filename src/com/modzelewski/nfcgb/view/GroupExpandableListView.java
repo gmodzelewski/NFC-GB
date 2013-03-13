@@ -1,8 +1,5 @@
 package com.modzelewski.nfcgb.view;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,12 +7,10 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.model.Group;
-import com.modzelewski.nfcgb.model.GroupMembership;
 import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
@@ -42,16 +37,7 @@ public class GroupExpandableListView {
 				builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
-						List<GroupMembership> gmd = null;
-						RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
-						try {
-							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.getId()).and().eq("group_id", group.id).prepare());
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						groupMembershipDao.delete(gmd);
-						model.getGroupById(group.id).getPerson().remove(model.getPersonById(person.getId()));
-						ga.notifyDataSetChanged();
+						model.removeGroupMembership(person.getId(), group.id);
 					}
 				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 					@Override

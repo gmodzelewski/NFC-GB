@@ -94,19 +94,14 @@ public class PersonDialog implements PersonDialogInterface {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
 				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
-				String name = nameET.getText().toString().trim();
-				String email = emailET.getText().toString().trim();
-				RuntimeExceptionDao<Person, Integer> personDao = dbh.getPersonDataDao();
+				String newName = nameET.getText().toString().trim();
+				String newEmail = emailET.getText().toString().trim();
 				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 				final AdapterView.AdapterContextMenuInfo pInfo = info;
-				final Person pd = model.persons.get(pInfo.position);
-
-				pd.setName(name);
-				pd.setEmail(email);
-
-				personDao.update(pd);
-				personDao.refresh(pd);
-
+				final Person p = model.persons.get(pInfo.position);
+				
+				model.editPerson(p, newName, newEmail);
+				
 				pa.notifyDataSetChanged();
 				ga.notifyDataSetChanged();
 			}

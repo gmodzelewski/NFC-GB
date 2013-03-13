@@ -80,4 +80,7 @@
     <string name="person_already_in_group">This person is already in that group.</string>
     <string name="menu_repop">Repopulate Database</string>
 
+    <string name="use_case_1_eventname">I am the name of an event</string>
+    <string name="use_case_2_eventname">I am the new name of an event</string>
+
 </resources>

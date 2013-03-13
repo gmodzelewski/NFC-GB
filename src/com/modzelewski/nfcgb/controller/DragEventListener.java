@@ -71,8 +71,6 @@ public class DragEventListener extends ListView implements OnDragListener {
 
 		case DragEvent.ACTION_DROP:
 			if (v.getTag() == EXPLISTVIEW_TAG) {
-                DatabaseHelper databaseHelper = model.getHelper();
-				RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
 				ClipData.Item i = event.getClipData().getItemAt(0);
 				Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
 				int personId = Integer.parseInt((String) i.getText());
@@ -80,27 +78,7 @@ public class DragEventListener extends ListView implements OnDragListener {
 				ExpandableListView expLv = (ExpandableListView) v;
 				droppedInGroupPos = expLv.pointToPosition((int) event.getX(), (int) event.getY());
 
-				Group group = null;
-				if (droppedInGroupPos >= 0) {
-					group = model.groups.get(droppedInGroupPos);
-				}
-
-				List<GroupMembership> groupResult = null;
-				try {
-                    assert group != null;
-                    groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and().eq("person_id", personId).query();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-                assert groupResult != null;
-                if (groupResult.isEmpty()) {
-					groupMembershipDao.create(new GroupMembership(group.id, personId));
-					model.getGroupById(group.id).getPerson().add(model.getPersonById(personId));
-				} else {
-					Toast.makeText(getContext(), getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
-				}
+				model.addGroupMembership(personId, droppedInGroupPos);
 			}
 			return true; // if drop accepted
 

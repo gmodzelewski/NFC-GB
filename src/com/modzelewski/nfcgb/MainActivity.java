@@ -246,7 +246,6 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			return true;
 		case R.id.om_add_person:
 			personDialog.addPerson(databaseHelper, model, personAdapter);
-			refreshListViews();
 			return true;
 		case R.id.om_nfc:
 			NfcCheck nfcCheck = new NfcCheck(nfcAdapter, context);
@@ -255,7 +254,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		case R.id.om_repop:
 			DatabasePopulator dp = new DatabasePopulator();
 			dp.fillDatabase(databaseHelper, context, model);
-			return true;
+            refreshListViews();
+            return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
