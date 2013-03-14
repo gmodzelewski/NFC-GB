@@ -34,9 +34,9 @@ public class EventSpinner {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 				model.setCurrentEvent(model.getEvents().get(position));
-				eventAdapter.notifyDataSetChanged();
-				groupAdapter.notifyDataSetChanged();
-				personAdapter.notifyDataSetChanged();
+//				eventAdapter.notifyDataSetChanged();
+//				groupAdapter.notifyDataSetChanged();
+//				personAdapter.notifyDataSetChanged();
 			}
 
 			@Override

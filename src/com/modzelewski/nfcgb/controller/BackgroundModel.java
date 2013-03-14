@@ -77,6 +77,11 @@ public class BackgroundModel {
 			groups.add(group);
 		}
 	}
+	
+	public void reloadEverything() {
+		reloadGroups();
+		reloadPersons();
+	}
 
 	/*
 	 * ----------------------------------------------------------------------------------
@@ -93,14 +98,65 @@ public class BackgroundModel {
 		reloadPersons();
 		reloadGroups();
 	}
+	
 
-	public void editEvent(Event event) {
-
+	public void editEvent(Event event, String eventName, Boolean wintersemester, int year,
+			String info) {
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		event.setEventname(eventName);
+		event.setWintersemester(wintersemester);
+		event.setYear(year);
+		event.setInfo(info);
+		
+		eventDao.update(event);
+		eventDao.refresh(event);
 	}
-
+	
 	public void removeEvent(Event event) {
+		currentEvent = event;
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDataDao();
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+		List<Event> ed = null;
+		List<Group> gd = null;
+		List<EventMembership> emd = null;
+		List<GroupMembership> gmd = null;
 
+		try {
+			ed = eventDao.query(eventDao.queryBuilder().where().eq("id", currentEvent.id).prepare());
+			gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", currentEvent.id).prepare());
+			emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", currentEvent.id).prepare());
+			//gmd goes over gd later
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+        for (Group group : gd) {
+			try {
+				gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", group.id).prepare());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		eventDao.delete(ed);
+		groupDao.delete(gd);
+		eventMembershipDao.delete(emd);
+		groupMembershipDao.delete(gmd);
+
+		persons.clear();
+		groups.clear();
+		events.remove(currentEvent);
+		reloadGroups();
+		reloadPersons();
+		if(events.size() == 0) {
+			setCurrentEvent(null);
+			Toast.makeText(mainActivity.getApplicationContext(), mainActivity.getString(R.string.please_add_a_new_event), Toast.LENGTH_LONG).show();
+		} else 
+			setCurrentEvent(events.get(0));
 	}
+
 
 	public Event getCurrentEvent() {
 		return currentEvent;
@@ -118,7 +174,7 @@ public class BackgroundModel {
 		return events;
 	}
 
-	public void setEventList(List<Event> events) {
+	public void setEvents(List<Event> events) {
 		this.events.clear();
 		this.events.addAll(events);
 		Collections.sort(this.events);
@@ -177,6 +233,11 @@ public class BackgroundModel {
 	 * ----------------------------------------------------------------------------------
 	 */
 
+	public void removePersons(Event event) {
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
+
+	}
+	
 	public List<Person> getPersons() {
 		return persons;
 	}
@@ -200,6 +261,11 @@ public class BackgroundModel {
 	 * --- EventMembership --------------------------------------------------------------
 	 * ----------------------------------------------------------------------------------
 	 */
+	private void removeEventMemberships(EventMembership eventMembership) {
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
+		eventMembershipDao.delete(eventMembership);
+		// no eventmembership representation List here, so no remove
+	}
 
 	public List<EventMembership> getEventMemberships(Event currentEvent) {
 		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
@@ -282,6 +348,9 @@ public class BackgroundModel {
 		}
 		return groupMemberships;
 	}
+
+
+
 
 	// ----------------------------------------------------------------------------------
 

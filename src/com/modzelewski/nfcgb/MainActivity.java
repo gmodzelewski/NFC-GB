@@ -109,9 +109,11 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			return true;
 		case R.id.cm_event_edit:
 			eventDialog.editEvent(databaseHelper, model, eventAdapter);
+			eventAdapter.notifyDataSetChanged();
 			return true;
 		case R.id.cm_event_remove:
 			eventDialog.removeEvent(databaseHelper, model, eventAdapter);
+			eventAdapter.notifyDataSetChanged();
 
 		default:
 			return super.onContextItemSelected(item);
@@ -129,7 +131,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		databaseHelper = model.getHelper();
 		// load events from database
 		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
-		model.setEventList(eventDao.queryForAll());
+		model.setEvents(eventDao.queryForAll());
 
 		// Dialog Constructors
 		aboutDialog = new AboutDialog();

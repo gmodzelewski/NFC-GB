@@ -58,6 +58,8 @@ public class EventDialog implements EventDialogInterface {
 				model.addEvent(event);
 				eventAdapter.notifyDataSetChanged();
 				eventSpinner.setSelection(eventAdapter.getPosition(event));
+				eventAdapter.notifyDataSetChanged();
+				
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -96,22 +98,19 @@ public class EventDialog implements EventDialogInterface {
 
 			@Override
 			public void onClick(DialogInterface dialog, int whichButton) {
-				EditText eventname = (EditText) eventView.findViewById(R.id.ed_eventname);
-				Switch wintersemester = (Switch) eventView.findViewById(R.id.ed_wintersemester);
-				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
-				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
-
-				if (eventname.toString().trim().isEmpty())
-					currentEvent.setEventname(context.getResources().getString(R.string.unknown_eventname));
+				EditText name = (EditText) eventView.findViewById(R.id.ed_eventname);
+				Switch ws = (Switch) eventView.findViewById(R.id.ed_wintersemester);
+				NumberPicker y = (NumberPicker) eventView.findViewById(R.id.np_year);
+				EditText i = (EditText) eventView.findViewById(R.id.ed_info);
+				String eventName = null;
+				if (name.toString().trim().isEmpty())
+					eventName = context.getResources().getString(R.string.unknown_eventname);
 				else
-					currentEvent.setEventname(eventname.getText().toString().trim());
-				currentEvent.setWintersemester(wintersemester.isChecked());
-				currentEvent.setYear(year.getValue());
-				currentEvent.setInfo(info.getText().toString());
-
-				eventDao.update(currentEvent);
-				eventDao.refresh(currentEvent);
-
+					eventName = name.getText().toString().trim();
+				Boolean wintersemester = ws.isChecked();
+				int year = y.getValue();
+				String info = i.getText().toString().trim();
+				model.editEvent(currentEvent, eventName, wintersemester, year, info);
 				eventAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
@@ -120,7 +119,6 @@ public class EventDialog implements EventDialogInterface {
 				// ignore, just dismiss
 			}
 		}).show();
-
 	}
 	
 	/* (non-Javadoc)
@@ -135,48 +133,8 @@ public class EventDialog implements EventDialogInterface {
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Event currentEvent = model.getCurrentEvent();
-				RuntimeExceptionDao<Event, Integer> eventDao = dbh.getEventDataDao();
-				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
-				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
-				RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
-				List<Event> ed = null;
-				List<Group> gd = null;
-				List<EventMembership> emd = null;
-				List<GroupMembership> gmd = null;
-
-				try {
-					ed = eventDao.query(eventDao.queryBuilder().where().eq("id", model.getCurrentEvent().getId()).prepare());
-					gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().getId()).prepare());
-					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", model.getCurrentEvent().getId()).prepare());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-                assert gd != null;
-                for (Group group : gd) {
-					try {
-						gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", group.id).prepare());
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-
-				eventDao.delete(ed);
-				groupDao.delete(gd);
-				eventMembershipDao.delete(emd);
-				groupMembershipDao.delete(gmd);
-
-				model.persons.clear();
-				model.groups.clear();
-				model.events.remove(currentEvent);
-				if (model.events.contains(currentEvent))
-					Toast.makeText(context, "ist noch drin", Toast.LENGTH_LONG).show();
-
+				model.removeEvent(model.getCurrentEvent());
 				eventAdapter.notifyDataSetChanged();
-				
-				if (!model.getEvents().isEmpty())
-					model.setCurrentEvent(model.getEvents().get(0));
 			}
 		});
 		adb.show();

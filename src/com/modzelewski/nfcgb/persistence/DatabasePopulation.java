@@ -70,9 +70,9 @@ public class DatabasePopulation {
 		eventMembershipDao.create(new EventMembership(1, 6));
 		eventMembershipDao.create(new EventMembership(2, 7));
         eventMembershipDao.create(new EventMembership(3, 8));
-        eventMembershipDao.create(new EventMembership(4, 9));
-        eventMembershipDao.create(new EventMembership(4, 10));
-        eventMembershipDao.create(new EventMembership(4, 11));
+        eventMembershipDao.create(new EventMembership(3, 9));
+        eventMembershipDao.create(new EventMembership(3, 10));
+        eventMembershipDao.create(new EventMembership(3, 11));
     }
 
     public static void populateGroupMembershipDao(RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao) {
