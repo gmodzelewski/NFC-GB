@@ -42,15 +42,7 @@ public class GroupExpandableListView {
 				builder.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int whichButton) {
-						List<GroupMembership> gmd = null;
-						RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
-						try {
-							gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.getId()).and().eq("group_id", group.id).prepare());
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
-						groupMembershipDao.delete(gmd);
-						model.getGroupById(group.id).getPerson().remove(model.getPersonById(person.getId()));
+						model.removeGroupMembership(group, person);
 						ga.notifyDataSetChanged();
 					}
 				}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {

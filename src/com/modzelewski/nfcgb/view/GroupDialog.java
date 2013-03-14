@@ -33,7 +33,7 @@ public class GroupDialog implements GroupDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.GroupDialogInterface#addGroup(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.GroupAdapter)
 	 */
 	@Override
-	public void addGroup(final DatabaseHelper dbh, final BackgroundModel model, final GroupAdapter ga) {
+	public void addGroup(final DatabaseHelper dbh, final BackgroundModel model, final GroupAdapter groupAdapter) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View groupView = inflater.inflate(R.layout.group_dialog, null);
 
@@ -52,7 +52,7 @@ public class GroupDialog implements GroupDialogInterface {
 				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
 				groupDao.create(group);
 				model.groups.add(group);
-				ga.notifyDataSetChanged();
+				groupAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -66,7 +66,7 @@ public class GroupDialog implements GroupDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.GroupDialogInterface#editGroup(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.GroupAdapter, android.view.MenuItem)
 	 */
 	@Override
-	public void editGroup(final DatabaseHelper dbh, final BackgroundModel model, final GroupAdapter ga, final MenuItem item) {
+	public void editGroup(final DatabaseHelper dbh, final BackgroundModel model, final GroupAdapter groupAdapter, final MenuItem item) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View groupView = inflater.inflate(R.layout.group_dialog, null);
 
@@ -94,7 +94,7 @@ public class GroupDialog implements GroupDialogInterface {
 				gd.setGroupName(groupName);
 				groupDao.update(gd);
 				groupDao.refresh(gd);
-				ga.notifyDataSetChanged();
+				groupAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -134,7 +134,7 @@ public class GroupDialog implements GroupDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.GroupDialogInterface#removeGroup(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.GroupAdapter, android.view.MenuItem)
 	 */
 	@Override
-	public void removeGroup(final DatabaseHelper dbh, final BackgroundModel model, final GroupAdapter ga, final MenuItem item) {
+	public void removeGroup(final DatabaseHelper dbh, final BackgroundModel model, final GroupAdapter groupAdapter, final MenuItem item) {
 		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(R.string.remove_group);
@@ -148,7 +148,7 @@ public class GroupDialog implements GroupDialogInterface {
 				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
 				groupDao.delete(gd);
 				model.groups.remove(gd);
-				ga.notifyDataSetChanged();
+				groupAdapter.notifyDataSetChanged();
 			}
 		});
 		adb.show();

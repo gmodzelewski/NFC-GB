@@ -56,9 +56,9 @@ public class DatabasePopulation {
 	}
 	
 	public static void populateEventDAO(RuntimeExceptionDao<Event, Integer> eventDao) {
-		eventDao.create(new Event("Ich AG", 2005, true, "Peter", "ich@auchhier.de", "here be dragons"));
-		eventDao.create(new Event("Medieninformatik 1 - Tutorium 2", 2011, false, "Hans Meiser", "ich@hier.de", ""));
-		eventDao.create(new Event("Medieninformatik 2 - Tutorium 5", 2012, true, "Mr. McScuzzypants", "ich@hier.de", ""));
+		eventDao.create(new Event("Ich AG", 2005, true, "here be dragons"));
+		eventDao.create(new Event("Medieninformatik 1 - Tutorium 2", 2011, false, ""));
+		eventDao.create(new Event("Medieninformatik 2 - Tutorium 5", 2012, true, ""));
 	}
 	
 	public static void populateEventMembershipDao(RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao) {

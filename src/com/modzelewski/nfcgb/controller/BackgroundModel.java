@@ -1,19 +1,21 @@
 package com.modzelewski.nfcgb.controller;
 
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import android.widget.Toast;
+
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.MainActivity;
+import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.model.Event;
 import com.modzelewski.nfcgb.model.EventMembership;
 import com.modzelewski.nfcgb.model.Group;
 import com.modzelewski.nfcgb.model.GroupMembership;
 import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class BackgroundModel {
 	private final MainActivity mainActivity;
@@ -34,21 +36,9 @@ public class BackgroundModel {
 		return mainActivity.getHelper();
 	}
 
-	public Event getCurrentEvent() {
-		return currentEvent;
-	}
-
-	public void setCurrentEvent(Event currentEvent) {
-		if (this.currentEvent != currentEvent) {
-			this.currentEvent = currentEvent;
-			reloadPersons();
-			reloadGroups();
-		}
-	}
-
 	private void reloadPersons() {
 		persons.clear();
-		if(currentEvent == null)
+		if (currentEvent == null)
 			return;
 		List<EventMembership> eventMemberships = getEventMemberships(currentEvent);
 		getPersons(eventMemberships);
@@ -65,39 +55,91 @@ public class BackgroundModel {
 		}
 		return persons;
 	}
-	
+
 	private void reloadGroups() {
 		groups.clear();
 
-		if(currentEvent == null) {
+		if (currentEvent == null) {
 			return;
 		}
-		
+
 		List<Group> groupsWithCurrentEvent = getGroups(currentEvent);
 
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDataDao();
-		
+
 		for (Group group : groupsWithCurrentEvent) {
 			List<GroupMembership> groupMemberships = getGroupMemberships(group);
-			
+
 			for (GroupMembership groupMembership : groupMemberships) {
-//				group.getPerson().add(getPersonById(groupMembership.getPersonId()));
+				// group.getPerson().add(getPersonById(groupMembership.getPersonId()));
 				group.getPerson().add(personDao.queryForId(groupMembership.getPersonId()));
 			}
 			groups.add(group);
 		}
 	}
-	
-	private List<GroupMembership> getGroupMemberships(Group group) {
-		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
-		List<GroupMembership> groupMemberships = null;
-		try {
-			groupMemberships = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).query();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return groupMemberships;
+
+	/*
+	 * ----------------------------------------------------------------------------------
+	 * --- Event ------------------------------------------------------------------------
+	 * ----------------------------------------------------------------------------------
+	 */
+	// Add, Edit, Remove
+	public void addEvent(Event event) {
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDataDao();
+		eventDao.create(event);
+		if(!events.contains(event));
+			events.add(event);
+		setCurrentEvent(event);
+		reloadPersons();
+		reloadGroups();
 	}
+
+	public void editEvent(Event event) {
+
+	}
+
+	public void removeEvent(Event event) {
+
+	}
+
+	public Event getCurrentEvent() {
+		return currentEvent;
+	}
+
+	public void setCurrentEvent(Event currentEvent) {
+		if (this.currentEvent != currentEvent) {
+			this.currentEvent = currentEvent;
+			reloadPersons();
+			reloadGroups();
+		}
+	}
+
+	public List<Event> getEvents() {
+		return events;
+	}
+
+	public void setEventList(List<Event> events) {
+		this.events.clear();
+		this.events.addAll(events);
+		Collections.sort(this.events);
+	}
+
+	// // getList, setEvents
+	// public ArrayList<String> getEventList() {
+	// ArrayList<String> eventNames = new ArrayList<String>();
+	// for (Event ed : events) {
+	// eventNames.add(String.format("%s (%s %d)", ed.getEventname(),
+	// ed.isWintersemester() ? "WiSe" : "SoSe", ed.getYear()));
+	// }
+	// return eventNames;
+	// }
+	// ----------------------------------------------------------------------------------
+
+	/*
+	 * ----------------------------------------------------------------------------------
+	 * --- Group ------------------------------------------------------------------------
+	 * ----------------------------------------------------------------------------------
+	 */
 
 	public List<Group> getGroups(Event currentEvent) {
 		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDataDao();
@@ -110,9 +152,54 @@ public class BackgroundModel {
 		return groupResult;
 	}
 
-	public List<Event> getEvents() {
-		return events;
+	public Group getGroupById(int id) {
+		Group group = null;
+		for (Group g : groups)
+			if (g.id == id)
+				group = g;
+		return group;
 	}
+
+	public List<Group> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(List<Group> groups) {
+		this.groups.clear();
+		this.groups.addAll(groups);
+	}
+
+	// ----------------------------------------------------------------------------------
+
+	/*
+	 * ----------------------------------------------------------------------------------
+	 * --- Person -----------------------------------------------------------------------
+	 * ----------------------------------------------------------------------------------
+	 */
+
+	public List<Person> getPersons() {
+		return persons;
+	}
+
+	public Person getPersonById(int id) {
+		Person person = null;
+		for (Person p : persons)
+			if (p.getId() == id)
+				person = p;
+		return person;
+	}
+
+	public void setPersons(List<Person> persons) {
+		this.persons = persons;
+	}
+
+	// ----------------------------------------------------------------------------------
+
+	/*
+	 * ----------------------------------------------------------------------------------
+	 * --- EventMembership --------------------------------------------------------------
+	 * ----------------------------------------------------------------------------------
+	 */
 
 	public List<EventMembership> getEventMemberships(Event currentEvent) {
 		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDataDao();
@@ -124,7 +211,67 @@ public class BackgroundModel {
 		}
 		return eventMemberships;
 	}
-	
+
+	// ----------------------------------------------------------------------------------
+
+	/*
+	 * ----------------------------------------------------------------------------------
+	 * --- GroupMembership --------------------------------------------------------------
+	 * ----------------------------------------------------------------------------------
+	 */
+
+	public void addGroupMembership(int personId, int groupId) {
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+
+		List<GroupMembership> groupResult = null;
+		try {
+			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", groupId).and()
+					.eq("person_id", personId).query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		assert groupResult != null;
+		if (groupResult.isEmpty()) {
+			groupMembershipDao.create(new GroupMembership(groupId, personId));
+			getGroupById(groupId).getPerson().add(getPersonById(personId));
+		} else {
+			Toast.makeText(mainActivity.getApplicationContext(),
+					mainActivity.getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
+		}
+
+		reloadGroups();
+	}
+
+	public void removeGroupMembership(Group group, Person person) {
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+
+		List<GroupMembership> groupResult = null;
+		try {
+			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and()
+					.eq("person_id", person.id).query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		groupMembershipDao.delete(groupResult);
+		group.getPerson().remove(person);
+		reloadGroups();
+	}
+
+	private List<GroupMembership> getGroupMemberships(Group group) {
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
+		List<GroupMembership> groupMemberships = null;
+		try {
+			groupMemberships = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return groupMemberships;
+	}
+
 	public List<GroupMembership> getGroupMemberships(Event currentEvent) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDataDao();
 		List<GroupMembership> groupMemberships = null;
@@ -135,59 +282,7 @@ public class BackgroundModel {
 		}
 		return groupMemberships;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	public ArrayList<String> getEventList() {
-		ArrayList<String> eventNames = new ArrayList<String>();
-		for (Event ed : events) {
-			eventNames.add(String.format("%s (%s %d)", ed.getEventname(), ed.isWintersemester() ? "WiSe" : "SoSe", ed.getYear()));
-		}
-		return eventNames;
-	}
 
-	public void setEvents(List<Event> events) {
-		this.events.clear();
-		this.events.addAll(events);
-		Collections.sort(this.events);
-	}
-
-	public List<Person> getPersons() {
-		return persons;
-	}
-	
-	public Person getPersonById(int id) {
-		Person person = null;
-		for(Person p : persons)
-			if(p.getId() == id)
-				person = p;
-		return person;
-	}
-
-	public Group getGroupById(int id) {
-		Group group = null;
-		for(Group g : groups)
-			if(g.id == id)
-				group = g;
-		return group;
-	}
-
-	public void setPersons(List<Person> persons) {
-		this.persons = persons;
-	}
-
-	public List<Group> getGroups() {
-		return groups;
-	}
-
-	public void setGroups(List<Group> groups) {
-		this.groups.clear();
-		this.groups.addAll(groups);
-	}
+	// ----------------------------------------------------------------------------------
 
 }

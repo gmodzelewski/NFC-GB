@@ -18,10 +18,6 @@ public class Event implements Comparable<Event> {
 	private
 	boolean wintersemester;
 	@DatabaseField
-	String tutor;
-	@DatabaseField
-	String tutoremail;
-	@DatabaseField
 	private
 	String info;
 	/*@ForeignCollectionField(eager = false)
@@ -35,12 +31,10 @@ public class Event implements Comparable<Event> {
 	public Event() {
 	}
 
-	public Event(String eventname, int year, boolean wintersemester, String tutor, String tutoremail, String info) {
+	public Event(String eventname, int year, boolean wintersemester, String info) {
 		this.setEventname(eventname);
 		this.year = year;
 		this.setWintersemester(wintersemester);
-		this.tutor = tutor;
-		this.tutoremail = tutoremail;
 		this.setInfo(info);
 	}
 
@@ -51,8 +45,6 @@ public class Event implements Comparable<Event> {
 		sb.append(", ").append("eventname=").append(getEventname());
 		sb.append(", ").append("year=").append(year);
 		sb.append(", ").append("wintersemester=").append(isWintersemester());
-		sb.append(", ").append("tutor=").append(tutor);
-		sb.append(", ").append("tutoremail=").append(tutoremail);
 		sb.append(", ").append("info=").append(getInfo());
 		return sb.toString();
 	}

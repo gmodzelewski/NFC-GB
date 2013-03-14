@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.controller.EventAdapter;
@@ -48,19 +49,15 @@ public class EventDialog implements EventDialogInterface {
 				NumberPicker year = (NumberPicker) eventView.findViewById(R.id.np_year);
 				EditText info = (EditText) eventView.findViewById(R.id.ed_info);
 
-				Event ed = new Event();
+				Event event = new Event();
+				event.setEventname(eventname.getText().toString());
+				event.setYear(year.getValue());
+				event.setWintersemester(wintersemester.isChecked());
+				event.setInfo(info.getText().toString());
 
-				ed.setEventname(eventname.getText().toString());
-				ed.setWintersemester(wintersemester.isChecked());
-				ed.setYear(year.getValue());
-				ed.setInfo(info.getText().toString());
-				
-				RuntimeExceptionDao<Event, Integer> eventDao = dbh.getEventDataDao();
-				eventDao.create(ed);
-				model.events.add(ed);
-				model.setCurrentEvent(ed);
-				eventSpinner.setSelection(eventAdapter.getPosition(ed));
+				model.addEvent(event);
 				eventAdapter.notifyDataSetChanged();
+				eventSpinner.setSelection(eventAdapter.getPosition(event));
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override

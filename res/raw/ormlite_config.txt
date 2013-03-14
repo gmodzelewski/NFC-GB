@@ -1,5 +1,5 @@
 #
-# generated on 2013/03/12 12:07:54
+# generated on 2013/03/14 01:17:27
 #
 # --table-start--
 dataClass=com.modzelewski.nfcgb.model.Event
@@ -18,12 +18,6 @@ useGetSet=true
 # --field-end--
 # --field-start--
 fieldName=wintersemester
-# --field-end--
-# --field-start--
-fieldName=tutor
-# --field-end--
-# --field-start--
-fieldName=tutoremail
 # --field-end--
 # --field-start--
 fieldName=info

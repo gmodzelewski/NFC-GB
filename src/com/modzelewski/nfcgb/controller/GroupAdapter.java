@@ -20,26 +20,31 @@ import java.util.List;
  * @author Georg
  * 
  */
-public class GroupAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
-//public class GroupAdapter extends BaseAdapter implements ExpandableListAdapter {
-private final Context context;
+public class GroupAdapter extends BaseExpandableListAdapter implements
+		ExpandableListAdapter {
+	// public class GroupAdapter extends BaseAdapter implements
+	// ExpandableListAdapter {
+	private final Context context;
 	private final List<Group> groups;
 	List<List<Person>> persons;
-//	private final LayoutInflater inflater;
+
+	// private final LayoutInflater inflater;
 
 	public GroupAdapter(Context context, List<Group> groups) {
 		super();
 		this.context = context;
 		this.groups = groups;
-//		this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		// this.inflater = (LayoutInflater)
+		// this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
-	
-//	public GroupAdapter(Context context, List<GroupData> groups, List<List<PersonData>> persons) {
-//		super();
-//		this.context = context;
-//		this.groups = groups;
-//		this.persons = persons;
-//	}
+
+	// public GroupAdapter(Context context, List<GroupData> groups,
+	// List<List<PersonData>> persons) {
+	// super();
+	// this.context = context;
+	// this.groups = groups;
+	// this.persons = persons;
+	// }
 
 	public int getCount() {
 		return groups.size();
@@ -53,12 +58,12 @@ private final Context context;
 		return position;
 	}
 
-//	public View getView(int position, View convertView, ViewGroup parent) {
-//		TextView text = (TextView) getView()
-//		text.setText(groups.get(position).getGroupName());
-//		return text;
-//	}
-	
+	// public View getView(int position, View convertView, ViewGroup parent) {
+	// TextView text = (TextView) getView()
+	// text.setText(groups.get(position).getGroupName());
+	// return text;
+	// }
+
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
 		return groups.get(groupPosition).getPerson().get(childPosition);
@@ -70,10 +75,18 @@ private final Context context;
 	}
 
 	@Override
-	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+	public View getChildView(int groupPosition, int childPosition,
+			boolean isLastChild, View convertView, ViewGroup parent) {
 		TextView text = new TextView(context);
 		text.setPadding(20, 0, 0, 0); // indent the child element a bit
-		text.setText(groups.get(groupPosition).getPerson().get(childPosition).getName());
+		Log.i("GROUPADAPTER", "Gruppe an groupPosition\n = " + groups.get(groupPosition).toString());
+		Log.i("GROUPADAPTER", "Liste Personen an groupPosition\n = " + groups.get(groupPosition).getPerson().toString());
+		Log.i("GROUPADAPTER", "Person an childPosition\n = " + groups.get(groupPosition).getPerson().get(childPosition).getName());
+
+		
+		if (groups.get(groupPosition).getPerson().get(childPosition).getName() != null)
+			text.setText(groups.get(groupPosition).getPerson()
+					.get(childPosition).getName());
 		return text;
 	}
 
@@ -110,7 +123,8 @@ private final Context context;
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+	public View getGroupView(int groupPosition, boolean isExpanded,
+			View convertView, ViewGroup parent) {
 		TextView text = new TextView(context);
 		text.setPadding(70, 30, 10, 30);
 		text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
@@ -135,10 +149,10 @@ private final Context context;
 	public void onGroupCollapsed(int groupPosition) {
 	}
 
-    public void  onGroupExpand  (int groupPosition) {
-        Log.i( getClass().getSimpleName(),"onGroupExpand: "+groupPosition );
-    }
-    
+	public void onGroupExpand(int groupPosition) {
+		Log.i(getClass().getSimpleName(), "onGroupExpand: " + groupPosition);
+	}
+
 	@Override
 	public void onGroupExpanded(int groupPosition) {
 	}
@@ -148,9 +162,9 @@ private final Context context;
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	public void remove() {
-		//TODO
+		// TODO
 	}
 
 }

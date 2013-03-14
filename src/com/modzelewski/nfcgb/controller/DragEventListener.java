@@ -85,22 +85,7 @@ public class DragEventListener extends ListView implements OnDragListener {
 					group = model.groups.get(droppedInGroupPos);
 				}
 
-				List<GroupMembership> groupResult = null;
-				try {
-                    assert group != null;
-                    groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and().eq("person_id", personId).query();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-                assert groupResult != null;
-                if (groupResult.isEmpty()) {
-					groupMembershipDao.create(new GroupMembership(group.id, personId));
-					model.getGroupById(group.id).getPerson().add(model.getPersonById(personId));
-				} else {
-					Toast.makeText(getContext(), getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
-				}
+				model.addGroupMembership(personId, group.id);
 			}
 			return true; // if drop accepted
 

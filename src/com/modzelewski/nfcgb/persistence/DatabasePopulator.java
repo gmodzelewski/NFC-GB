@@ -55,7 +55,7 @@ public class DatabasePopulator {
 
 		// load events from database
 		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
-		model.setEvents(eventDao.queryForAll());
+		model.setEventList(eventDao.queryForAll());
 
 //		createSpinner();
 //		createListView();
