@@ -132,19 +132,17 @@ public class GroupDialog implements GroupDialogInterface {
 	 */
 	@Override
 	public void removeGroup(final DatabaseHelper dbh, final BackgroundModel model, final GroupAdapter groupAdapter, final MenuItem item) {
-		ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(R.string.remove_group);
 		adb.setMessage(R.string.remove_group_message);
 		adb.setNegativeButton(R.string.cancel_button, null);
-		final ExpandableListView.ExpandableListContextMenuInfo pInfo = info;
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+				final ExpandableListView.ExpandableListContextMenuInfo pInfo = info;
 				Group gd = model.groups.get((int) pInfo.id);
-				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
-				groupDao.delete(gd);
-				model.groups.remove(gd);
+				model.removeGroup(gd);
 				groupAdapter.notifyDataSetChanged();
 			}
 		});

@@ -206,6 +206,13 @@ public class BackgroundModel {
 		reloadGroups();
 	}
 	
+	public void removeGroup(Group gd) {
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDataDao();
+		groupDao.delete(gd);
+		groups.remove(gd);
+		reloadGroups();
+	}
+	
 	public List<Group> getGroups(Event currentEvent) {
 		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDataDao();
 		List<Group> groupResult = null;
@@ -397,9 +404,6 @@ public class BackgroundModel {
 		}
 		return groupMemberships;
 	}
-
-
-
 
 	// ----------------------------------------------------------------------------------
 

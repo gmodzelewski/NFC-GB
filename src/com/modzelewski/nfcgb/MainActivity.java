@@ -248,6 +248,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			return true;
 		case R.id.om_add_group:
 			groupDialog.addGroup(databaseHelper, model, groupAdapter);
+			
 			return true;
 		case R.id.om_add_person:
 			personDialog.addPerson(databaseHelper, model, personAdapter);

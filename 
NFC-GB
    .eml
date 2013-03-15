@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inheritJdk="true">
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="ormlite-android-4.41.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/../NFC-GB/libs/ormlite-android-4.41.jar!/"/>
+	</lib>
+	<lib name="ormlite-core-4.41.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/../NFC-GB/libs/ormlite-core-4.41.jar!/"/>
+	</lib>
+</component>
