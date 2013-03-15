@@ -8,18 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.controller.GroupAdapter;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
-import com.modzelewski.nfcgb.model.EventMembership;
-import com.modzelewski.nfcgb.model.GroupMembership;
 import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class PersonDialog implements PersonDialogInterface {
 	private final Context context;
@@ -39,7 +33,7 @@ public class PersonDialog implements PersonDialogInterface {
 	 * com.modzelewski.nfcgb.controller.PersonAdapter)
 	 */
 	@Override
-	public void addPerson(final DatabaseHelper dbh, final BackgroundModel model, final PersonAdapter pa) {
+	public void addPerson(final DatabaseHelper dbh, final BackgroundModel model, final PersonAdapter personAdapter) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View personView = inflater.inflate(R.layout.person_dialog, null);
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
@@ -54,7 +48,7 @@ public class PersonDialog implements PersonDialogInterface {
 				String name = nameET.getText().toString().trim();
 				String email = emailET.getText().toString().trim();
 				model.addPerson(name, email);
-				pa.notifyDataSetChanged();
+				personAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -74,7 +68,7 @@ public class PersonDialog implements PersonDialogInterface {
 	 * com.modzelewski.nfcgb.controller.PersonAdapter)
 	 */
 	@Override
-	public void editPerson(final BackgroundModel model, final MenuItem item) {
+	public void editPerson(final BackgroundModel model, final MenuItem item, final GroupAdapter groupAdapter, final PersonAdapter personAdapter) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View personView = inflater.inflate(R.layout.person_dialog, null);
 		EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
@@ -95,6 +89,8 @@ public class PersonDialog implements PersonDialogInterface {
 				String name = nameET.getText().toString().trim();
 				String email = emailET.getText().toString().trim();
 				model.editPerson(person, name, email);
+                groupAdapter.notifyDataSetChanged();
+                personAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -114,7 +110,7 @@ public class PersonDialog implements PersonDialogInterface {
 	 * com.modzelewski.nfcgb.controller.PersonAdapter)
 	 */
 	@Override
-	public void removePerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa, final GroupAdapter ga) {
+	public void removePerson(final BackgroundModel model, final MenuItem item, final GroupAdapter groupAdapter, final PersonAdapter personAdapter) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(R.string.context_menu_remove_title);
@@ -126,9 +122,8 @@ public class PersonDialog implements PersonDialogInterface {
 			public void onClick(DialogInterface dialog, int which) {
 				Person person = model.persons.get(pInfo.position);
 				model.removePerson(person);
-				
-				pa.notifyDataSetChanged();
-				ga.notifyDataSetChanged();
+                groupAdapter.notifyDataSetChanged();
+                personAdapter.notifyDataSetChanged();
 			}
 		});
 		adb.show();

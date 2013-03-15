@@ -11,8 +11,8 @@ public interface PersonDialogInterface {
 
 	public abstract void addPerson(DatabaseHelper dbh, BackgroundModel model, PersonAdapter pa);
 
-	public abstract void removePerson(DatabaseHelper dbh, BackgroundModel model, MenuItem item, PersonAdapter pa, final GroupAdapter ga);
+	public abstract void removePerson(BackgroundModel model, MenuItem item, GroupAdapter groupAdapter, PersonAdapter personAdapter);
 
-	public abstract void editPerson(BackgroundModel model, MenuItem item);
+	public abstract void editPerson(BackgroundModel model, MenuItem item, GroupAdapter groupAdapter, PersonAdapter personAdapter);
 
 }
