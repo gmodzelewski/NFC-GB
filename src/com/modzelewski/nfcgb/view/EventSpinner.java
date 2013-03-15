@@ -25,7 +25,6 @@ public class EventSpinner {
 	 * @param databaseHelper 
 	 * @param context 
 	 * @param model 
-	 * @param model 
 	 * @return 
 	 */
 	public Spinner create(final BackgroundModel model, Context context, DatabaseHelper databaseHelper, final EventAdapter eventAdapter, final GroupAdapter groupAdapter, final PersonAdapter personAdapter) {
@@ -34,9 +33,10 @@ public class EventSpinner {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 				model.setCurrentEvent(model.getEvents().get(position));
-//				eventAdapter.notifyDataSetChanged();
-//				groupAdapter.notifyDataSetChanged();
-//				personAdapter.notifyDataSetChanged();
+				model.reloadEverything();
+				eventAdapter.notifyDataSetChanged();
+				groupAdapter.notifyDataSetChanged();
+				personAdapter.notifyDataSetChanged();		
 			}
 
 			@Override

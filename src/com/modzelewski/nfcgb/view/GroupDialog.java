@@ -48,10 +48,7 @@ public class GroupDialog implements GroupDialogInterface {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				EditText groupNameET = (EditText) groupView.findViewById(R.id.gd_groupName);
 				String groupName = groupNameET.getText().toString().trim();
-				Group group = new Group(groupName, model.getCurrentEvent().getId());
-				RuntimeExceptionDao<Group, Integer> groupDao = dbh.getGroupDataDao();
-				groupDao.create(group);
-				model.groups.add(group);
+				model.addGroup(groupName);
 				groupAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {

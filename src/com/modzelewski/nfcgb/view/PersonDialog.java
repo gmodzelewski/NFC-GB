@@ -53,13 +53,7 @@ public class PersonDialog implements PersonDialogInterface {
 				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
 				String name = nameET.getText().toString().trim();
 				String email = emailET.getText().toString().trim();
-				RuntimeExceptionDao<Person, Integer> personDao = dbh.getPersonDataDao();
-				Person person = new Person(name, email);
-				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
-				personDao.create(person);
-				EventMembership emd = new EventMembership(model.getCurrentEvent().getId(), person.getId());
-				eventMembershipDao.create(emd);
-				model.persons.add(person);
+				model.addPerson(name, email);
 				pa.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
@@ -80,16 +74,16 @@ public class PersonDialog implements PersonDialogInterface {
 	 * com.modzelewski.nfcgb.controller.PersonAdapter)
 	 */
 	@Override
-	public void editPerson(final DatabaseHelper dbh, final BackgroundModel model, final MenuItem item, final PersonAdapter pa, final GroupAdapter ga) {
+	public void editPerson(final BackgroundModel model, final MenuItem item) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View personView = inflater.inflate(R.layout.person_dialog, null);
 		EditText nameET = (EditText) personView.findViewById(R.id.pd_name);
 		EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		final AdapterView.AdapterContextMenuInfo pInfo = info;
-		final Person pd = model.persons.get(pInfo.position);
-		nameET.setText(pd.getName());
-		emailET.setText(pd.getEmail());
+		final Person person = model.persons.get(pInfo.position);
+		nameET.setText(person.getName());
+		emailET.setText(person.getEmail());
 		AlertDialog.Builder adb = new AlertDialog.Builder(context);
 		adb.setTitle(context.getResources().getString(R.string.edit_person_in) + " " + model.getCurrentEvent().getEventname());
 		adb.setView(personView);
@@ -100,19 +94,7 @@ public class PersonDialog implements PersonDialogInterface {
 				EditText emailET = (EditText) personView.findViewById(R.id.pd_email);
 				String name = nameET.getText().toString().trim();
 				String email = emailET.getText().toString().trim();
-				RuntimeExceptionDao<Person, Integer> personDao = dbh.getPersonDataDao();
-				AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-				final AdapterView.AdapterContextMenuInfo pInfo = info;
-				final Person pd = model.persons.get(pInfo.position);
-
-				pd.setName(name);
-				pd.setEmail(email);
-
-				personDao.update(pd);
-				personDao.refresh(pd);
-
-				pa.notifyDataSetChanged();
-				ga.notifyDataSetChanged();
+				model.editPerson(person, name, email);
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
@@ -142,31 +124,13 @@ public class PersonDialog implements PersonDialogInterface {
 		adb.setPositiveButton(R.string.ok_button, new AlertDialog.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = dbh.getEventMembershipDataDao();
-				RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = dbh.getGroupMembershipDataDao();
-				List<EventMembership> emd = null;
-				List<GroupMembership> gmd = null;
-
-				Person pd = model.persons.get(pInfo.position);
-				try {
-					emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).and().eq("event_id", model.getCurrentEvent().getId()).prepare());
-					gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", pd.getId()).prepare());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-
-				for (GroupMembership groupMembership : gmd) {
-					model.getGroupById(groupMembership.getGroup_id()).getPerson().remove(model.getPersonById(pd.getId()));
-				}
-				model.persons.remove(pd);
-				eventMembershipDao.delete(emd);
-				groupMembershipDao.delete(gmd);
-
+				Person person = model.persons.get(pInfo.position);
+				model.removePerson(person);
+				
 				pa.notifyDataSetChanged();
 				ga.notifyDataSetChanged();
 			}
 		});
 		adb.show();
 	}
-
 }

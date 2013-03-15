@@ -8,10 +8,10 @@ import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
 public interface EventDialogInterface {
 
-	public abstract void addEvent(DatabaseHelper dbh, BackgroundModel model, Spinner spinner, EventAdapter ea);
+	public abstract void addEvent(BackgroundModel model, Spinner eventSpinner, EventAdapter eventAdapter);
 
-	public abstract void editEvent(DatabaseHelper dbh, BackgroundModel model, EventAdapter ea);
+	public abstract void removeEvent(BackgroundModel model, EventAdapter eventAdapter);
 
-	public abstract void removeEvent(DatabaseHelper dbh, BackgroundModel model, EventAdapter ea);
+	void editEvent(BackgroundModel model, EventAdapter eventAdapter);
 
 }

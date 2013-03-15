@@ -88,33 +88,35 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		switch (item.getItemId()) {
 		case R.id.cm_group_add:
 			groupDialog.addGroup(databaseHelper, model, groupAdapter);
+//			refreshListViews();
 			return true;
 		case R.id.cm_group_edit:
 			groupDialog.editGroup(databaseHelper, model, groupAdapter, item);
+//			refreshListViews();
 			return true;
 		case R.id.cm_group_remove:
 			groupDialog.removeGroup(databaseHelper, model, groupAdapter, item);
+//			refreshListViews();
 			return true;
 		case R.id.cm_group_email:
 			groupDialog.emailGroup(model, item);
 			return true;
 		case R.id.cm_person_edit:
-			personDialog.editPerson(databaseHelper, model, item, personAdapter, groupAdapter);
-			refreshListViews();
+			personDialog.editPerson(model, item);
+//			refreshListViews();
 			return true;
 		case R.id.cm_person_remove:
 			personDialog.removePerson(databaseHelper, model, item, personAdapter, groupAdapter);
-			refreshListViews();
+//			refreshListViews();
 			// Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
 		case R.id.cm_event_edit:
-			eventDialog.editEvent(databaseHelper, model, eventAdapter);
-			eventAdapter.notifyDataSetChanged();
+			eventDialog.editEvent(model, eventAdapter);
+//			refreshListViews();
 			return true;
 		case R.id.cm_event_remove:
-			eventDialog.removeEvent(databaseHelper, model, eventAdapter);
-			eventAdapter.notifyDataSetChanged();
-
+			eventDialog.removeEvent(model, eventAdapter);
+//			refreshListViews();
 		default:
 			return super.onContextItemSelected(item);
 		}
@@ -241,7 +243,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			return true;
 		case R.id.om_add_event:
 			EventDialogInterface eventDialog = new EventDialog(context);
-			eventDialog.addEvent(databaseHelper, model, eventSpinner, eventAdapter);
+			eventDialog.addEvent(model, eventSpinner, eventAdapter);
 			refreshListViews();
 			return true;
 		case R.id.om_add_group:
