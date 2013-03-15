@@ -111,8 +111,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			// Log.i("DEFAULT", "Bin drin, ItemID " + item.getItemId());
 			return true;
 		case R.id.cm_event_edit:
-			eventDialog.editEvent(model, eventAdapter);
-//			refreshListViews();
+			eventDialog.editEvent(model);
+			refreshListViews(); //or giving them both adapters and refresh them there
 			return true;
 		case R.id.cm_event_remove:
 			eventDialog.removeEvent(model, eventAdapter);

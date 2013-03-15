@@ -12,6 +12,6 @@ public interface EventDialogInterface {
 
 	public abstract void removeEvent(BackgroundModel model, EventAdapter eventAdapter);
 
-	void editEvent(BackgroundModel model, EventAdapter eventAdapter);
+	void editEvent(BackgroundModel model);
 
 }

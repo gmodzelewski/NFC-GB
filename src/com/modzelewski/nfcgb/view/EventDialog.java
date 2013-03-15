@@ -73,7 +73,7 @@ public class EventDialog implements EventDialogInterface {
 	 * @see com.modzelewski.nfcgb.view.EventDialogInterface#editEvent(com.modzelewski.nfcgb.persistence.DatabaseHelper, com.modzelewski.nfcgb.model.BackgroundModel, android.widget.Spinner, com.modzelewski.nfcgb.controller.EventAdapter, android.view.MenuItem)
 	 */
 	@Override
-	public void editEvent(final BackgroundModel model, final EventAdapter eventAdapter) {
+	public void editEvent(final BackgroundModel model) {
 		final Event currentEvent = model.getCurrentEvent();
 		LayoutInflater inflater = LayoutInflater.from(context);
 		final View eventView = inflater.inflate(R.layout.event_dialog, null);
@@ -109,7 +109,6 @@ public class EventDialog implements EventDialogInterface {
 				int year = y.getValue();
 				String info = i.getText().toString().trim();
 				model.editEvent(currentEvent, eventName, wintersemester, year, info);
-				eventAdapter.notifyDataSetChanged();
 			}
 		}).setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 			@Override
