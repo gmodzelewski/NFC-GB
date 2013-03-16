@@ -1,9 +1,5 @@
 package com.modzelewski.nfcgb.nfc;
 
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Locale;
-
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -13,43 +9,38 @@ import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
 import android.os.Parcelable;
 import android.widget.Toast;
-
 import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.controller.BackgroundModel;
-import com.modzelewski.nfcgb.model.Event;
-import com.modzelewski.nfcgb.model.EventMembership;
-import com.modzelewski.nfcgb.model.Group;
-import com.modzelewski.nfcgb.model.GroupMembership;
-import com.modzelewski.nfcgb.model.Person;
-import com.modzelewski.nfcgb.persistence.DatabaseHelper;
+import com.modzelewski.nfcgb.model.*;
+
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Locale;
 
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
-	NfcAdapter nfcAdapter;
-	private Context context;
-	private BackgroundModel model;
+    private final NfcAdapter nfcAdapter;
+    private final Context context;
+    private final BackgroundModel model;
 
-	public Nfc(NfcAdapter nfcAdapter, Context context, BackgroundModel model) {
-		this.nfcAdapter = nfcAdapter;
-		this.context = context;
-		this.model = model;
-	}
+    public Nfc(NfcAdapter nfcAdapter, Context context, BackgroundModel model) {
+        this.nfcAdapter = nfcAdapter;
+        this.context = context;
+        this.model = model;
+    }
 
 
-	
-	// CREATE!!!
-	@Override
-	public NdefMessage createNdefMessage(NfcEvent event) {
-		// String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
-		// System.currentTimeMillis());
-		Event currentEvent = model.getCurrentEvent();
-		List<GroupMembership> groupMemberships = model.getGroupMemberships(currentEvent);
-		List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
-		List<Group> groups = model.getGroups(currentEvent);
-		List<Person> persons = model.getPersons(eventMemberships);
-		
-		
-		
-		
+    // CREATE!!!
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        // String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
+        // System.currentTimeMillis());
+        Event currentEvent = model.getCurrentEvent();
+        List<GroupMembership> groupMemberships = model.getGroupMemberships(currentEvent);
+        List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
+        List<Group> groups = model.getGroups(currentEvent);
+        List<Person> persons = model.getPersons(eventMemberships);
+
+
 //		Person person1 = new Person("Hans", "hans@email.de");
 //		// PersonData person2 = new PersonData("Peter", "peter@email.de");
 //		String person1Name = person1.getName();
@@ -65,58 +56,59 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 //		// ,NdefRecord.createApplicationRecord("com.modzelewski.nfcgb")
 //				});
 //		return msg;
-		return null;
-	}
+        return null;
+    }
 
-	public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
-		byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
-		Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
-		byte[] textBytes = payload.getBytes(utfEncoding);
-		int utfBit = encodeInUtf8 ? 0 : (1 << 7);
-		char status = (char) (utfBit + langBytes.length);
-		byte[] data = new byte[1 + langBytes.length + textBytes.length];
-		data[0] = (byte) status;
-		System.arraycopy(langBytes, 0, data, 1, langBytes.length);
-		System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
-		NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
-		return record;
-	}
+    public NdefRecord createTextRecord(String payload, Locale locale, boolean encodeInUtf8) {
+        byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
+        Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
+        byte[] textBytes = payload.getBytes(utfEncoding);
+        int utfBit = encodeInUtf8 ? 0 : (1 << 7);
+        char status = (char) (utfBit + langBytes.length);
+        byte[] data = new byte[1 + langBytes.length + textBytes.length];
+        data[0] = (byte) status;
+        System.arraycopy(langBytes, 0, data, 1, langBytes.length);
+        System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
+        NdefRecord record = new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
+        return record;
+    }
 
-	
-	/**
-	 * Creates a custom MIME type encapsulated in an NDEF record
-	 */
-	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
-		
-		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
-		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
-		return mimeRecord;
-	}
 
-	// /**
-	// * Parses the NDEF Message from the intent and prints to a Toast
-	// */
-	// public void processIntent(Context context, Intent intent) {
-	// Parcelable[] rawMsgs =
-	// intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-	// // only one message sent during the beam
-	// NdefMessage msg = (NdefMessage) rawMsgs[0];
-	// // record 0 contains the MIME type, record 1 is the AAR, if present
-	// Toast.makeText(context, new String(msg.getRecords()[0].getPayload()),
-	// Toast.LENGTH_LONG).show();
-	// }
+    /**
+     * Creates a custom MIME type encapsulated in an NDEF record
+     */
+    public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
 
-	//
-	/**
-	 * Parses the NDEF Message from the intent and prints to a Toast
-	 */
-	public void processIntent(Intent intent) {
-		Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-		// only one message sent during the beam
-		NdefMessage msg = (NdefMessage) rawMsgs[0];
-		// record 0 contains the MIME type, record 1 is the AAR, if present
-		Toast.makeText(context, "Got it", Toast.LENGTH_LONG).show();
-		Toast.makeText(context, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
-	}
+        byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+        NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
+        return mimeRecord;
+    }
+
+    // /**
+    // * Parses the NDEF Message from the intent and prints to a Toast
+    // */
+    // public void processIntent(Context context, Intent intent) {
+    // Parcelable[] rawMsgs =
+    // intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+    // // only one message sent during the beam
+    // NdefMessage msg = (NdefMessage) rawMsgs[0];
+    // // record 0 contains the MIME type, record 1 is the AAR, if present
+    // Toast.makeText(context, new String(msg.getRecords()[0].getPayload()),
+    // Toast.LENGTH_LONG).show();
+    // }
+
+    //
+
+    /**
+     * Parses the NDEF Message from the intent and prints to a Toast
+     */
+    public void processIntent(Intent intent) {
+        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        // only one message sent during the beam
+        NdefMessage msg = (NdefMessage) rawMsgs[0];
+        // record 0 contains the MIME type, record 1 is the AAR, if present
+        Toast.makeText(context, "Got it", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
+    }
 
 }

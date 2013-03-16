@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.Person;
@@ -20,18 +19,19 @@ import com.modzelewski.nfcgb.persistence.DatabaseHelper;
  */
 public class PersonListView {
 
-    private ListView personsLV;
+    private final ListView personsLV;
 
-	public PersonListView(ListView personsLV) {
-		this.personsLV = personsLV;
-	}
+    public PersonListView(ListView personsLV) {
+        this.personsLV = personsLV;
+    }
 
-	/**
+    /**
      * Create list referencing at persons in background model.
-     * @param databaseHelper 
-     * @param context 
-     * @param model 
-	 * @return 
+     *
+     * @param databaseHelper
+     * @param context
+     * @param model
+     * @return
      */
     public ListView create(final BackgroundModel model, Context context, DatabaseHelper databaseHelper, PersonAdapter pa) {
         personsLV.setAdapter(pa);
@@ -50,7 +50,7 @@ public class PersonListView {
                 );
                 return false;
             }
-        });      
+        });
 //      // On normal Click: Context Menu
 //      personsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //          @Override
@@ -58,6 +58,6 @@ public class PersonListView {
 //              MainActivity.class.getActivity().openContextMenu(v);
 //          }
 //      });
-		return personsLV;
+        return personsLV;
     }
 }
