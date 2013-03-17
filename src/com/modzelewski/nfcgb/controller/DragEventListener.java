@@ -39,6 +39,8 @@ public class DragEventListener extends ListView implements OnDragListener {
         final int action = event.getAction();
         switch (action) {
             case DragEvent.ACTION_DRAG_STARTED:
+                Log.i(getClass().getSimpleName(), "x : " + event.getX());
+                Log.i(getClass().getSimpleName(), "y : " + event.getY());
                 if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
                     Log.i(getClass().getSimpleName(), "ACTION DRAG STARTED accept");
                     if (v.getTag() == EXPLISTVIEW_TAG) {
@@ -68,6 +70,8 @@ public class DragEventListener extends ListView implements OnDragListener {
 
             case DragEvent.ACTION_DROP:
                 if (v.getTag() == EXPLISTVIEW_TAG) {
+                    Log.i(getClass().getSimpleName(), "x drop : " + event.getX());
+                    Log.i(getClass().getSimpleName(), "y drop : " + event.getY());
                     DatabaseHelper databaseHelper = model.getHelper();
                     RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
                     ClipData.Item i = event.getClipData().getItemAt(0);

@@ -1,5 +1,9 @@
 package com.modzelewski.nfcgb.nfc;
 
+import java.nio.charset.Charset;
+import java.util.LinkedList;
+import java.util.Locale;
+
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -8,14 +12,16 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.controller.BackgroundModel;
-import com.modzelewski.nfcgb.model.*;
-
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Locale;
+import com.modzelewski.nfcgb.model.Event;
+import com.modzelewski.nfcgb.model.EventMembership;
+import com.modzelewski.nfcgb.model.Group;
+import com.modzelewski.nfcgb.model.Person;
 
 public class Nfc extends MainActivity implements CreateNdefMessageCallback {
     private final NfcAdapter nfcAdapter;
@@ -35,12 +41,20 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
         // String text = ("Beam me up, Android!\n\n" + "Beam Time: " +
         // System.currentTimeMillis());
         Event currentEvent = model.getCurrentEvent();
-        List<GroupMembership> groupMemberships = model.getGroupMemberships(currentEvent);
-        List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
-        List<Group> groups = model.getGroups(currentEvent);
-        List<Person> persons = model.getPersons(eventMemberships);
+//        LinkedList<GroupMembership> groupMemberships = (LinkedList<GroupMembership>) model.getGroupMemberships(currentEvent);
+        LinkedList<EventMembership> eventMemberships = (LinkedList<EventMembership>) model.getEventMemberships(currentEvent);
+        LinkedList<Group> groups = (LinkedList<Group>) model.getGroups(currentEvent);
+        LinkedList<Person> persons = (LinkedList<Person>) model.getPersons(eventMemberships);
 
-
+        Gson gson = new Gson();
+        String eventrep = gson.toJson(currentEvent, Event.class);
+        Log.i("NFC", "eventrep = " + eventrep);
+        
+//        gson.toJson(groupMemberships, GroupMembership.class);
+//        gson.toJson(eventMemberships, EventMembership.class);
+//        gson.toJson(groups, Group.class);
+//        gson.toJson(persons, Person.class);
+        
 //		Person person1 = new Person("Hans", "hans@email.de");
 //		// PersonData person2 = new PersonData("Peter", "peter@email.de");
 //		String person1Name = person1.getName();
