@@ -1,11 +1,8 @@
 package com.modzelewski.nfcgb.tests;
 
-import android.app.Instrumentation;
-import android.os.SystemClock;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -15,12 +12,11 @@ import android.widget.Spinner;
 import com.jayway.android.robotium.solo.Solo;
 import com.modzelewski.nfcgb.MainActivity;
 import com.modzelewski.nfcgb.R;
-import com.modzelewski.nfcgb.controller.BackgroundModel;
 
 public class TestUseCases extends
 		ActivityInstrumentationTestCase2<MainActivity> {
 	private Solo solo;
-	private BackgroundModel model;
+//	private BackgroundModel model;
 
 	public TestUseCases() {
 		super(MainActivity.class);
@@ -37,7 +33,7 @@ public class TestUseCases extends
 		 
 	}
 
-	@Suppress
+	
 	public void testUseCase01CreateEvent() {
 		Spinner eventSpinner = (Spinner) solo.getView(R.id.events_spinner);
 		int eventCount = eventSpinner.getCount();
@@ -64,7 +60,7 @@ public class TestUseCases extends
 		assertTrue(newEventCount == eventCount + 1);
 	}
 
-	@Suppress
+	
 	public void testUseCase02EditEvent() {
 		Spinner eventSpinner = (Spinner) solo.getView(R.id.events_spinner);
 		int eventCount = eventSpinner.getCount();
@@ -91,7 +87,7 @@ public class TestUseCases extends
 
 	}
 
-	@Suppress
+	
 	public void testUseCase03ChangeEvent() {
 		Spinner eventSpinner = (Spinner) solo.getView(R.id.events_spinner);
 
@@ -121,7 +117,7 @@ public class TestUseCases extends
 		// assertTrue(); don't know
 	}
 
-	@Suppress
+	
 	public void testUseCase04RemoveEvent() {
 		Spinner eventSpinner = (Spinner) solo.getView(R.id.events_spinner);
 		int eventCountBefore = eventSpinner.getCount();
@@ -141,7 +137,7 @@ public class TestUseCases extends
 		assertEquals(eventCountAfter, eventCountBefore - 1);
 	}
 
-	@Suppress
+	
 	public void testUseCase04RemoveEventWhileMoreThanOne() {
 		Spinner eventSpinner = (Spinner) solo.getView(R.id.events_spinner);
 		String labelForRemoveEvent = solo.getString(R.string.remove_event);
@@ -163,7 +159,7 @@ public class TestUseCases extends
 		assertTrue(eventSpinner.getCount() == 1);
 	}
 	
-	@Suppress
+	
 	public void testUseCase05CreatePerson() {
 		View labelForCreatePerson = solo.getView(R.id.om_add_person);
 		ListView personLV = (ListView) solo.getView(R.id.personsLV);
@@ -193,7 +189,7 @@ public class TestUseCases extends
 //		assertTrue(countBefore == (countnew - 1));
 	}
 
-	@Suppress
+	
 	public void testUseCase06EditPerson() {
 		String editPerson = solo.getString(R.string.edit_person);
 		ListView personLV = (ListView) solo.getView(R.id.personsLV);
@@ -220,7 +216,7 @@ public class TestUseCases extends
 		assertTrue(solo.searchText(personMail));
 	}
 	
-	@Suppress
+	
 	public void testUseCase07DeletePerson() {
 		assertTrue(solo.searchText("The edited name of a person"));
 		String removePerson = solo.getString(R.string.remove_person);
@@ -260,7 +256,7 @@ public class TestUseCases extends
 //		}
 	}
 
-	@Suppress
+	
 	public void testUseCase08CreateGroup() {
 		View labelForCreateGroup = solo.getView(R.id.om_add_group);
 		ListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
@@ -284,7 +280,7 @@ public class TestUseCases extends
 		assertTrue(countBefore == (countAfter - 1));
 	}
 
-	@Suppress
+	
 	public void testUseCase09EditGroup() {
 		String editGroup = solo.getString(R.string.edit_group);
 		ExpandableListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
@@ -314,7 +310,7 @@ public class TestUseCases extends
 		assertTrue(solo.searchText(groupName));
 	}
 
-	@Suppress
+	
 	public void testUseCase10RemoveGroup() {
 		String removeGroup = solo.getString(R.string.remove_group);
 		ExpandableListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
@@ -346,34 +342,38 @@ public class TestUseCases extends
 	}
 
 	
-	@Suppress
+	
 	public void testUseCase12SendGroupMail() {
-
+		String mailGroup = solo.getString(R.string.email_group);
+		ExpandableListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
+		testUseCase08CreateGroup();
+		solo.clickLongOnText("A groupname");
+		assertTrue(solo.searchText(mailGroup));
 	}
 
-	@Suppress
+	
 	public void testUseCase13ShowAndHidePersonsInAGroup() {
 
 	}
 
-	@Suppress
+	
 	public void testUseCase14EditPersonWhichIsInAGroup() {
 
 	}
 
-	@Suppress
+	
 	public void testUseCase15RemovePersonFromGroup() {
-
+//		String removePerson = solo.getString(R.string.remove_person_from_group);
+//		ExpandableListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
 	}
 
-	@Suppress
+	
 	public void testUseCase16SyncViaNFC() {
 
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-
 		solo.finishOpenedActivities();
 	}
 }

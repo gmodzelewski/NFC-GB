@@ -10,25 +10,34 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.modzelewski.nfcgb.controller.*;
+import com.modzelewski.nfcgb.controller.BackgroundModel;
+import com.modzelewski.nfcgb.controller.DragEventListener;
+import com.modzelewski.nfcgb.controller.EventAdapter;
+import com.modzelewski.nfcgb.controller.GroupAdapter;
+import com.modzelewski.nfcgb.controller.PersonAdapter;
 import com.modzelewski.nfcgb.model.Event;
-import com.modzelewski.nfcgb.model.EventMembership;
-import com.modzelewski.nfcgb.model.Group;
-import com.modzelewski.nfcgb.model.GroupMembership;
-import com.modzelewski.nfcgb.model.Person;
 import com.modzelewski.nfcgb.nfc.Nfc;
 import com.modzelewski.nfcgb.nfc.NfcCheck;
 import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 import com.modzelewski.nfcgb.persistence.DatabasePopulator;
-import com.modzelewski.nfcgb.view.*;
-
-import java.util.LinkedList;
-import java.util.List;
+import com.modzelewski.nfcgb.view.AboutDialog;
+import com.modzelewski.nfcgb.view.EventDialog;
+import com.modzelewski.nfcgb.view.EventDialogInterface;
+import com.modzelewski.nfcgb.view.EventSpinner;
+import com.modzelewski.nfcgb.view.GroupDialog;
+import com.modzelewski.nfcgb.view.GroupDialogInterface;
+import com.modzelewski.nfcgb.view.GroupExpandableListView;
+import com.modzelewski.nfcgb.view.PersonDialog;
+import com.modzelewski.nfcgb.view.PersonDialogInterface;
+import com.modzelewski.nfcgb.view.PersonListView;
 
 /**
  * MainActivity test test

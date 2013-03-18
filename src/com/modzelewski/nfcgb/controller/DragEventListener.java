@@ -1,5 +1,8 @@
 package com.modzelewski.nfcgb.controller;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -10,13 +13,8 @@ import android.view.View;
 import android.view.View.OnDragListener;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.modzelewski.nfcgb.model.Group;
-import com.modzelewski.nfcgb.model.GroupMembership;
-import com.modzelewski.nfcgb.persistence.DatabaseHelper;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.modzelewski.nfcgb.model.Group;
 
 public class DragEventListener extends ListView implements OnDragListener {
 
@@ -72,8 +70,6 @@ public class DragEventListener extends ListView implements OnDragListener {
                 if (v.getTag() == EXPLISTVIEW_TAG) {
                     Log.i(getClass().getSimpleName(), "x drop : " + event.getX());
                     Log.i(getClass().getSimpleName(), "y drop : " + event.getY());
-                    DatabaseHelper databaseHelper = model.getHelper();
-                    RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = databaseHelper.getGroupMembershipDataDao();
                     ClipData.Item i = event.getClipData().getItemAt(0);
                     Log.i(getClass().getSimpleName(), "i.getText(): " + i.getText().toString());
                     int personId = Integer.parseInt((String) i.getText());
