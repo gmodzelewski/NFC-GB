@@ -1,0 +1,86 @@
+<resources>
+
+    <string name="menu_is_nfc_supported">Wird NFC unterstützt?</string>
+    <string name="nfc_available">"NFC wird von Ihrem Smartphone unterstützt.\n\t Sie können die NFC Features nutzen.\n\t Yeyy"</string>
+    <string name="nfc_not_available">"NFC wird von Ihrem Smartphone leider nicht unterstützt.\n\t Sie können die NFC Features nicht nutzen.\n\t Sorry."</string>
+    <string name="menu_info">Eigene Informationen</string>
+    <string name="menu_about">Impressum</string>
+    <string name="menu_add_person">Person hinzufügen</string>
+    <string name="menu_add_group">Gruppe hinzufügen</string>
+    <string name="menu_add_event">Veranstaltung hinzufügen</string>
+    <string name="title_activity_main">NFC GB</string>
+    <string name="app_name">NFC-GB</string>
+    <string name="edit_event">Veranstaltung bearbeiten</string>
+    <string name="remove_event">Veranstaltung löschen</string>
+    <string name="event">Veranstaltung</string>
+    <string name="eventname">Veranstaltungsname</string>
+    <string name="eventname_hint">Der name der Veranstaltung</string>
+    <string name="semester">Semester</string>
+    <string name="semester_hint">Das Semester</string>
+    <string name="year">Jahr</string>
+    <string name="year_hint">Der Jahrgang</string>
+    <string name="tutor">Tutor</string>
+    <string name="tutor_hint">Name of your tutor</string>
+    <string name="tutor_Mail">Tutor Mail address</string>
+    <string name="tutor_Mail_hint">Mail address of your tutor</string>
+    <string name="info">Informationen</string>
+    <string name="info_hint">Weitere Informationen</string>
+    <string name="groups">Gruppen</string>
+    <string name="person_dialog">Person bearbeiten</string>
+    <string name="name">Name</string>
+    <string name="name_hint">Der Name</string>
+    <string name="email">Mail</string>
+    <string name="email_hint">Die Mail-Adresse</string>
+    <string name="course_of_studies">Course of studies</string>
+    <string name="course_of_studies_hint">My course of studies</string>
+    <string name="apply_button">Bestätige</string>
+    <string name="ok_button">Ok</string>
+    <string name="neutral_button">Das ist ja interessant.</string>
+    <string name="cancel_button">Abbrechen</string>
+
+    <string-array name="persons_context_menu">
+        <item>Person bearbeiten</item>
+        <item>Person löschen</item>
+    </string-array>
+    <string-array name="events_context_menu">
+        <item>Veranstaltung hinzufügen</item>
+        <item>Veranstaltung bearbeiten</item>
+        <item>Veranstaltung löschen</item>
+    </string-array>
+
+    <string name="context_menu_remove_title">Lösche</string>
+    <string name="context_menu_remove_message">Möchtest du diese Veranstaltung wirklich entfernen?</string>
+    <string name="prompt">Wähle</string>
+    <string name="about">\tYou are awesome!\n\n\tThis App was made as a part of a bachelor thesis at the University of Bremen. You can download the code on github: \n \thttps://github.com/melitta/NFC-GB \n \nIf you have Feedback, send it to me. I love Feedback.\nYours sincerely, \n\tGeorg Modzelewski</string>
+    <string name="about_tv">Über das NFC-GB App</string>
+    <string name="about_Mail_chooser">Bitte wähle deine Mail App</string>
+    <string name="about_no_Mail_apps">Entschuldige. Es sind leider keine Mail Apps installiert.</string>
+    <string name="about_goto_github">Gehe zur github-page</string>
+    <string name="about_send_mail">Sende Mail mit Feedback</string>
+    <string name="about_Mail_subject">Feedback für NFC-GB</string>
+    <string name="about_Mail_body"></string>
+    <string name="edit_person">Person bearbeiten</string>
+    <string name="remove_person">Person löschen</string>
+    <string name="incorrect_mail">Falsche Mail-Adresse: </string>
+    <string name="edit_person_in">Bearbeite Person in</string>
+    <string name="add_person_in">Füge Person hinzu, in</string>
+    <string name="added">hinzugefügt</string>
+    <string name="add_event">Veranstaltung hinzufügen</string>
+    <string name="add_group">Gruppe hinzufügen</string>
+    <string name="edit_group">Gruppe bearbeiten</string>
+    <string name="remove_group">Gruppe löschen</string>
+    <string name="email_group">Gruppe eine Mail schicken</string>
+    <string name="remove_group_message">Möchtest du diese Gruppe wirklich löschen?</string>
+    <string name="remove_person_from_group">Lösche Person aus Gruppe</string>
+    <string name="gd_groupName">Gruppen Name</string>
+    <string name="gd_groupName_hint">Der Name der Gruppe</string>
+    <string name="deleted">gelöscht</string>
+    <string name="add_new_event">Bitte füge eine neue Veranstaltung hinzu.</string>
+    <string name="unknown_eventname">Unbekannter Veranstaltungsname</string>
+    <string name="person_already_in_group">Diese Person befindet sich bereits in der Gruppe.</string>
+    <string name="menu_repop">Repopulate Database</string>
+    <string name="please_add_a_new_event">Keine Veranstaltungen mehr übrig. \nBitte füge eine neue Veranstaltung hinzu.</string>
+           <string name="use_case_1_eventname">This is an eventname</string>
+    <string name="use_case_2_eventname">This is an edited eventname</string>
+    <string name="use_case_3_eventname">This is an eventname for use case 3</string>
+</resources>
