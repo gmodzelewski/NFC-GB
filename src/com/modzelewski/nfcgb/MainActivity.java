@@ -1,6 +1,5 @@
 package com.modzelewski.nfcgb;
 
-import android.app.Fragment.SavedState;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -129,7 +128,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		databaseHelper = model.getHelper();
 		// load events from database
 		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper
-				.getEventDataDao();
+				.getEventDao();
 		model.setEvents(eventDao.queryForAll());
 
 		// Dialog Constructors

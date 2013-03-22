@@ -65,9 +65,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 
 		// here we try inserting data in the on-create as a test
-//		RuntimeExceptionDao<EventData, Integer> daoE = getEventDataDao();
+//		RuntimeExceptionDao<EventData, Integer> daoE = getEventDao();
 //		RuntimeExceptionDao<PersonData, Integer> daoP = getPersonDao();
-//		RuntimeExceptionDao<GroupData, Integer> daoG = getGroupDataDao();
+//		RuntimeExceptionDao<GroupData, Integer> daoG = getGroupDao();
 //		long millis = System.currentTimeMillis();
 //		// create some entries in the onCreate
 //		EventData event = new EventData(millis);
@@ -163,7 +163,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * for our eventData class. It will create it or just give the cached value.
 	 * RuntimeExceptionDao only through RuntimeExceptions.
 	 */
-	public RuntimeExceptionDao<Event, Integer> getEventDataDao() {
+	public RuntimeExceptionDao<Event, Integer> getEventDao() {
 		if (eventRuntimeDao == null) {
 			eventRuntimeDao = getRuntimeExceptionDao(Event.class);
 		}
@@ -187,7 +187,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * for our groupData class. It will create it or just give the cached
 	 * value. RuntimeExceptionDao only through RuntimeExceptions.
 	 */
-	public RuntimeExceptionDao<Group, Integer> getGroupDataDao() {
+	public RuntimeExceptionDao<Group, Integer> getGroupDao() {
 		if (groupRuntimeDao == null) {
 			groupRuntimeDao = getRuntimeExceptionDao(Group.class);
 		}
@@ -199,7 +199,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * for our groupData class. It will create it or just give the cached
 	 * value. RuntimeExceptionDao only through RuntimeExceptions.
 	 */
-	public RuntimeExceptionDao<EventMembership, Integer> getEventMembershipDataDao() {
+	public RuntimeExceptionDao<EventMembership, Integer> getEventMembershipDao() {
 		if (eventMembershipRuntimeDao == null) {
 			eventMembershipRuntimeDao = getRuntimeExceptionDao(EventMembership.class);
 		}
@@ -211,7 +211,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * for our groupData class. It will create it or just give the cached
 	 * value. RuntimeExceptionDao only through RuntimeExceptions.
 	 */
-	public RuntimeExceptionDao<GroupMembership, Integer> getGroupMembershipDataDao() {
+	public RuntimeExceptionDao<GroupMembership, Integer> getGroupMembershipDao() {
 		if (groupMembershipRuntimeDao == null) {
 			groupMembershipRuntimeDao = getRuntimeExceptionDao(GroupMembership.class);
 		}

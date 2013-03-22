@@ -37,11 +37,11 @@ public class DatabasePopulator {
 		Log.i(LOG_TAG, "-------------------------------------------------------------------");
 
 		// populate empty database
-		DatabasePopulation.populateEventDAO(databaseHelper.getEventDataDao());
+		DatabasePopulation.populateEventDAO(databaseHelper.getEventDao());
 		DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDao());
-		DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
-		DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
-        DatabasePopulation.populateGroupMembershipDao(databaseHelper.getGroupMembershipDataDao());
+		DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDao());
+		DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDao());
+        DatabasePopulation.populateGroupMembershipDao(databaseHelper.getGroupMembershipDao());
 		Log.i(LOG_TAG, "-------------------------------------------------------------------");
 		Log.i(LOG_TAG, "--- Database is new populated ---");
 		Toast.makeText(context, "--- Database is new populated ---", Toast.LENGTH_SHORT).show();
@@ -54,7 +54,7 @@ public class DatabasePopulator {
 		// }
 
 		// load events from database
-		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
+		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDao();
 		model.setEvents(eventDao.queryForAll());
 		model.reloadEverything();
 //		createSpinner();
