@@ -38,7 +38,7 @@ public class DatabasePopulator {
 
 		// populate empty database
 		DatabasePopulation.populateEventDAO(databaseHelper.getEventDataDao());
-		DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDataDao());
+		DatabasePopulation.populatePersonDAO(databaseHelper.getPersonDao());
 		DatabasePopulation.populateGroupDAO(databaseHelper.getGroupDataDao());
 		DatabasePopulation.populateEventMembershipDao(databaseHelper.getEventMembershipDataDao());
         DatabasePopulation.populateGroupMembershipDao(databaseHelper.getGroupMembershipDataDao());
@@ -57,7 +57,6 @@ public class DatabasePopulator {
 		RuntimeExceptionDao<Event, Integer> eventDao = databaseHelper.getEventDataDao();
 		model.setEvents(eventDao.queryForAll());
 		model.reloadEverything();
-		
 //		createSpinner();
 //		createListView();
 //		create();

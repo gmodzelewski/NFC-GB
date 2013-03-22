@@ -89,7 +89,7 @@ public class DragEventListener extends ListView implements OnDragListener {
             case DragEvent.ACTION_DRAG_ENDED:
                 Log.i(getClass().getSimpleName(), "ACTION DRAG ENDED called");
 
-                if (v.getTag() == EXPLISTVIEW_TAG && droppedInGroupPos >= 1) {
+                if (v.getTag() == EXPLISTVIEW_TAG && droppedInGroupPos >= 0) {
                     ExpandableListView expLv = (ExpandableListView) v;
 
                     expLv.expandGroup(droppedInGroupPos);

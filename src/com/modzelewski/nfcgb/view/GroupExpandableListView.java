@@ -50,5 +50,4 @@ public class GroupExpandableListView {
         });
         return groupExpLV;
     }
-
 }

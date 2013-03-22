@@ -66,7 +66,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 		// here we try inserting data in the on-create as a test
 //		RuntimeExceptionDao<EventData, Integer> daoE = getEventDataDao();
-//		RuntimeExceptionDao<PersonData, Integer> daoP = getPersonDataDao();
+//		RuntimeExceptionDao<PersonData, Integer> daoP = getPersonDao();
 //		RuntimeExceptionDao<GroupData, Integer> daoG = getGroupDataDao();
 //		long millis = System.currentTimeMillis();
 //		// create some entries in the onCreate
@@ -175,7 +175,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * for our personData class. It will create it or just give the cached
 	 * value. RuntimeExceptionDao only through RuntimeExceptions.
 	 */
-	public RuntimeExceptionDao<Person, Integer> getPersonDataDao() {
+	public RuntimeExceptionDao<Person, Integer> getPersonDao() {
 		if (personRuntimeDao == null) {
 			personRuntimeDao = getRuntimeExceptionDao(Person.class);
 		}

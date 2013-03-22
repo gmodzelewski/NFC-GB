@@ -1,6 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/cm_person_add"
+        android:orderInCategory="100"
+        android:title="@string/menu_add_person"/>
+    <item
         android:id="@+id/cm_person_edit"
         android:orderInCategory="100"
         android:title="@string/edit_person"/>

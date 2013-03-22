@@ -1,5 +1,6 @@
 package com.modzelewski.nfcgb;
 
+import android.app.Fragment.SavedState;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -93,6 +94,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 			return true;
 		case R.id.cm_group_email:
 			groupDialog.emailGroup(model, item);
+			return true;
+		case R.id.cm_person_add:
+			personDialog.addPerson(model, personAdapter);
+			refreshListViews();
 			return true;
 		case R.id.cm_person_edit:
 			personDialog.editPerson(model, item, groupAdapter, personAdapter);
@@ -271,6 +276,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		case R.id.om_repop:
 			DatabasePopulator dp = new DatabasePopulator();
 			dp.fillDatabase(databaseHelper, context, model);
+			eventAdapter.notifyDataSetChanged();
+			refreshListViews();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

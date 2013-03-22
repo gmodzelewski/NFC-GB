@@ -39,6 +39,7 @@
     <string name="cancel_button">Cancel</string>
 
     <string-array name="persons_context_menu">
+        <item>Add Person</item>
         <item>Edit Person</item>
         <item>Remove Person</item>
     </string-array>

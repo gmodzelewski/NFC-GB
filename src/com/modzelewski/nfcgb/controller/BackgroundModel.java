@@ -48,7 +48,7 @@ public class BackgroundModel {
 	public List<Person> getPersons(List<EventMembership> eventMemberships) {
 		// ArrayList<String> personsFullNames = new ArrayList<String>();
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDataDao();
+				.getPersonDao();
 
 		for (EventMembership emd : eventMemberships) {
 			Person pd = personDao.queryForId(emd.getPerson_id());
@@ -68,7 +68,7 @@ public class BackgroundModel {
 		List<Group> groupsWithCurrentEvent = getGroups(currentEvent);
 
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDataDao();
+				.getPersonDao();
 
 		for (Group group : groupsWithCurrentEvent) {
 			List<GroupMembership> groupMemberships = getGroupMemberships(group);
@@ -295,7 +295,7 @@ public class BackgroundModel {
 
 	public void addPerson(String name, String email) {
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDataDao();
+				.getPersonDao();
 		Person person = new Person(name, email);
 		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper()
 				.getEventMembershipDataDao();
@@ -337,7 +337,7 @@ public class BackgroundModel {
 
 	public void editPerson(Person person, String name, String email) {
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDataDao();
+				.getPersonDao();
 		persons.remove(person);
 		person.setName(name);
 		person.setEmail(email);
