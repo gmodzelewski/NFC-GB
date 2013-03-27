@@ -1,10 +1,14 @@
 package com.modzelewski.nfcgb.model;
 
+import android.text.TextUtils;
+import android.text.TextUtils.StringSplitter;
+
 import com.j256.ormlite.field.DatabaseField;
 
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * A simple demonstration object we are creating and persisting to the database.
@@ -39,6 +43,7 @@ public class Group implements Serializable {
 		this.setGroupName(groupName);
 		this.event_id = event_id;
 	}
+	
 
 	@Override
 	public String toString() {

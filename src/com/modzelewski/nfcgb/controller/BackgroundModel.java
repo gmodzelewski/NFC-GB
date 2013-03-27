@@ -23,11 +23,11 @@ public class BackgroundModel {
 	// selected event
 	private Event currentEvent = null;
 	// event list for spinner
-	public final List<Event> events = new LinkedList<Event>();
+	public List<Event> events = new LinkedList<Event>();
 	// person list for left list
 	public List<Person> persons = new LinkedList<Person>();
 	// group list for right list
-	public final List<Group> groups = new LinkedList<Group>();
+	public List<Group> groups = new LinkedList<Group>();
 
 	public BackgroundModel(MainActivity mainActivity) {
 		this.mainActivity = mainActivity;
@@ -451,7 +451,7 @@ public class BackgroundModel {
 		reloadGroups();
 	}
 
-	private List<GroupMembership> getGroupMemberships(Group group) {
+	public List<GroupMembership> getGroupMemberships(Group group) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper()
 				.getGroupMembershipDao();
 		List<GroupMembership> groupMemberships = null;

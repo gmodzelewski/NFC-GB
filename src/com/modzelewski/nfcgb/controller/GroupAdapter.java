@@ -77,9 +77,9 @@ public class GroupAdapter extends BaseExpandableListAdapter implements
                              boolean isLastChild, View convertView, ViewGroup parent) {
         TextView text = new TextView(context);
         text.setPadding(20, 0, 0, 0); // indent the child element a bit
-        Log.i("GROUPADAPTER", "Gruppe an groupPosition\n = " + groups.get(groupPosition).toString());
-        Log.i("GROUPADAPTER", "Liste Personen an groupPosition\n = " + groups.get(groupPosition).getPerson().toString());
-        Log.i("GROUPADAPTER", "Person an childPosition\n = " + groups.get(groupPosition).getPerson().get(childPosition).getName());
+//        Log.i("GROUPADAPTER", "Gruppe an groupPosition\n = " + groups.get(groupPosition).toString());
+//        Log.i("GROUPADAPTER", "Liste Personen an groupPosition\n = " + groups.get(groupPosition).getPerson().toString());
+//        Log.i("GROUPADAPTER", "Person an childPosition\n = " + groups.get(groupPosition).getPerson().get(childPosition).getName());
 
 
         if (groups.get(groupPosition).getPerson().get(childPosition).getName() != null)
@@ -148,7 +148,7 @@ public class GroupAdapter extends BaseExpandableListAdapter implements
     }
 
     public void onGroupExpand(int groupPosition) {
-        Log.i(getClass().getSimpleName(), "onGroupExpand: " + groupPosition);
+//        Log.i(getClass().getSimpleName(), "onGroupExpand: " + groupPosition);
     }
 
     @Override

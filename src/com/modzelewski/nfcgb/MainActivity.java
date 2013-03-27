@@ -68,6 +68,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	private PersonAdapter personAdapter;
 	private EventAdapter eventAdapter;
 
+	private Nfc nfc;
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == request_Code) {
@@ -141,7 +143,7 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		groupAdapter = new GroupAdapter(context, model.getGroups());
 		personAdapter = new PersonAdapter(context, model.getPersons());
 		eventAdapter = new EventAdapter(context, model.getEvents());
-		nfcAdapter = NfcAdapter.getDefaultAdapter(context);
+		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
 		EventSpinner es = new EventSpinner(
 				(Spinner) findViewById(R.id.events_spinner));
@@ -183,14 +185,8 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
 		// NFC Callback init
 		if (nfcAdapter != null) {
-			// Check to see that the Activity started due to an Android Beam
-			if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent()
-					.getAction())) {
-				Nfc nfc = new Nfc(nfcAdapter, context, model);
-				nfc.processIntent(getIntent());
-				// Register callback
-				nfcAdapter.setNdefPushMessageCallback(nfc, this);
-			}
+			nfc = new Nfc(nfcAdapter, context, model);
+			nfcAdapter.setNdefPushMessageCallback(nfc, this);
 		}
 	}
 
@@ -286,6 +282,10 @@ public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	@Override
 	public void onResume() {
 		super.onResume();
+		// Check to see that the Activity started due to an Android Beam
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            nfc.processIntent(getIntent());
+        }
 	}
 
 	void refreshListViews() {
