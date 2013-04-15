@@ -34,7 +34,6 @@ public class NfcCheck {
         this.nfcAdapter = nfcAdapter;
     }
 
-    @SuppressLint("NewApi")
 	public void check(BackgroundModel model) {
         if (nfcAdapter == null) {
             Toast.makeText(context, context.getResources().getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
@@ -69,10 +68,16 @@ public class NfcCheck {
             NdefRecord groupMembershipRecord = NdefRecord.createExternal("com.modzelewski.nfcgb.nfc", "GROUPMEMBERSHIP", groupMembershipBytes);
             
             NdefMessage msg = new NdefMessage(eventRecord, eventMembershipRecord, personRecord, groupRecord, groupMembershipRecord);
-
-            NdefRecord[] ndefRecords = msg.getRecords();
-            byte[] bytes = ndefRecords[0].getPayload();
+            //return msg
             
+            //process intent
+            NdefRecord[] ndefRecords = msg.getRecords();
+            
+            /*	##########################################
+             * 			EVENT
+             *	##########################################
+             */
+            byte[] bytes = ndefRecords[0].getPayload();
             // read from byte array
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             DataInputStream in = new DataInputStream(bais);
@@ -81,7 +86,7 @@ public class NfcCheck {
 				while (in.available() > 0) {
 				    eventString = in.readUTF();
 //				    Group aGroup = element;
-				    Log.i("NFCCHECK", eventString);
+//				    Log.i("NFCCHECK", eventString);
 //                System.out.println(element);
 				}
 			} catch (IOException e) {
@@ -89,17 +94,58 @@ public class NfcCheck {
 				e.printStackTrace();
 			}
             StringTokenizer tokens = new StringTokenizer(eventString, ",");
-            Log.i("NFCCHECKTOKENSID", tokens.nextToken());
+//            Log.i("NFCCHECKTOKENSID", tokens.nextToken());
             String eventName = substringAfter(tokens.nextToken(), "eventname=");
             String year = substringAfter(tokens.nextToken(), "year=");
             String wintersemester = substringAfter(tokens.nextToken(), "wintersemester=");
             String info = substringAfter(tokens.nextToken(), "info=");
             
-            Log.i("EVENTNAME", eventName);
-            Log.i("YEAR", year);
-            Log.i("WS", wintersemester);
-            Log.i("INFO", info);
+//            Log.i("EVENTNAME", eventName);
+//            Log.i("YEAR", year);
+//            Log.i("WS", wintersemester);
+//            Log.i("INFO", info);
+
             
+            /*	##########################################
+             * 			EVENTMEMBERSHIPS
+             *	##########################################
+             */
+            byte[] eventMembershipBytes2 = ndefRecords[1].getPayload();
+            // read from byte array
+            ByteArrayInputStream eventMembershipBais = new ByteArrayInputStream(eventMembershipBytes2);
+            DataInputStream eventMembershipIn = new DataInputStream(eventMembershipBais);
+            String eventMembershipString = null;
+            try {
+            	while (eventMembershipIn.available() > 0) {
+            		eventMembershipString = eventMembershipIn.readUTF();
+//				    Group aGroup = element;
+            		Log.i("NFCCHECK-EMS", eventMembershipString);
+            		StringTokenizer tokens2 = new StringTokenizer(eventMembershipString, ",");
+                  Log.i("NFCCHECKTOKENSID", tokens2.nextToken());
+                  String event_id = substringAfter(tokens2.nextToken(), "event_id=");
+                  String person_id = substringAfter(tokens2.nextToken(), "person_id=");
+                  Log.i("EVENTID= ", event_id);
+                  Log.i("personID= ", person_id);
+            	
+            	}
+            } catch (IOException e) {
+            	// TODO Auto-generated catch block
+            	e.printStackTrace();
+            }
+            
+            
+//            StringTokenizer tokens = new StringTokenizer(eventString, ",");
+//            Log.i("NFCCHECKTOKENSID", tokens.nextToken());
+//            String eventName = substringAfter(tokens.nextToken(), "eventname=");
+//            String year = substringAfter(tokens.nextToken(), "year=");
+//            String wintersemester = substringAfter(tokens.nextToken(), "wintersemester=");
+//            String info = substringAfter(tokens.nextToken(), "info=");
+//            
+//            Log.i("EVENTNAME", eventName);
+//            Log.i("YEAR", year);
+//            Log.i("WS", wintersemester);
+//            Log.i("INFO", info);
+//            
             
 //            StringTokenizer tokensS = new StringTokenizer(tokens.nextToken(), "=");
 //            tokensS.nextToken();

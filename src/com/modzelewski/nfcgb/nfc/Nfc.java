@@ -23,6 +23,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.modzelewski.nfcgb.MainActivity;
+import com.modzelewski.nfcgb.R;
 import com.modzelewski.nfcgb.controller.BackgroundModel;
 import com.modzelewski.nfcgb.model.Event;
 import com.modzelewski.nfcgb.model.EventMembership;
@@ -189,7 +190,23 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
         List<Group> groups = readFromByteToGroupList(groupBytes);
         List<GroupMembership> groupMemberships = readFromByteToGroupMembershipList(groupMembershipBytes);
         
-        model.addEvent(event);
+        if(!model.addEventIfNotExists(event)){
+//        	//make everything new
+//        	
+//        	//make new EventMemberships from the event id and the persons
+//        	model.addEventMemberships(eventMemberships, event.getId(), persons);
+//        	
+//        	//add Persons, their ids are in addEventMemberships already
+//        	model.addPersons(persons);
+//        	
+//        	//add Groups, the eventid is also important
+//        	model.addGroups(groups, event.getId());
+//        	
+//        	//add GroupMemberships between FUCK
+//        	model.addGroupMemberships(persons, groups);
+        } else {
+        	//update everything
+        }
         
     }
 
@@ -213,36 +230,27 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	}
 
 
-	private List<EventMembership> readFromByteToEventMembershipList(
-			byte[] eventMembershipBytes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	private Event readFromByteToEvent(byte[] bytes) {
-		// read from byte array
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+	private List<EventMembership> readFromByteToEventMembershipList(byte[] eventMembershipBytes) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(eventMembershipBytes);
         DataInputStream in = new DataInputStream(bais);
-        String eventString = null;
+        String eventMembershipMessage = null;
         try {
 			while (in.available() > 0) {
-			    eventString = in.readUTF();
-//			    Group aGroup = element;
-			    Log.i("NFCCHECK", eventString);
-//            System.out.println(element);
+			    eventMembershipMessage = in.readUTF();
+			    Log.i("NFCCHECK-EventMembershipMSG", eventMembershipMessage);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        StringTokenizer tokens = new StringTokenizer(eventString, ",");
-        String idToken = tokens.nextToken();
-        String nameToken = tokens.nextToken();
-        String yearToken = tokens.nextToken();
-        String wsToken = tokens.nextToken();
-        String infoToken = tokens.nextToken();
-        
+//        StringTokenizer tokens = new StringTokenizer(eventMembershipMessage, ",");
+//        String idToken = tokens.nextToken();
+//        String nameToken = tokens.nextToken();
+//        String yearToken = tokens.nextToken();
+//        String wsToken = tokens.nextToken();
+//        String infoToken = tokens.nextToken();
+//        
+//        Event event = new Event(nameToken, Integer.getInteger(yearToken), Boolean.valueOf(wsToken), infoToken);
 //        StringTokenizer idToken = new StringTokenizer(idToken), "=");
         
 //        Log.i("NFCEVENTID", id);
@@ -251,7 +259,41 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 //        Log.i("NFCEVENTWS", ws);
 //        Log.i("NFCEVENTINFO", info); 
 //        return new Event(name, Integer.getInteger(year), Boolean.valueOf(ws), info);
-        return null;
+
+		return null;
+	}
+
+
+	private Event readFromByteToEvent(byte[] eventBytes) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(eventBytes);
+        DataInputStream in = new DataInputStream(bais);
+        String eventMessage = null;
+        try {
+			while (in.available() > 0) {
+			    eventMessage = in.readUTF();
+			    Log.i("NFCCHECK-EventMSG", eventMessage);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        StringTokenizer tokens = new StringTokenizer(eventMessage, ",");
+        String idToken = tokens.nextToken();
+        String nameToken = tokens.nextToken();
+        String yearToken = tokens.nextToken();
+        String wsToken = tokens.nextToken();
+        String infoToken = tokens.nextToken();
+        
+        Event event = new Event(nameToken, Integer.getInteger(yearToken), Boolean.valueOf(wsToken), infoToken);
+//        StringTokenizer idToken = new StringTokenizer(idToken), "=");
+        
+//        Log.i("NFCEVENTID", id);
+//        Log.i("NFCEVENTNAME", name);
+//        Log.i("NFCEVENTYEAR", year);
+//        Log.i("NFCEVENTWS", ws);
+//        Log.i("NFCEVENTINFO", info); 
+//        return new Event(name, Integer.getInteger(year), Boolean.valueOf(ws), info);
+        return event;
 	}
     
     

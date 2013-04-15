@@ -101,11 +101,21 @@ public class BackgroundModel {
 				.getEventDao();
 		eventDao.create(event);
 		if (!events.contains(event))
-			;
-		events.add(event);
+			events.add(event);
 		setCurrentEvent(event);
 		reloadPersons();
 		reloadGroups();
+	}
+	
+	public boolean addEventIfNotExists(Event event) {
+		boolean exists = false;
+		for (Event e : events) {
+			if(e.getEventname() == event.getEventname())
+				exists = true;
+		}
+		if(!exists)
+			events.add(event);
+		return exists; //false means does not exist in events. true means has to be updated.
 	}
 
 	public void editEvent(Event event, String eventName,
@@ -463,6 +473,8 @@ public class BackgroundModel {
 		}
 		return groupMemberships;
 	}
+
+
 
 	// public List<GroupMembership> getGroupMemberships(Event currentEvent) {
 	// RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao =
