@@ -190,23 +190,23 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
         List<Group> groups = readFromByteToGroupList(groupBytes);
         List<GroupMembership> groupMemberships = readFromByteToGroupMembershipList(groupMembershipBytes);
         
-        if(!model.addEventIfNotExists(event)){
-//        	//make everything new
-//        	
-//        	//make new EventMemberships from the event id and the persons
-//        	model.addEventMemberships(eventMemberships, event.getId(), persons);
-//        	
-//        	//add Persons, their ids are in addEventMemberships already
-//        	model.addPersons(persons);
-//        	
-//        	//add Groups, the eventid is also important
-//        	model.addGroups(groups, event.getId());
-//        	
-//        	//add GroupMemberships between FUCK
-//        	model.addGroupMemberships(persons, groups);
-        } else {
-        	//update everything
-        }
+//        if(!model.addEventIfNotExists(event)){
+////        	//make everything new
+////        	
+////        	//make new EventMemberships from the event id and the persons
+////        	model.addEventMemberships(eventMemberships, event.getId(), persons);
+////        	
+////        	//add Persons, their ids are in addEventMemberships already
+////        	model.addPersons(persons);
+////        	
+////        	//add Groups, the eventid is also important
+////        	model.addGroups(groups, event.getId());
+////        	
+////        	//add GroupMemberships between FUCK
+////        	model.addGroupMemberships(persons, groups);
+//        } else {
+//        	//update everything
+//        }
         
     }
 

@@ -106,16 +106,45 @@ public class BackgroundModel {
 		reloadPersons();
 		reloadGroups();
 	}
-	
-	public boolean addEventIfNotExists(Event event) {
+
+	public void addEventIfNotExists(Event event) {
 		boolean exists = false;
 		for (Event e : events) {
-			if(e.getEventname() == event.getEventname())
+			if (e.getEventname() == event.getEventname()) {
 				exists = true;
+				e.setYear(event.getYear());
+				e.setWintersemester(event.isWintersemester());
+				e.setInfo(event.getInfo());
+			}
 		}
-		if(!exists)
+		if (!exists)
 			events.add(event);
-		return exists; //false means does not exist in events. true means has to be updated.
+	}
+
+	public int addEventIfNotExists(String eventName, String year,
+			String wintersemester, String info) {
+		boolean exists = false;
+		int id = -1;
+		for (Event e : events) {
+			if (e.getEventname().equals(eventName)) {
+				exists = true;
+				id = e.id;
+				editEvent(e, eventName, Boolean.valueOf(wintersemester),
+						Integer.parseInt(year), info);
+			}
+		}
+		if (!exists) {
+			// Log.i("BACKGROUNDMODEL", "eventName = " + eventName);
+			// Log.i("BACKGROUNDMODEL", "year = " + Integer.parseInt(year));
+			// Log.i("BACKGROUNDMODEL", "ws = " +
+			// Boolean.valueOf(wintersemester));
+			// Log.i("BACKGROUNDMODEL", "info = " + info);
+			Event event = new Event(eventName, Integer.parseInt(year),
+					Boolean.valueOf(wintersemester), info);
+			id = event.id;
+			addEvent(event);
+		}
+		return id;
 	}
 
 	public void editEvent(Event event, String eventName,
@@ -130,6 +159,8 @@ public class BackgroundModel {
 		this.currentEvent = event;
 		eventDao.update(event);
 		eventDao.refresh(event);
+		reloadPersons();
+		reloadGroups();
 	}
 
 	public void removeEvent(Event event) {
@@ -316,6 +347,21 @@ public class BackgroundModel {
 		persons.add(person);
 	}
 
+	public int addPersonIfNotExists(String name, String email) {
+		for (Person p : persons) {
+			if (p.getName().equals(name) && p.getEmail().equals(email)) {
+				return p.id;
+			}
+		}
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
+				.getPersonDao();
+		Person person = new Person(name, email);
+		personDao.create(person);
+		
+		
+		return person.id;
+	}
+
 	public void removePerson(Person person) {
 		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper()
 				.getEventMembershipDao();
@@ -390,13 +436,13 @@ public class BackgroundModel {
 	// // no eventmembership representation List here, so no remove
 	// }
 
-	public List<EventMembership> getEventMemberships(Event currentEvent) {
+	public List<EventMembership> getEventMemberships(Event event) {
 		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper()
 				.getEventMembershipDao();
 		List<EventMembership> eventMemberships = null;
 		try {
 			eventMemberships = eventMembershipDao.queryBuilder().where()
-					.eq("event_id", currentEvent.getId()).query();
+					.eq("event_id", event.id).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -473,8 +519,6 @@ public class BackgroundModel {
 		}
 		return groupMemberships;
 	}
-
-
 
 	// public List<GroupMembership> getGroupMemberships(Event currentEvent) {
 	// RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao =
