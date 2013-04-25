@@ -272,6 +272,19 @@ public class BackgroundModel {
 		reloadGroups();
 	}
 
+	public int addGroupIfNotExists(String groupName, int eventId) {
+		for (Group g : groups) {
+			if (g.getGroupName().equals(groupName)) {
+				return g.id;
+			}
+		}
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()
+				.getGroupDao();
+		Group group = new Group(groupName, eventId);
+		groupDao.create(group);
+		return group.id;
+	}
+	
 	public void editGroup(Group group, String name) {
 		// create Object
 		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()

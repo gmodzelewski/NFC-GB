@@ -100,7 +100,7 @@ public class NfcCheck {
 			 * ########################################## EVENT
 			 * ##########################################
 			 */
-			int event_id = eventParser(model, ndefRecords[0].getPayload());
+			int eventId = eventParser(model, ndefRecords[0].getPayload());
 
 			/*
 			 * ########################################## Person
@@ -113,7 +113,7 @@ public class NfcCheck {
 			 * ########################################## Group
 			 * ##########################################
 			 */
-			groupParser(model, ndefRecords[3].getPayload());
+			Hashtable<Integer, Integer> changedGroupIds = groupParser(model, ndefRecords[3].getPayload(), eventId);
 
 			// need ids, what to do?
 
@@ -257,7 +257,7 @@ public class NfcCheck {
 	}
 
 	private Hashtable<Integer, Integer> groupParser(BackgroundModel model,
-			byte[] groupBytes) {
+			byte[] groupBytes, int eventId) {
 		// read from byte array
 		ByteArrayInputStream bais = new ByteArrayInputStream(groupBytes);
 		DataInputStream in = new DataInputStream(bais);
@@ -280,13 +280,14 @@ public class NfcCheck {
 //			Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
 			String groupName = substringAfter(tokens.nextToken(), "groupName=");
 			Log.i("NFCCHECK-NAME", groupName);
-			String eventId = substringAfter(tokens.nextToken(), "event_id=");
-			Log.i("NFCCHECK-EMAIL", eventId);
+			String oldEventId = substringAfter(tokens.nextToken(), "event_id=");
+			Log.i("NFCCHECK-EMAIL", oldEventId);
 
-//			int newId = model.addPersonIfNotExists(name, email);
+			int newId = model.addGroupIfNotExists(groupName, eventId);
+
 			// newId == -1 means Person already exists. Btw: only exists if both
 			// name and email are the same
-//			changedPersonIds.put(oldId, newId);
+			changedGroupIds.put(oldId, newId);
 			// int personId = model.addEventIfNotExists(eventName, year,
 			// wintersemester, info);
 		}
