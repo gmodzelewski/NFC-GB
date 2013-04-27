@@ -335,17 +335,17 @@ public class BackgroundModel {
 
 		Person person = new Person(name, email);
 		personDao.create(person);
-		
+
 		EventMembership emd = new EventMembership(getCurrentEvent().getId(), person.getId());
 		eventMembershipDao.create(emd);
-		
+
 		persons.add(person);
 	}
 
 	public int addPersonIfNotExists(String name, String email) {
 		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDao();
 		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDao();
-		
+
 		for (Person p : persons) {
 			if (p.getName().equals(name) && p.getEmail().equals(email)) {
 				return p.id;
@@ -354,10 +354,10 @@ public class BackgroundModel {
 
 		Person person = new Person(name, email);
 		personDao.create(person);
-		
+
 		EventMembership emd = new EventMembership(getCurrentEvent().getId(), person.getId());
 		eventMembershipDao.create(emd);
-		
+
 		persons.add(person);
 		return person.id;
 	}
@@ -441,40 +441,42 @@ public class BackgroundModel {
 		}
 		return eventMemberships;
 	}
-	
-//	is not needed because can be new generated at addPersonIfotExists
-//	public void createEventMembershipsFromNdef(BackgroundModel model, byte[] groupMembershipBytes, int eventId,
-//			Hashtable<Integer, Integer> changedPersonIds) {
-//		// read from byte array
-//		ByteArrayInputStream bais = new ByteArrayInputStream(groupMembershipBytes);
-//		DataInputStream in = new DataInputStream(bais);
-//		List<String> groupMembershipStrings = new LinkedList<String>();
-//		try {
-//			while (in.available() > 0) {
-//				groupMembershipStrings.add(in.readUTF());
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		if (groupMembershipStrings != null)
-//			Log.i("NFCCHECKGroupMemberships", groupMembershipStrings.toString());
-//		for (String groupMembershipString : groupMembershipStrings) {
-//			StringTokenizer tokens = new StringTokenizer(groupMembershipString, ",");
-//
-//			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
-//			String oldEventId = substringAfter(tokens.nextToken(), "event_id=");
-//			String oldPersonId = substringAfter(tokens.nextToken(), "person_id=");
-//
-//			// int newId = model.addPersonIfNotExists(name, email);
-//			// newId == -1 means Person already exists. Btw: only exists if both
-//			// name and email are the same
-//			// changedPersonIds.put(oldId, newId);
-//			// int personId = model.addEventIfNotExists(eventName, year,
-//			// wintersemester, info);
-//		}
-//
-//	}
+
+	// is not needed because can be new generated at addPersonIfotExists
+	// public void createEventMembershipsFromNdef(BackgroundModel model, byte[]
+	// groupMembershipBytes, int eventId,
+	// Hashtable<Integer, Integer> changedPersonIds) {
+	// // read from byte array
+	// ByteArrayInputStream bais = new
+	// ByteArrayInputStream(groupMembershipBytes);
+	// DataInputStream in = new DataInputStream(bais);
+	// List<String> groupMembershipStrings = new LinkedList<String>();
+	// try {
+	// while (in.available() > 0) {
+	// groupMembershipStrings.add(in.readUTF());
+	// }
+	// } catch (IOException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// if (groupMembershipStrings != null)
+	// Log.i("NFCCHECKGroupMemberships", groupMembershipStrings.toString());
+	// for (String groupMembershipString : groupMembershipStrings) {
+	// StringTokenizer tokens = new StringTokenizer(groupMembershipString, ",");
+	//
+	// int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
+	// String oldEventId = substringAfter(tokens.nextToken(), "event_id=");
+	// String oldPersonId = substringAfter(tokens.nextToken(), "person_id=");
+	//
+	// // int newId = model.addPersonIfNotExists(name, email);
+	// // newId == -1 means Person already exists. Btw: only exists if both
+	// // name and email are the same
+	// // changedPersonIds.put(oldId, newId);
+	// // int personId = model.addEventIfNotExists(eventName, year,
+	// // wintersemester, info);
+	// }
+	//
+	// }
 
 	// ----------------------------------------------------------------------------------
 
@@ -485,6 +487,42 @@ public class BackgroundModel {
 	 * ------------
 	 * ----------------------------------------------------------------------
 	 */
+
+	public void createGroupMembershipsFromNdef(BackgroundModel model, byte[] groupMembershipBytes,
+			Hashtable<Integer, Integer> changedGroupIds, Hashtable<Integer, Integer> changedPersonIds) {
+
+		// read from byte array
+		ByteArrayInputStream bais = new ByteArrayInputStream(groupMembershipBytes);
+		DataInputStream in = new DataInputStream(bais);
+		List<String> groupMembershipStrings = new LinkedList<String>();
+		try {
+			while (in.available() > 0) {
+				groupMembershipStrings.add(in.readUTF());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (groupMembershipStrings != null)
+			Log.i("NFCCHECKGM", groupMembershipStrings.toString());
+		for (String groupMembershipString : groupMembershipStrings) {
+			StringTokenizer tokens = new StringTokenizer(groupMembershipString, ",");
+		
+			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
+			Log.i("NFCCHECKGM-OLDID", String.valueOf(oldId));
+			String oldGroupId = substringAfter(tokens.nextToken(), "group_id=");
+			Log.i("NFCCHECKGM-GROUPID", oldGroupId);
+			String oldPersonId = substringAfter(tokens.nextToken(), "event_id=");
+			Log.i("NFCCHECK-EMAIL", oldPersonId);
+			
+			if(changedGroupIds.get(oldGroupId) == null || changedPersonIds.get(oldPersonId) == null){
+				Toast.makeText(mainActivity, "OldPersonId not found. this shouldn't happen", Toast.LENGTH_LONG).show();
+				return;
+			}
+			int groupId = changedGroupIds.get(oldGroupId);
+			int personId = changedPersonIds.get(oldPersonId);
+			model.addGroupMembership(personId, groupId);
+		}
+	}
 
 	public void addGroupMembership(int personId, int groupId) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
@@ -538,8 +576,6 @@ public class BackgroundModel {
 		return groupMemberships;
 	}
 
-	
-
 	// public List<GroupMembership> getGroupMemberships(Event currentEvent) {
 	// RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao =
 	// getHelper().getGroupMembershipDao();
@@ -571,9 +607,4 @@ public class BackgroundModel {
 		return pos >= 0 ? string.substring(pos + delimiter.length()) : "";
 	}
 
-	public void createGroupMembershipsFromNdef(BackgroundModel model, byte[] groupMembershipBytes,
-			Hashtable<Integer, Integer> changedGroupIds, Hashtable<Integer, Integer> changedPersonIds) {
-
-		
-	}
 }
