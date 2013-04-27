@@ -502,24 +502,28 @@ public class BackgroundModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		if (groupMembershipStrings != null)
-//			Log.i("NFCCHECKGM", groupMembershipStrings.toString());
+		// if (groupMembershipStrings != null)
+		// Log.i("NFCCHECKGM", groupMembershipStrings.toString());
 		for (String groupMembershipString : groupMembershipStrings) {
 			StringTokenizer tokens = new StringTokenizer(groupMembershipString, ",");
-		
+
 			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
 			Log.i("NFCCHECKGM-OLDID", String.valueOf(oldId));
 			String oldGroupId = substringAfter(tokens.nextToken(), "group_id=");
-//			Log.i("NFCCHECKGM-GROUPID", oldGroupId);
+			// Log.i("NFCCHECKGM-GROUPID", oldGroupId);
 			String oldPersonId = substringAfter(tokens.nextToken(), "person_id=");
-//			Log.i("NFCCHECK-PERSONID", oldPersonId);
-//			
-//			Log.i("NFCCHECK-CHANGEDGROUPIDS", String.valueOf(changedGroupIds.containsKey(Integer.parseInt(oldGroupId))));
+			// Log.i("NFCCHECK-PERSONID", oldPersonId);
+			//
+			// Log.i("NFCCHECK-CHANGEDGROUPIDS",
+			// String.valueOf(changedGroupIds.containsKey(Integer.parseInt(oldGroupId))));
 
-//			if(changedGroupIds.get(Integer.parseInt(oldGroupId)) == null || changedPersonIds.get(Integer.parseInt(oldPersonId)) == null){
-//				Toast.makeText(mainActivity, "OldPersonId not found. this shouldn't happen", Toast.LENGTH_LONG).show();
-//				return;
-//			}
+			// if(changedGroupIds.get(Integer.parseInt(oldGroupId)) == null ||
+			// changedPersonIds.get(Integer.parseInt(oldPersonId)) == null){
+			// Toast.makeText(mainActivity,
+			// "OldPersonId not found. this shouldn't happen",
+			// Toast.LENGTH_LONG).show();
+			// return;
+			// }
 			int groupId = changedGroupIds.get(Integer.parseInt(oldGroupId));
 			int personId = changedPersonIds.get(Integer.parseInt(oldPersonId));
 			model.addGroupMembershipWithoutToast(personId, groupId);
@@ -549,7 +553,7 @@ public class BackgroundModel {
 
 		reloadGroups();
 	}
-	
+
 	public void addGroupMembershipWithoutToast(int personId, int groupId) {
 		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
 
@@ -566,7 +570,7 @@ public class BackgroundModel {
 		if (groupResult.isEmpty()) {
 			groupMembershipDao.create(new GroupMembership(groupId, personId));
 			getGroupById(groupId).getPerson().add(getPersonById(personId));
-		} 
+		}
 
 		reloadGroups();
 	}
@@ -614,6 +618,115 @@ public class BackgroundModel {
 	// }
 
 	// ----------------------------------------------------------------------------------
+
+	public Hashtable<Integer, Integer> groupParser(BackgroundModel model, byte[] groupBytes, int eventId) {
+		// read from byte array
+		ByteArrayInputStream bais = new ByteArrayInputStream(groupBytes);
+		DataInputStream in = new DataInputStream(bais);
+		List<String> groupStrings = new LinkedList<String>();
+		try {
+			while (in.available() > 0) {
+				groupStrings.add(in.readUTF());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// if (groupStrings != null)
+		// Log.i("NFCCHECKGroup", groupStrings.toString());
+		Hashtable<Integer, Integer> changedGroupIds = new Hashtable<Integer, Integer>();
+		for (String groupString : groupStrings) {
+			StringTokenizer tokens = new StringTokenizer(groupString, ",");
+
+			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
+			// Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
+			String groupName = substringAfter(tokens.nextToken(), "groupName=");
+			// Log.i("NFCCHECK-NAME", groupName);
+//			String oldEventId = substringAfter(tokens.nextToken(), "event_id=");
+			// Log.i("NFCCHECK-EMAIL", oldEventId);
+
+			int newId = model.addGroupIfNotExists(groupName, eventId);
+
+			// newId == -1 means Person already exists. Btw: only exists if both
+			// name and email are the same
+			changedGroupIds.put(oldId, newId);
+			// int personId = model.addEventIfNotExists(eventName, year,
+			// wintersemester, info);
+		}
+		return changedGroupIds;
+	}
+
+	public int eventParser(BackgroundModel model, byte[] eventBytes) {
+		// byte[] eventBytes = ndefRecords[0].getPayload();
+		// read from byte array
+		ByteArrayInputStream bais = new ByteArrayInputStream(eventBytes);
+		DataInputStream in = new DataInputStream(bais);
+		String eventString = null;
+		try {
+			while (in.available() > 0) {
+				eventString = in.readUTF();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// Log.i("NFCCHECK", eventString);
+		StringTokenizer tokens = new StringTokenizer(eventString, ",");
+		// Log.i("NFCCHECKTOKENSID", tokens.nextToken());
+		tokens.nextToken();
+		String eventName = substringAfter(tokens.nextToken(), "eventname=");
+		String year = substringAfter(tokens.nextToken(), "year=");
+		String wintersemester = substringAfter(tokens.nextToken(), "wintersemester=");
+		String info = substringAfter(tokens.nextToken(), "info=");
+		// Log.i("NFCCHECK-EVENTNAME", eventName);
+		// Log.i("NFCCHECK-YEAR", year);
+		// Log.i("NFCCHECK-WS", wintersemester);
+		// Log.i("NFCCHECK-INFO", info);
+		// Log.i("NFCCHECK-trim", String.valueOf(eventName.trim().length()));
+		int eventId = -1;
+		if (eventName != null && eventName.trim().length() != 0) {
+			eventId = model.addEventIfNotExists(eventName, year, wintersemester, info);
+		} else {
+			Toast.makeText(mainActivity.getApplicationContext(), "No eventName specified.", Toast.LENGTH_LONG).show();
+		}
+		return eventId;
+	}
+
+	public Hashtable<Integer, Integer> personParser(BackgroundModel model, byte[] personBytes) {
+		// read from byte array
+		ByteArrayInputStream bais = new ByteArrayInputStream(personBytes);
+		DataInputStream in = new DataInputStream(bais);
+		List<String> personStrings = new LinkedList<String>();
+		try {
+			while (in.available() > 0) {
+				personStrings.add(in.readUTF());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// if (personStrings != null)
+		// Log.i("NFCCHECKPerson", personStrings.toString());
+		Hashtable<Integer, Integer> changedPersonIds = new Hashtable<Integer, Integer>();
+		for (String personString : personStrings) {
+			StringTokenizer tokens = new StringTokenizer(personString, ",");
+
+			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
+			// Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
+			String name = substringAfter(tokens.nextToken(), "name=");
+			// Log.i("NFCCHECK-NAME", name);
+			String email = substringAfter(tokens.nextToken(), "email=");
+			// Log.i("NFCCHECK-EMAIL", email);
+
+			int newId = model.addPersonIfNotExists(name, email);
+			// newId == -1 means Person already exists. Btw: only exists if both
+			// name and email are the same
+			changedPersonIds.put(oldId, newId);
+			// int personId = model.addEventIfNotExists(eventName, year,
+			// wintersemester, info);
+		}
+		return changedPersonIds;
+	}
+
 	/**
 	 * Returns the substring after the first occurrence of a delimiter. The
 	 * delimiter is not part of the result.
