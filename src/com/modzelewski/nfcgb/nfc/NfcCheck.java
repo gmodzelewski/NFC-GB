@@ -37,15 +37,10 @@ public class NfcCheck {
 
 	public void check(BackgroundModel model) {
 		if (nfcAdapter == null) {
-			Toast.makeText(
-					context,
-					context.getResources()
-							.getString(R.string.nfc_not_available),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(context, context.getResources().getString(R.string.nfc_not_available), Toast.LENGTH_LONG)
+					.show();
 		} else {
-			Toast.makeText(context,
-					context.getResources().getString(R.string.nfc_available),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(context, context.getResources().getString(R.string.nfc_available), Toast.LENGTH_LONG).show();
 
 			// ###########################################
 			// # create NdefMessage #
@@ -55,8 +50,7 @@ public class NfcCheck {
 			List<Event> eventList = new LinkedList<Event>();
 			eventList.add(currentEvent);
 
-			List<EventMembership> eventMemberships = model
-					.getEventMemberships(currentEvent);
+			List<EventMembership> eventMemberships = model.getEventMemberships(currentEvent);
 
 			List<Person> persons = model.getPersons(eventMemberships);
 
@@ -73,21 +67,15 @@ public class NfcCheck {
 			byte[] groupBytes = writeByteArrayFromList(groups);
 			byte[] groupMembershipBytes = writeByteArrayFromList(groupMemberships);
 
-			NdefRecord eventRecord = NdefRecord.createExternal(
-					"com.modzelewski.nfcgb.nfc", "EVENT", eventBytes);
-			NdefRecord eventMembershipRecord = NdefRecord.createExternal(
-					"com.modzelewski.nfcgb.nfc", "EVENTMEMBERSHIP",
-					eventMembershipBytes);
-			NdefRecord personRecord = NdefRecord.createExternal(
-					"com.modzelewski.nfcgb.nfc", "PERSON", personBytes);
-			NdefRecord groupRecord = NdefRecord.createExternal(
-					"com.modzelewski.nfcgb.nfc", "GROUPS", groupBytes);
-			NdefRecord groupMembershipRecord = NdefRecord.createExternal(
-					"com.modzelewski.nfcgb.nfc", "GROUPMEMBERSHIP",
-					groupMembershipBytes);
+			NdefRecord eventRecord = NdefRecord.createExternal("com.modzelewski.nfcgb.nfc", "EVENT", eventBytes);
+			NdefRecord eventMembershipRecord = NdefRecord.createExternal("com.modzelewski.nfcgb.nfc",
+					"EVENTMEMBERSHIP", eventMembershipBytes);
+			NdefRecord personRecord = NdefRecord.createExternal("com.modzelewski.nfcgb.nfc", "PERSON", personBytes);
+			NdefRecord groupRecord = NdefRecord.createExternal("com.modzelewski.nfcgb.nfc", "GROUPS", groupBytes);
+			NdefRecord groupMembershipRecord = NdefRecord.createExternal("com.modzelewski.nfcgb.nfc",
+					"GROUPMEMBERSHIP", groupMembershipBytes);
 
-			NdefMessage msg = new NdefMessage(eventRecord,
-					eventMembershipRecord, personRecord, groupRecord,
+			NdefMessage msg = new NdefMessage(eventRecord, eventMembershipRecord, personRecord, groupRecord,
 					groupMembershipRecord);
 			// return msg
 
@@ -103,161 +91,34 @@ public class NfcCheck {
 			int eventId = eventParser(model, ndefRecords[0].getPayload());
 
 			/*
-			 * ########################################## Person
+			 * ########################################## PERSON
 			 * ##########################################
 			 */
-			Hashtable<Integer, Integer> changedPersonIds = personParser(model,
-					ndefRecords[2].getPayload());
+			Hashtable<Integer, Integer> changedPersonIds = personParser(model, ndefRecords[2].getPayload());
 
 			/*
-			 * ########################################## Group
+			 * ########################################## GROUP
 			 * ##########################################
 			 */
 			Hashtable<Integer, Integer> changedGroupIds = groupParser(model, ndefRecords[3].getPayload(), eventId);
 
-			// need ids, what to do?
+			/*
+			 * ########################################## EventMembership
+			 * ##########################################
+			 */
+//			is not needed because can be new generated at addPersonIfNotExists
+//			model.createEventMembershipsFromNdef(model, ndefRecords[1].getPayload(), eventId, changedPersonIds);
 
-			// /* ##########################################
-			// * EVENTMEMBERSHIPS
-			// * ##########################################
-			// */
-			// Log.i("NFCCHECK-EMS", "I'm in eventmemberships");
-			// byte[] eventMembershipBytes2 = ndefRecords[1].getPayload();
-			// // read from byte array
-			// ByteArrayInputStream eventMembershipBais = new
-			// ByteArrayInputStream(eventMembershipBytes2);
-			// DataInputStream eventMembershipIn = new
-			// DataInputStream(eventMembershipBais);
-			// String eventMembershipString = null;
-			// try {
-			// while (eventMembershipIn.available() > 0) {
-			// eventMembershipString = eventMembershipIn.readUTF();
-			// // Group aGroup = element;
-			// Log.i("NFCCHECK-EMS", eventMembershipString);
-			// StringTokenizer tokens2 = new
-			// StringTokenizer(eventMembershipString, ",");
-			// Log.i("NFCCHECKTOKENSID", tokens2.nextToken());
-			// String event_id = substringAfter(tokens2.nextToken(),
-			// "event_id=");
-			// String person_id = substringAfter(tokens2.nextToken(),
-			// "person_id=");
-			// Log.i("EVENTID= ", event_id);
-			// Log.i("personID= ", person_id);
-			//
-			// }
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-
-			// StringTokenizer tokens = new StringTokenizer(eventString, ",");
-			// Log.i("NFCCHECKTOKENSID", tokens.nextToken());
-			// String eventName = substringAfter(tokens.nextToken(),
-			// "eventname=");
-			// String year = substringAfter(tokens.nextToken(), "year=");
-			// String wintersemester = substringAfter(tokens.nextToken(),
-			// "wintersemester=");
-			// String info = substringAfter(tokens.nextToken(), "info=");
-			//
-			// Log.i("EVENTNAME", eventName);
-			// Log.i("YEAR", year);
-			// Log.i("WS", wintersemester);
-			// Log.i("INFO", info);
-			//
-
-			// StringTokenizer tokensS = new StringTokenizer(tokens.nextToken(),
-			// "=");
-			// tokensS.nextToken();
-			//
-			// String idString = tokensS.nextToken();
-			// tokensS = new StringTokenizer(tokens.nextToken(), "=");
-			// tokensS.nextToken();
-			//
-			// String eventNameString = tokensS.nextToken();
-			// tokensS = new StringTokenizer(tokens.nextToken(), "=");
-			// Log.i(NFCCHECKTOKENS, tokensS.nextToken());
-			//
-			// String yearString = tokens.nextToken();
-			// tokensS = new StringTokenizer(tokens.nextToken(), "=");
-			// tokensS.nextToken();
-			//
-			// String wintersemesterString = tokens.nextToken();
-			// tokensS = new StringTokenizer(tokens.nextToken(), "=");
-			// tokensS.nextToken();
-			//
-			// String infoString = tokens.nextToken();
-			// tokensS = new StringTokenizer(tokens.nextToken(), "=");
-			//
-			// Log.i("NFCEVENTID", idString);
-			// Log.i("NFCEVENTNAME", eventNameString);
-			// Log.i("NFCEVENTYEAR", yearString);
-			// Log.i("NFCEVENTWS", wintersemesterString);
-			// Log.i("NFCEVENTINFO", infoString);
-
-			// public Group fromString(String element) {
-			// super();
-			// StringTokenizer tokens = new StringTokenizer(element, ",");
-			// Group g = new Gr
-			// this.id = Integer.getInteger(tokens.nextToken());
-			// }
-
-			// if (!groups.isEmpty())
-			// Toast.makeText(context, "Groups ist nicht leer",
-			// Toast.LENGTH_LONG).show();
-			//
-			// Log.i("NFC", "personsrep = " + persons.toString());
-			// LinkedList<GroupMembership> groupMemberships =
-			// (LinkedList<GroupMembership>)
-			// model.getGroupMemberships(currentEvent);
-			// LinkedList<EventMembership> eventMemberships =
-			// (LinkedList<EventMembership>)
-			// model.getEventMemberships(currentEvent);
-			// LinkedList<Group> groups = (LinkedList<Group>)
-			// model.getGroups(currentEvent);
-			// LinkedList<Person> persons = (LinkedList<Person>)
-			// model.getPersons(eventMemberships);
-
-			// Nfc nfc = new Nfc(nfcAdapter, context, model);
-			//
-			// Gson gson = new Gson();
-			// LinkedList<Person> persons = (LinkedList<Person>)
-			// model.getPersons();
-			// String payload = gson.toJson(persons);
-			//
-			// NdefRecord ndefRecord = nfc.createTextRecord("hallo",
-			// Locale.GERMAN, true);
-			// Log.i("NFC", "record = " + ndefRecord.toString());
-			// NdefMessage msg = new NdefMessage(ndefRecord);
-			// Log.i("NFC", "records = " + msg.getRecords().toString());
-			// NdefRecord[] records = msg.getRecords();
-			// String data = records[0].getPayload().toString();
-			//
-			//
-			// NdefRecord mimeRecord =
-			// NdefRecord.createMime("application/vnd.com.example.android.beam",
-			// payload.getBytes(Charset.forName("US-ASCII")));
-			// Log.i("NFC", "mimeRecord = " + mimeRecord.toString());
-			//
-			//
-			// // NdefRecord mimeRecord = new NdefRecord(
-			// // NdefRecord.TNF_MIME_MEDIA ,
-			// "application/vnd.com.example.android.beam".getBytes(Charset.forName("US-ASCII")),
-			// new byte[0],
-			// "Beam me up, Android!".getBytes(Charset.forName("US-ASCII")));
-			// Log.i("NFC", "mimeRecord = " +
-			// mimeRecord.getPayload().toString());
-			//
-			// Event currentEvent = model.getCurrentEvent();
-			// NdefMessage msg = new NdefMessage();
-			// msg.toString();
-			//
-			// String gmsrep = gson.toJsonTree(currentEvent, persons);
+			/*
+			 * ########################################## EventMembership
+			 * ##########################################
+			 */
+			model.createGroupMembershipsFromNdef(model, ndefRecords[4].getPayload(), changedGroupIds, changedPersonIds);
 
 		}
 	}
 
-	private Hashtable<Integer, Integer> groupParser(BackgroundModel model,
-			byte[] groupBytes, int eventId) {
+	private Hashtable<Integer, Integer> groupParser(BackgroundModel model, byte[] groupBytes, int eventId) {
 		// read from byte array
 		ByteArrayInputStream bais = new ByteArrayInputStream(groupBytes);
 		DataInputStream in = new DataInputStream(bais);
@@ -277,7 +138,7 @@ public class NfcCheck {
 			StringTokenizer tokens = new StringTokenizer(groupString, ",");
 
 			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
-//			Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
+			// Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
 			String groupName = substringAfter(tokens.nextToken(), "groupName=");
 			Log.i("NFCCHECK-NAME", groupName);
 			String oldEventId = substringAfter(tokens.nextToken(), "event_id=");
@@ -313,8 +174,7 @@ public class NfcCheck {
 		tokens.nextToken();
 		String eventName = substringAfter(tokens.nextToken(), "eventname=");
 		String year = substringAfter(tokens.nextToken(), "year=");
-		String wintersemester = substringAfter(tokens.nextToken(),
-				"wintersemester=");
+		String wintersemester = substringAfter(tokens.nextToken(), "wintersemester=");
 		String info = substringAfter(tokens.nextToken(), "info=");
 		// Log.i("NFCCHECK-EVENTNAME", eventName);
 		// Log.i("NFCCHECK-YEAR", year);
@@ -323,17 +183,14 @@ public class NfcCheck {
 		// Log.i("NFCCHECK-trim", String.valueOf(eventName.trim().length()));
 		int eventId = -1;
 		if (eventName != null && eventName.trim().length() != 0) {
-			eventId = model.addEventIfNotExists(eventName, year,
-					wintersemester, info);
+			eventId = model.addEventIfNotExists(eventName, year, wintersemester, info);
 		} else {
-			Toast.makeText(context, "No eventName specified.",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "No eventName specified.", Toast.LENGTH_LONG).show();
 		}
 		return eventId;
 	}
 
-	private Hashtable<Integer, Integer> personParser(BackgroundModel model,
-			byte[] personBytes) {
+	private Hashtable<Integer, Integer> personParser(BackgroundModel model, byte[] personBytes) {
 		// read from byte array
 		ByteArrayInputStream bais = new ByteArrayInputStream(personBytes);
 		DataInputStream in = new DataInputStream(bais);
@@ -346,19 +203,18 @@ public class NfcCheck {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (personStrings != null)
-			Log.i("NFCCHECKPerson", personStrings.toString());
+//		if (personStrings != null)
+//			Log.i("NFCCHECKPerson", personStrings.toString());
 		Hashtable<Integer, Integer> changedPersonIds = new Hashtable<Integer, Integer>();
 		for (String personString : personStrings) {
 			StringTokenizer tokens = new StringTokenizer(personString, ",");
 
-			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(),
-					"id="));
-			Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
+			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
+//			Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
 			String name = substringAfter(tokens.nextToken(), "name=");
-			Log.i("NFCCHECK-NAME", name);
+//			Log.i("NFCCHECK-NAME", name);
 			String email = substringAfter(tokens.nextToken(), "email=");
-			Log.i("NFCCHECK-EMAIL", email);
+//			Log.i("NFCCHECK-EMAIL", email);
 
 			int newId = model.addPersonIfNotExists(name, email);
 			// newId == -1 means Person already exists. Btw: only exists if both

@@ -1,9 +1,14 @@
 package com.modzelewski.nfcgb.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -47,8 +52,7 @@ public class BackgroundModel {
 
 	public List<Person> getPersons(List<EventMembership> eventMemberships) {
 		// ArrayList<String> personsFullNames = new ArrayList<String>();
-		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDao();
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDao();
 
 		for (EventMembership emd : eventMemberships) {
 			Person pd = personDao.queryForId(emd.getPerson_id());
@@ -67,16 +71,14 @@ public class BackgroundModel {
 
 		List<Group> groupsWithCurrentEvent = getGroups(currentEvent);
 
-		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDao();
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDao();
 
 		for (Group group : groupsWithCurrentEvent) {
 			List<GroupMembership> groupMemberships = getGroupMemberships(group);
 
 			for (GroupMembership groupMembership : groupMemberships) {
 				// group.getPerson().add(getPersonById(groupMembership.getPersonId()));
-				group.getPerson().add(
-						personDao.queryForId(groupMembership.getPersonId()));
+				group.getPerson().add(personDao.queryForId(groupMembership.getPersonId()));
 			}
 			groups.add(group);
 		}
@@ -97,8 +99,7 @@ public class BackgroundModel {
 	 */
 	// Add, Edit, Remove
 	public void addEvent(Event event) {
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper()
-				.getEventDao();
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDao();
 		eventDao.create(event);
 		if (!events.contains(event))
 			events.add(event);
@@ -121,16 +122,14 @@ public class BackgroundModel {
 			events.add(event);
 	}
 
-	public int addEventIfNotExists(String eventName, String year,
-			String wintersemester, String info) {
+	public int addEventIfNotExists(String eventName, String year, String wintersemester, String info) {
 		boolean exists = false;
 		int id = -1;
 		for (Event e : events) {
 			if (e.getEventname().equals(eventName)) {
 				exists = true;
 				id = e.id;
-				editEvent(e, eventName, Boolean.valueOf(wintersemester),
-						Integer.parseInt(year), info);
+				editEvent(e, eventName, Boolean.valueOf(wintersemester), Integer.parseInt(year), info);
 			}
 		}
 		if (!exists) {
@@ -139,18 +138,15 @@ public class BackgroundModel {
 			// Log.i("BACKGROUNDMODEL", "ws = " +
 			// Boolean.valueOf(wintersemester));
 			// Log.i("BACKGROUNDMODEL", "info = " + info);
-			Event event = new Event(eventName, Integer.parseInt(year),
-					Boolean.valueOf(wintersemester), info);
+			Event event = new Event(eventName, Integer.parseInt(year), Boolean.valueOf(wintersemester), info);
 			id = event.id;
 			addEvent(event);
 		}
 		return id;
 	}
 
-	public void editEvent(Event event, String eventName,
-			Boolean wintersemester, int year, String info) {
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper()
-				.getEventDao();
+	public void editEvent(Event event, String eventName, Boolean wintersemester, int year, String info) {
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDao();
 		event.setEventname(eventName);
 		event.setWintersemester(wintersemester);
 		event.setYear(year);
@@ -165,26 +161,20 @@ public class BackgroundModel {
 
 	public void removeEvent(Event event) {
 		currentEvent = event;
-		RuntimeExceptionDao<Event, Integer> eventDao = getHelper()
-				.getEventDao();
-		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()
-				.getGroupDao();
-		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper()
-				.getEventMembershipDao();
-		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper()
-				.getGroupMembershipDao();
+		RuntimeExceptionDao<Event, Integer> eventDao = getHelper().getEventDao();
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDao();
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDao();
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
 		List<Event> ed = null;
 		List<Group> gd = null;
 		List<EventMembership> emd = null;
 		List<GroupMembership> gmd = null;
 
 		try {
-			ed = eventDao.query(eventDao.queryBuilder().where()
-					.eq("id", currentEvent.id).prepare());
-			gd = groupDao.query(groupDao.queryBuilder().where()
-					.eq("event_id", currentEvent.id).prepare());
-			emd = eventMembershipDao.query(eventMembershipDao.queryBuilder()
-					.where().eq("event_id", currentEvent.id).prepare());
+			ed = eventDao.query(eventDao.queryBuilder().where().eq("id", currentEvent.id).prepare());
+			gd = groupDao.query(groupDao.queryBuilder().where().eq("event_id", currentEvent.id).prepare());
+			emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("event_id", currentEvent.id)
+					.prepare());
 			// gmd goes over gd later
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -192,8 +182,7 @@ public class BackgroundModel {
 
 		for (Group group : gd) {
 			try {
-				gmd = groupMembershipDao.query(groupMembershipDao
-						.queryBuilder().where().eq("group_id", group.id)
+				gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("group_id", group.id)
 						.prepare());
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -213,8 +202,7 @@ public class BackgroundModel {
 		if (events.size() == 0) {
 			setCurrentEvent(null);
 			Toast.makeText(mainActivity.getApplicationContext(),
-					mainActivity.getString(R.string.please_add_a_new_event),
-					Toast.LENGTH_LONG).show();
+					mainActivity.getString(R.string.please_add_a_new_event), Toast.LENGTH_LONG).show();
 		} else
 			setCurrentEvent(events.get(0));
 	}
@@ -262,8 +250,7 @@ public class BackgroundModel {
 	 */
 
 	public void addGroup(String groupName) {
-		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()
-				.getGroupDao();
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDao();
 		Log.i(getClass().getSimpleName(), "currentevent: " + getCurrentEvent());
 		Group group = new Group(groupName, getCurrentEvent().getId());
 		groupDao.create(group);
@@ -278,17 +265,15 @@ public class BackgroundModel {
 				return g.id;
 			}
 		}
-		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()
-				.getGroupDao();
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDao();
 		Group group = new Group(groupName, eventId);
 		groupDao.create(group);
 		return group.id;
 	}
-	
+
 	public void editGroup(Group group, String name) {
 		// create Object
-		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()
-				.getGroupDao();
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDao();
 		Group groupInList = groups.get(groups.indexOf(group));
 		groupInList.setGroupName(name);
 		group.setGroupName(name);
@@ -299,20 +284,17 @@ public class BackgroundModel {
 	}
 
 	public void removeGroup(Group gd) {
-		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()
-				.getGroupDao();
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDao();
 		groupDao.delete(gd);
 		groups.remove(gd);
 		reloadGroups();
 	}
 
 	public List<Group> getGroups(Event currentEvent) {
-		RuntimeExceptionDao<Group, Integer> groupDao = getHelper()
-				.getGroupDao();
+		RuntimeExceptionDao<Group, Integer> groupDao = getHelper().getGroupDao();
 		List<Group> groupResult = null;
 		try {
-			groupResult = groupDao.queryBuilder().where()
-					.eq("event_id", currentEvent.getId()).query();
+			groupResult = groupDao.queryBuilder().where().eq("event_id", currentEvent.getId()).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -348,54 +330,55 @@ public class BackgroundModel {
 	 */
 
 	public void addPerson(String name, String email) {
-		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDao();
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDao();
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDao();
+
 		Person person = new Person(name, email);
-		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper()
-				.getEventMembershipDao();
 		personDao.create(person);
-		EventMembership emd = new EventMembership(getCurrentEvent().getId(),
-				person.getId());
+		
+		EventMembership emd = new EventMembership(getCurrentEvent().getId(), person.getId());
 		eventMembershipDao.create(emd);
+		
 		persons.add(person);
 	}
 
 	public int addPersonIfNotExists(String name, String email) {
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDao();
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDao();
+		
 		for (Person p : persons) {
 			if (p.getName().equals(name) && p.getEmail().equals(email)) {
 				return p.id;
 			}
 		}
-		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDao();
+
 		Person person = new Person(name, email);
 		personDao.create(person);
 		
+		EventMembership emd = new EventMembership(getCurrentEvent().getId(), person.getId());
+		eventMembershipDao.create(emd);
 		
+		persons.add(person);
 		return person.id;
 	}
 
 	public void removePerson(Person person) {
-		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper()
-				.getEventMembershipDao();
-		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper()
-				.getGroupMembershipDao();
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDao();
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
 		List<EventMembership> emd = null;
 		List<GroupMembership> gmd = null;
 
 		try {
-			emd = eventMembershipDao.query(eventMembershipDao.queryBuilder()
-					.where().eq("person_id", person.getId()).and()
-					.eq("event_id", getCurrentEvent().getId()).prepare());
-			gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder()
-					.where().eq("person_id", person.getId()).prepare());
+			emd = eventMembershipDao.query(eventMembershipDao.queryBuilder().where().eq("person_id", person.getId())
+					.and().eq("event_id", getCurrentEvent().getId()).prepare());
+			gmd = groupMembershipDao.query(groupMembershipDao.queryBuilder().where().eq("person_id", person.getId())
+					.prepare());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		for (GroupMembership groupMembership : gmd) {
-			getGroupById(groupMembership.getGroup_id()).getPerson().remove(
-					getPersonById(person.getId()));
+			getGroupById(groupMembership.getGroup_id()).getPerson().remove(getPersonById(person.getId()));
 		}
 		persons.remove(person);
 		eventMembershipDao.delete(emd);
@@ -405,8 +388,7 @@ public class BackgroundModel {
 	}
 
 	public void editPerson(Person person, String name, String email) {
-		RuntimeExceptionDao<Person, Integer> personDao = getHelper()
-				.getPersonDao();
+		RuntimeExceptionDao<Person, Integer> personDao = getHelper().getPersonDao();
 		persons.remove(person);
 		person.setName(name);
 		person.setEmail(email);
@@ -450,17 +432,49 @@ public class BackgroundModel {
 	// }
 
 	public List<EventMembership> getEventMemberships(Event event) {
-		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper()
-				.getEventMembershipDao();
+		RuntimeExceptionDao<EventMembership, Integer> eventMembershipDao = getHelper().getEventMembershipDao();
 		List<EventMembership> eventMemberships = null;
 		try {
-			eventMemberships = eventMembershipDao.queryBuilder().where()
-					.eq("event_id", event.id).query();
+			eventMemberships = eventMembershipDao.queryBuilder().where().eq("event_id", event.id).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return eventMemberships;
 	}
+	
+//	is not needed because can be new generated at addPersonIfotExists
+//	public void createEventMembershipsFromNdef(BackgroundModel model, byte[] groupMembershipBytes, int eventId,
+//			Hashtable<Integer, Integer> changedPersonIds) {
+//		// read from byte array
+//		ByteArrayInputStream bais = new ByteArrayInputStream(groupMembershipBytes);
+//		DataInputStream in = new DataInputStream(bais);
+//		List<String> groupMembershipStrings = new LinkedList<String>();
+//		try {
+//			while (in.available() > 0) {
+//				groupMembershipStrings.add(in.readUTF());
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		if (groupMembershipStrings != null)
+//			Log.i("NFCCHECKGroupMemberships", groupMembershipStrings.toString());
+//		for (String groupMembershipString : groupMembershipStrings) {
+//			StringTokenizer tokens = new StringTokenizer(groupMembershipString, ",");
+//
+//			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
+//			String oldEventId = substringAfter(tokens.nextToken(), "event_id=");
+//			String oldPersonId = substringAfter(tokens.nextToken(), "person_id=");
+//
+//			// int newId = model.addPersonIfNotExists(name, email);
+//			// newId == -1 means Person already exists. Btw: only exists if both
+//			// name and email are the same
+//			// changedPersonIds.put(oldId, newId);
+//			// int personId = model.addEventIfNotExists(eventName, year,
+//			// wintersemester, info);
+//		}
+//
+//	}
 
 	// ----------------------------------------------------------------------------------
 
@@ -473,14 +487,12 @@ public class BackgroundModel {
 	 */
 
 	public void addGroupMembership(int personId, int groupId) {
-		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper()
-				.getGroupMembershipDao();
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
 
 		List<GroupMembership> groupResult = null;
 		try {
-			groupResult = groupMembershipDao.queryBuilder().where()
-					.eq("group_id", groupId).and().eq("person_id", personId)
-					.query();
+			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", groupId).and()
+					.eq("person_id", personId).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -491,25 +503,20 @@ public class BackgroundModel {
 			groupMembershipDao.create(new GroupMembership(groupId, personId));
 			getGroupById(groupId).getPerson().add(getPersonById(personId));
 		} else {
-			Toast.makeText(
-					mainActivity.getApplicationContext(),
-					mainActivity.getResources().getString(
-							R.string.person_already_in_group),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(mainActivity.getApplicationContext(),
+					mainActivity.getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
 		}
 
 		reloadGroups();
 	}
 
 	public void removeGroupMembership(Group group, Person person) {
-		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper()
-				.getGroupMembershipDao();
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
 
 		List<GroupMembership> groupResult = null;
 		try {
-			groupResult = groupMembershipDao.queryBuilder().where()
-					.eq("group_id", group.id).and().eq("person_id", person.id)
-					.query();
+			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and()
+					.eq("person_id", person.id).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -521,17 +528,17 @@ public class BackgroundModel {
 	}
 
 	public List<GroupMembership> getGroupMemberships(Group group) {
-		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper()
-				.getGroupMembershipDao();
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
 		List<GroupMembership> groupMemberships = null;
 		try {
-			groupMemberships = groupMembershipDao.queryBuilder().where()
-					.eq("group_id", group.id).query();
+			groupMemberships = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return groupMemberships;
 	}
+
+	
 
 	// public List<GroupMembership> getGroupMemberships(Event currentEvent) {
 	// RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao =
@@ -548,5 +555,25 @@ public class BackgroundModel {
 	// }
 
 	// ----------------------------------------------------------------------------------
+	/**
+	 * Returns the substring after the first occurrence of a delimiter. The
+	 * delimiter is not part of the result.
+	 * 
+	 * @param string
+	 *            String to get a substring from.
+	 * @param delimiter
+	 *            String to search for.
+	 * @return Substring after the last occurrence of the delimiter.
+	 */
+	public static String substringAfter(String string, String delimiter) {
+		int pos = string.indexOf(delimiter);
 
+		return pos >= 0 ? string.substring(pos + delimiter.length()) : "";
+	}
+
+	public void createGroupMembershipsFromNdef(BackgroundModel model, byte[] groupMembershipBytes,
+			Hashtable<Integer, Integer> changedGroupIds, Hashtable<Integer, Integer> changedPersonIds) {
+
+		
+	}
 }
