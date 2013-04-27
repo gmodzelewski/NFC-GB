@@ -502,25 +502,27 @@ public class BackgroundModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (groupMembershipStrings != null)
-			Log.i("NFCCHECKGM", groupMembershipStrings.toString());
+//		if (groupMembershipStrings != null)
+//			Log.i("NFCCHECKGM", groupMembershipStrings.toString());
 		for (String groupMembershipString : groupMembershipStrings) {
 			StringTokenizer tokens = new StringTokenizer(groupMembershipString, ",");
 		
 			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
 			Log.i("NFCCHECKGM-OLDID", String.valueOf(oldId));
 			String oldGroupId = substringAfter(tokens.nextToken(), "group_id=");
-			Log.i("NFCCHECKGM-GROUPID", oldGroupId);
-			String oldPersonId = substringAfter(tokens.nextToken(), "event_id=");
-			Log.i("NFCCHECK-EMAIL", oldPersonId);
-			
-			if(changedGroupIds.get(oldGroupId) == null || changedPersonIds.get(oldPersonId) == null){
-				Toast.makeText(mainActivity, "OldPersonId not found. this shouldn't happen", Toast.LENGTH_LONG).show();
-				return;
-			}
-			int groupId = changedGroupIds.get(oldGroupId);
-			int personId = changedPersonIds.get(oldPersonId);
-			model.addGroupMembership(personId, groupId);
+//			Log.i("NFCCHECKGM-GROUPID", oldGroupId);
+			String oldPersonId = substringAfter(tokens.nextToken(), "person_id=");
+//			Log.i("NFCCHECK-PERSONID", oldPersonId);
+//			
+//			Log.i("NFCCHECK-CHANGEDGROUPIDS", String.valueOf(changedGroupIds.containsKey(Integer.parseInt(oldGroupId))));
+
+//			if(changedGroupIds.get(Integer.parseInt(oldGroupId)) == null || changedPersonIds.get(Integer.parseInt(oldPersonId)) == null){
+//				Toast.makeText(mainActivity, "OldPersonId not found. this shouldn't happen", Toast.LENGTH_LONG).show();
+//				return;
+//			}
+			int groupId = changedGroupIds.get(Integer.parseInt(oldGroupId));
+			int personId = changedPersonIds.get(Integer.parseInt(oldPersonId));
+			model.addGroupMembershipWithoutToast(personId, groupId);
 		}
 	}
 
@@ -544,6 +546,27 @@ public class BackgroundModel {
 			Toast.makeText(mainActivity.getApplicationContext(),
 					mainActivity.getResources().getString(R.string.person_already_in_group), Toast.LENGTH_LONG).show();
 		}
+
+		reloadGroups();
+	}
+	
+	public void addGroupMembershipWithoutToast(int personId, int groupId) {
+		RuntimeExceptionDao<GroupMembership, Integer> groupMembershipDao = getHelper().getGroupMembershipDao();
+
+		List<GroupMembership> groupResult = null;
+		try {
+			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", groupId).and()
+					.eq("person_id", personId).query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		assert groupResult != null;
+		if (groupResult.isEmpty()) {
+			groupMembershipDao.create(new GroupMembership(groupId, personId));
+			getGroupById(groupId).getPerson().add(getPersonById(personId));
+		} 
 
 		reloadGroups();
 	}

@@ -131,8 +131,8 @@ public class NfcCheck {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (groupStrings != null)
-			Log.i("NFCCHECKGroup", groupStrings.toString());
+//		if (groupStrings != null)
+//			Log.i("NFCCHECKGroup", groupStrings.toString());
 		Hashtable<Integer, Integer> changedGroupIds = new Hashtable<Integer, Integer>();
 		for (String groupString : groupStrings) {
 			StringTokenizer tokens = new StringTokenizer(groupString, ",");
@@ -140,9 +140,9 @@ public class NfcCheck {
 			int oldId = Integer.parseInt(substringAfter(tokens.nextToken(), "id="));
 			// Log.i("NFCCHECK-OLDID", String.valueOf(oldId));
 			String groupName = substringAfter(tokens.nextToken(), "groupName=");
-			Log.i("NFCCHECK-NAME", groupName);
+//			Log.i("NFCCHECK-NAME", groupName);
 			String oldEventId = substringAfter(tokens.nextToken(), "event_id=");
-			Log.i("NFCCHECK-EMAIL", oldEventId);
+//			Log.i("NFCCHECK-EMAIL", oldEventId);
 
 			int newId = model.addGroupIfNotExists(groupName, eventId);
 
