@@ -320,7 +320,15 @@ public class TestUseCases extends
 		solo.clickOnText(removeGroup);
 		solo.clickOnButton(solo.getString(R.string.ok_button));
 		int countAfter = groupELV.getCount();
-		assertTrue(countBefore == countAfter+1);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        assertTrue(countBefore == countAfter+1);
 		assertFalse(solo.searchText("The edited name of a group"));
 	}
 
