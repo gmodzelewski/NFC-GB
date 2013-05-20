@@ -110,7 +110,6 @@ public class NfcCheck {
 //				groupStrings.add(in.readUTF());
 //			}
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 ////		if (groupStrings != null)
@@ -182,7 +181,6 @@ public class NfcCheck {
 //				personStrings.add(in.readUTF());
 //			}
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 ////		if (personStrings != null)

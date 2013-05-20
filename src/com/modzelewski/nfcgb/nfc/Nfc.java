@@ -176,17 +176,14 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 	}
 
 //	private List<GroupMembership> readFromByteToGroupMembershipList(byte[] groupMembershipBytes) {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	private List<Group> readFromByteToGroupList(byte[] groupBytes) {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	private List<Person> readFromByteToPersonList(byte[] personBytes) {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
@@ -200,7 +197,6 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 //				Log.i("NFCCHECK-EventMembershipMSG", eventMembershipMessage);
 //			}
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 //		// StringTokenizer tokens = new StringTokenizer(eventMembershipMessage,
@@ -236,7 +232,6 @@ public class Nfc extends MainActivity implements CreateNdefMessageCallback {
 //				Log.i("NFCCHECK-EventMSG", eventMessage);
 //			}
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 //		StringTokenizer tokens = new StringTokenizer(eventMessage, ",");

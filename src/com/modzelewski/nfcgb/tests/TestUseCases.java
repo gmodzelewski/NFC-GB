@@ -16,7 +16,6 @@ import com.modzelewski.nfcgb.R;
 public class TestUseCases extends
 		ActivityInstrumentationTestCase2<MainActivity> {
 	private Solo solo;
-//	private BackgroundModel model;
 
 	public TestUseCases() {
 		super(MainActivity.class);
@@ -27,10 +26,6 @@ public class TestUseCases extends
 		solo = new Solo(getInstrumentation(), getActivity());
 		solo.assertCurrentActivity("Check on first activity",
 				MainActivity.class);
-//		this.model = getActivity().getModel();
-//		 DatabasePopulator dp = new DatabasePopulator();
-//		 dp.fillDatabase(model.getHelper(), getActivity().getApplicationContext(), model);
-		 
 	}
 
 	
@@ -114,7 +109,6 @@ public class TestUseCases extends
 		assertTrue(eventCountAfter - 2 == eventCountBefore);
 
 		solo.clickOnText(solo.getString(R.string.use_case_1_eventname));
-		// assertTrue(); don't know
 	}
 
 	
@@ -153,7 +147,6 @@ public class TestUseCases extends
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		assertTrue(eventSpinner.getCount() == 1);
@@ -165,8 +158,6 @@ public class TestUseCases extends
 		ListView personLV = (ListView) solo.getView(R.id.personsLV);
 		int countBefore = personLV.getCount();
 		Log.i("testUseCase05CreatePerson", "countBefore = " + countBefore);
-//		int countold = model.getPersons().size();
-//		Log.i("testUseCase05CreatePerson", "countold = " + countold);
 
 		solo.clickOnView(labelForCreatePerson);
 
@@ -178,15 +169,11 @@ public class TestUseCases extends
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		int countAfter = personLV.getCount();
-//		int countnew = model.getPersons().size();
 		Log.i("testUseCase05CreatePerson", "countAfter = " + countAfter);
-//		Log.i("testUseCase05CreatePerson", "countNew = " + countnew);
-		assertTrue(countBefore == countAfter-1);
-//		assertTrue(countBefore == (countnew - 1));
+		assertTrue(countBefore == countAfter - 1);
 	}
 
 	
@@ -194,7 +181,6 @@ public class TestUseCases extends
 		String editPerson = solo.getString(R.string.edit_person);
 		ListView personLV = (ListView) solo.getView(R.id.personsLV);
 		int countBefore = personLV.getAdapter().getCount();
-		// solo.clickOnView(personLV.getChildAt(countBefore));
 		solo.clickOnText("Person with a name");
 		solo.clickOnText(editPerson);
 
@@ -232,7 +218,6 @@ public class TestUseCases extends
 		try {
 		Thread.sleep(1000);
 	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 		
@@ -240,20 +225,6 @@ public class TestUseCases extends
 
 		assertFalse(solo.searchText("The edited name of a person"));
 		assertTrue(countBefore == countAfter+1);
-//		TODO Neu schreiben
-//		while (personLV.getCount() > 0) {
-//
-//			solo.clickInList(personLV, countBefore)("The edited name of a person");
-//			solo.clickOnText(removePerson);
-//
-//			solo.clickOnButton(solo.getString(R.string.ok_button));
-//
-//			int countAfter = personLV.getCount();
-//			Log.i("testUseCase07DeletePerson", "countAfter = " + countAfter);
-//			assertTrue(countBefore == countAfter - 1);
-//			assertFalse(solo.searchText("The edited name of a person"));
-//
-//		}
 	}
 
 	
@@ -262,7 +233,6 @@ public class TestUseCases extends
 		ListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
 		int countBefore = groupELV.getCount();
 		Log.i("TestUseCases", "countBefore = " + countBefore);
-//		int countInModelBefore = model.getGroups().size();
 		solo.clickOnView(labelForCreateGroup);
 
 		EditText personNameEditText = (EditText) solo
@@ -272,11 +242,9 @@ public class TestUseCases extends
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		int countAfter = groupELV.getCount();
-//		assertTrue(countInModelBefore == countInModelAfter - 1);
 		assertTrue(countBefore == (countAfter - 1));
 	}
 
@@ -285,7 +253,6 @@ public class TestUseCases extends
 		String editGroup = solo.getString(R.string.edit_group);
 		ExpandableListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
 		int countBefore = groupELV.getCount();
-		// solo.clickOnView(personLV.getChildAt(countBefore));
 		solo.clickLongOnText("A groupname");
 		solo.clickOnText(editGroup);
 
@@ -300,7 +267,6 @@ public class TestUseCases extends
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -315,7 +281,6 @@ public class TestUseCases extends
 		String removeGroup = solo.getString(R.string.remove_group);
 		ExpandableListView groupELV = (ExpandableListView) solo.getView(R.id.groupsExpLV);
 		int countBefore = groupELV.getCount();
-		// solo.clickOnView(personLV.getChildAt(countBefore));
 		solo.clickLongOnText("The edited name of a group");
 		solo.clickOnText(removeGroup);
 		solo.clickOnButton(solo.getString(R.string.ok_button));
@@ -324,7 +289,6 @@ public class TestUseCases extends
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

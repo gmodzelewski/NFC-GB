@@ -456,7 +456,6 @@ public class BackgroundModel {
 	// groupMembershipStrings.add(in.readUTF());
 	// }
 	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// }
 	// if (groupMembershipStrings != null)
@@ -538,7 +537,6 @@ public class BackgroundModel {
 			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", groupId).and()
 					.eq("person_id", personId).query();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -562,7 +560,6 @@ public class BackgroundModel {
 			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", groupId).and()
 					.eq("person_id", personId).query();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -583,7 +580,6 @@ public class BackgroundModel {
 			groupResult = groupMembershipDao.queryBuilder().where().eq("group_id", group.id).and()
 					.eq("person_id", person.id).query();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -629,7 +625,6 @@ public class BackgroundModel {
 				groupStrings.add(in.readUTF());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// if (groupStrings != null)
@@ -701,7 +696,6 @@ public class BackgroundModel {
 				personStrings.add(in.readUTF());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// if (personStrings != null)

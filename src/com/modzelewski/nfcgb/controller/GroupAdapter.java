@@ -95,13 +95,11 @@ public class GroupAdapter extends BaseExpandableListAdapter implements
 
     @Override
     public long getCombinedChildId(long groupId, long childId) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public long getCombinedGroupId(long groupId) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -139,7 +137,6 @@ public class GroupAdapter extends BaseExpandableListAdapter implements
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        // TODO Auto-generated method stub
         return true;
     }
 
@@ -157,7 +154,6 @@ public class GroupAdapter extends BaseExpandableListAdapter implements
 
     @Override
     public boolean hasStableIds() {
-        // TODO Auto-generated method stub
         return false;
     }
 
