@@ -40,8 +40,6 @@ import com.modzelewski.nfcgb.view.PersonDialogInterface;
 import com.modzelewski.nfcgb.view.PersonListView;
 
 /**
- * MainActivity test test
- * 
  * @author Georg
  */
 public class MainActivity extends OrmLiteBaseActivity<DatabaseHelper> {
